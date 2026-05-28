@@ -1,42 +1,45 @@
 // Shared TypeScript types for the Sydney Minimetro game
 
-export type LineId = 'T1' | 'T2' | 'T3' | 'T4' | 'T5' | 'T6' | 'T7' | 'T8' | 'T9' | 'M1' | 'M2';
+export type LineId = 'T1' | 'T2' | 'T3' | 'T4' | 'T5' | 'T6' | 'T7' | 'T8' | 'T9' | 'M1';
 
 export interface TrainLine {
   id: LineId;
   name: string;
-  color: string;        // hex color string
-  textColor: string;    // for contrast on badge
+  color: string;
+  textColor: string;
 }
 
 export interface Station {
-  id: string;           // e.g. 'central', 'chatswood'
-  name: string;         // display name e.g. 'Central'
-  lines: LineId[];      // which lines stop here
-  x: number;           // schematic X (0–1400)
-  y: number;           // schematic Y (0–900)
+  id: string;
+  name: string;
+  lines: LineId[];
+  lat: number;   // WGS-84 latitude
+  lng: number;   // WGS-84 longitude
 }
 
 export interface Edge {
-  from: string;         // station id
-  to: string;           // station id
-  line: LineId;         // which line this edge belongs to
+  from: string;
+  to: string;
+  line: LineId;
 }
 
 export interface GameState {
   mode: 'daily' | 'practice';
   startId: string;
   targetId: string;
-  guessedIds: string[];            // ordered list of guessed station ids
-  revealedEdgeKeys: Set<string>;   // "from-to-line" strings
+  guessedIds: string[]; // correct guesses
+  revealedEdgeKeys: Set<string>;
   isComplete: boolean;
-  optimalPath: string[];           // filled when game ends
-  userPath: string[];              // the user's path (connected chain if valid)
-  date?: string;                   // ISO date string for daily mode
+  optimalPath: string[];
+  userPath: string[];
+  date?: string;
+  tripPath: string[];
+  tripLines: LineId[];
+  wrongGuesses: string[];
 }
 
 export interface DailyChallenge {
-  start: string;  // station id
-  target: string; // station id
-  date: string;   // YYYY-MM-DD
+  start: string;
+  target: string;
+  date: string;
 }

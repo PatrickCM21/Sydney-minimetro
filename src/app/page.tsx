@@ -6,9 +6,9 @@ import StationInput from '@/components/StationInput';
 import GuessHistory from '@/components/GuessHistory';
 import ResultsModal from '@/components/ResultsModal';
 import { STATION_MAP, LINE_MAP } from '@/lib/networkData';
-import { bfsShortestPath, extractUserPath, areAdjacent } from '@/lib/pathfinding';
+import { findLinePath, getSharedLine, bfsShortestPathWithLines } from '@/lib/pathfinding';
 import { getRandomChallenge, getDailyChallenge, getTodayString } from '@/lib/dailyChallenge';
-import type { Station, GameState } from '@/types';
+import type { Station, GameState, LineId } from '@/types';
 
 // Dynamically import map (SVG heavy, no SSR needed)
 const GameMap = dynamic(() => import('@/components/GameMap'), {
@@ -23,7 +23,9 @@ const GameMap = dynamic(() => import('@/components/GameMap'), {
 function initGameState(
   startId: string,
   targetId: string,
-  mode: 'daily' | 'practice'
+  mode: 'daily' | 'practice',
+  tripPath: string[],
+  tripLines: LineId[]
 ): GameState {
   return {
     mode,
@@ -32,9 +34,12 @@ function initGameState(
     guessedIds: [],
     revealedEdgeKeys: new Set(),
     isComplete: false,
-    optimalPath: [],
+    optimalPath: tripPath,
     userPath: [],
     date: mode === 'daily' ? getTodayString() : undefined,
+    tripPath,
+    tripLines,
+    wrongGuesses: [],
   };
 }
 
@@ -57,75 +62,133 @@ export default function Home() {
     setTimeout(() => setToasts(t => t.filter(m => m.id !== id)), 3000);
   }, []);
 
+  const stationsList = React.useMemo(() => {
+    return Array.from(STATION_MAP.values()).sort((a, b) => a.name.localeCompare(b.name));
+  }, []);
+
   // Start a new game
-  const startGame = useCallback((m: 'daily' | 'practice') => {
+  const startGame = useCallback((m: 'daily' | 'practice', customStartId?: string, customTargetId?: string) => {
     let startId: string, targetId: string;
     if (m === 'daily') {
       const c = getDailyChallenge(getTodayString());
       startId = c.start;
       targetId = c.target;
     } else {
-      const c = getRandomChallenge();
-      startId = c.start;
-      targetId = c.target;
+      if (customStartId && customTargetId) {
+        startId = customStartId;
+        targetId = customTargetId;
+      } else {
+        const c = getRandomChallenge();
+        startId = c.start;
+        targetId = c.target;
+      }
     }
+
+    if (startId === targetId) {
+      addToast("Start and end stations must be different!", "error");
+      return;
+    }
+
+    const line = getSharedLine(startId, targetId);
+    let tripPath: string[] = [];
+    let tripLines: LineId[] = [];
+
+    if (line) {
+      tripPath = findLinePath(startId, targetId, line) ?? [];
+      tripLines = [line];
+    } else {
+      const pathWithLines = bfsShortestPathWithLines(startId, targetId);
+      if (pathWithLines) {
+        tripPath = pathWithLines.path;
+        tripLines = pathWithLines.lines;
+      }
+    }
+
+    if (tripPath.length === 0) {
+      addToast("No valid rail path found between these stations!", "error");
+      return;
+    }
+
     setMode(m);
-    setGameState(initGameState(startId, targetId, m));
+    setGameState(initGameState(startId, targetId, m, tripPath, tripLines));
     setShowResults(false);
-  }, []);
+  }, [addToast]);
+
+  const handlePracticeChange = useCallback((newStartId: string, newTargetId: string) => {
+    startGame('practice', newStartId, newTargetId);
+  }, [startGame]);
 
   // Initialize on mount
   useEffect(() => {
-    startGame('daily');
+    const timer = setTimeout(() => {
+      startGame('daily');
+    }, 0);
+    return () => clearTimeout(timer);
   }, [startGame]);
 
   // Handle a player guess
   const handleGuess = useCallback((station: Station) => {
     if (!gameState || gameState.isComplete) return;
 
-    const { startId, targetId, guessedIds } = gameState;
+    const { guessedIds, wrongGuesses, tripPath, tripLines } = gameState;
 
     // Already guessed?
-    if (guessedIds.includes(station.id)) {
+    if (guessedIds.includes(station.id) || wrongGuesses.includes(station.id)) {
       addToast(`${station.name} already guessed`, 'error');
       return;
     }
 
-    const newGuessedIds = [...guessedIds, station.id];
+    const intermediateStations = tripPath.slice(1, -1);
+    const isCorrect = intermediateStations.includes(station.id);
 
-    // Check if this guess creates a connection between the start and target
-    // (BFS through all active nodes: start + guessed + target)
-    const activeNodes = new Set([startId, targetId, ...newGuessedIds]);
-    const userPath = extractUserPath(newGuessedIds, startId, targetId);
+    if (isCorrect) {
+      const newGuessedIds = [...guessedIds, station.id];
+      const allGuessed = intermediateStations.every(id => newGuessedIds.includes(id));
 
-    if (station.id === targetId) {
-      // Shouldn't happen (target is excluded from autocomplete) but guard anyway
-      return;
+      const newState: GameState = {
+        ...gameState,
+        guessedIds: newGuessedIds,
+        isComplete: allGuessed,
+        userPath: allGuessed ? tripPath : [],
+      };
+
+      setGameState(newState);
+
+      if (allGuessed) {
+        setTimeout(() => setShowResults(true), 800);
+        addToast(`🎉 Connected! You guessed all stations on the trip!`, 'success');
+      } else {
+        addToast(`Correct! Added ${station.name}`, 'success');
+      }
+    } else {
+      const newWrongGuesses = [...wrongGuesses, station.id];
+      const hasLineOverlap = station.lines.some(l => tripLines.includes(l));
+
+      const newState: GameState = {
+        ...gameState,
+        wrongGuesses: newWrongGuesses,
+      };
+
+      setGameState(newState);
+
+      if (!hasLineOverlap) {
+        addToast(`${station.name} is not on the correct lines!`, 'error');
+      } else {
+        addToast(`${station.name} is not on this trip!`, 'error');
+      }
     }
+  }, [gameState, addToast]);
 
-    // Was this station adjacent to nothing? Warn but allow
-    const allActiveExceptNew = new Set([startId, targetId, ...guessedIds]);
-    const hasNeighbor = (STATION_MAP.get(station.id)?.lines ?? []).length > 0;
-
+  const handleGiveUp = useCallback(() => {
+    if (!gameState || gameState.isComplete) return;
     const newState: GameState = {
       ...gameState,
-      guessedIds: newGuessedIds,
-      revealedEdgeKeys: new Set(), // recomputed by GameMap
+      isComplete: true,
+      userPath: gameState.tripPath,
     };
-
-    // If a valid path now exists, end the game
-    if (userPath) {
-      const optimalPath = bfsShortestPath(startId, targetId) ?? [];
-      newState.isComplete = true;
-      newState.optimalPath = optimalPath;
-      newState.userPath = userPath;
-      setGameState(newState);
-      setTimeout(() => setShowResults(true), 800);
-      addToast(`🎉 Connected! Path found in ${newGuessedIds.length} guess${newGuessedIds.length !== 1 ? 'es' : ''}`, 'success');
-    } else {
-      setGameState(newState);
-      addToast(`Added ${station.name}`, 'info');
-    }
+    setGameState(newState);
+    setTimeout(() => setShowResults(true), 400);
+    addToast(`Trip revealed. Better luck next time!`, 'info');
   }, [gameState, addToast]);
 
   const handlePlayAgain = useCallback(() => {
@@ -142,8 +205,6 @@ export default function Home() {
 
   const startStation = STATION_MAP.get(gameState.startId);
   const targetStation = STATION_MAP.get(gameState.targetId);
-  const startLine = startStation ? LINE_MAP[startStation.lines[0]] : null;
-  const targetLine = targetStation ? LINE_MAP[targetStation.lines[0]] : null;
 
   return (
     <main className="w-screen h-screen flex flex-col overflow-hidden" id="main-game">
@@ -178,28 +239,63 @@ export default function Home() {
         </div>
 
         {/* Challenge header */}
-        <div className="flex items-center gap-3 text-sm">
-          {startStation && (
-            <div className="hidden md:flex items-center gap-2">
-              <span
-                className="line-badge"
-                style={{ backgroundColor: startLine?.color, color: startLine?.textColor }}
+        <div className="flex items-center gap-2 text-sm">
+          {mode === 'practice' ? (
+            <div className="flex items-center gap-2">
+              <select
+                value={gameState.startId}
+                onChange={(e) => handlePracticeChange(e.target.value, gameState.targetId)}
+                className="bg-game-surface border border-game-border text-white text-xs rounded-md px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-blue-500 font-semibold cursor-pointer hover:bg-game-surface/80 transition-colors"
               >
-                {startStation.lines[0]}
-              </span>
-              <span className="text-green-400 font-semibold">{startStation.name}</span>
+                {stationsList.map(s => (
+                  <option key={s.id} value={s.id} className="bg-game-bg text-white">
+                    {s.name}
+                  </option>
+                ))}
+              </select>
+              <span className="text-gray-500 font-semibold">↔</span>
+              <select
+                value={gameState.targetId}
+                onChange={(e) => handlePracticeChange(gameState.startId, e.target.value)}
+                className="bg-game-surface border border-game-border text-white text-xs rounded-md px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-blue-500 font-semibold cursor-pointer hover:bg-game-surface/80 transition-colors"
+              >
+                {stationsList.map(s => (
+                  <option key={s.id} value={s.id} className="bg-game-bg text-white">
+                    {s.name}
+                  </option>
+                ))}
+              </select>
             </div>
+          ) : (
+            <>
+              {startStation && (
+                <div className="flex items-center gap-2">
+                  <span className="text-white font-semibold">{startStation.name}</span>
+                </div>
+              )}
+              <span className="text-gray-500 font-semibold">↔</span>
+              {targetStation && (
+                <div className="flex items-center gap-2">
+                  <span className="text-white font-semibold">{targetStation.name}</span>
+                </div>
+              )}
+            </>
           )}
-          <span className="text-gray-600">→</span>
-          {targetStation && (
-            <div className="hidden md:flex items-center gap-2">
-              <span
-                className="line-badge"
-                style={{ backgroundColor: targetLine?.color, color: targetLine?.textColor }}
-              >
-                {targetStation.lines[0]}
-              </span>
-              <span className="text-red-400 font-semibold">{targetStation.name}</span>
+          {gameState.tripLines && (
+            <div className="hidden sm:flex items-center gap-1.5 ml-4 border-l border-game-border pl-4">
+              <span className="text-gray-500 text-xs">Use lines:</span>
+              {gameState.tripLines.map(lineId => {
+                const line = LINE_MAP[lineId];
+                return (
+                  <span
+                    key={lineId}
+                    className="line-badge text-xs font-semibold"
+                    style={{ backgroundColor: line?.color, color: line?.textColor }}
+                  >
+                    {lineId}
+                  </span>
+                );
+              })}
             </div>
           )}
         </div>
@@ -207,7 +303,7 @@ export default function Home() {
         {/* Guess count */}
         <div className="flex items-center gap-2">
           <span className="text-gray-500 text-xs font-mono">
-            {gameState.guessedIds.length} guess{gameState.guessedIds.length !== 1 ? 'es' : ''}
+            {gameState.guessedIds.length} correct / {gameState.tripPath.length > 2 ? gameState.tripPath.length - 2 : 0} stations
           </span>
           {gameState.isComplete && (
             <button
@@ -230,8 +326,9 @@ export default function Home() {
             targetId={gameState.targetId}
             guessedIds={gameState.guessedIds}
             optimalPath={gameState.isComplete ? gameState.optimalPath : undefined}
-            userPath={gameState.isComplete ? (gameState.userPath ?? undefined) : undefined}
             isComplete={gameState.isComplete}
+            wrongGuesses={gameState.wrongGuesses}
+            tripLines={gameState.tripLines}
           />
         </div>
 
@@ -242,46 +339,53 @@ export default function Home() {
             <div className="text-xs text-gray-500 font-medium uppercase tracking-wider mb-2">
               {mode === 'daily' ? `Daily Challenge · ${getTodayString()}` : 'Practice Mode'}
             </div>
-            <div className="flex flex-col gap-1.5">
+            <div className="flex flex-col gap-2">
               <div className="flex items-center gap-2">
-                <span className="text-xs text-gray-500 w-12">From</span>
-                <span
-                  className="line-badge text-xs"
-                  style={{ backgroundColor: startLine?.color, color: startLine?.textColor }}
-                >
-                  {startStation?.lines[0]}
-                </span>
-                <span className="text-green-400 font-semibold text-sm">{startStation?.name}</span>
+                <span className="text-xs text-gray-500 w-16">Endpoint</span>
+                <span className="text-white font-semibold text-sm">{startStation?.name}</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-xs text-gray-500 w-12">To</span>
-                <span
-                  className="line-badge text-xs"
-                  style={{ backgroundColor: targetLine?.color, color: targetLine?.textColor }}
-                >
-                  {targetStation?.lines[0]}
-                </span>
-                <span className="text-red-400 font-semibold text-sm">{targetStation?.name}</span>
+                <span className="text-xs text-gray-500 w-16">Endpoint</span>
+                <span className="text-white font-semibold text-sm">{targetStation?.name}</span>
               </div>
+              {gameState.tripLines && (
+                <div className="flex items-center gap-1.5 mt-1">
+                  <span className="text-xs text-gray-500 w-16">Lines</span>
+                  <div className="flex flex-wrap gap-1">
+                    {gameState.tripLines.map(lineId => {
+                      const line = LINE_MAP[lineId];
+                      return (
+                        <span
+                          key={lineId}
+                          className="line-badge text-xs font-semibold"
+                          style={{ backgroundColor: line?.color, color: line?.textColor }}
+                        >
+                          {lineId}
+                        </span>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
             </div>
-            {/* Optimal stops hint (visible only after game ends) */}
-            {gameState.isComplete && gameState.optimalPath.length > 0 && (
-              <div className="mt-2 text-xs text-gray-500">
-                Optimal: <span className="text-green-400 font-semibold">{gameState.optimalPath.length - 1} stops</span>
-              </div>
-            )}
           </div>
 
           {/* Input */}
           {!gameState.isComplete && (
-            <div className="px-3 py-3 border-b border-game-border">
+            <div className="px-3 py-3 border-b border-game-border flex flex-col gap-2">
               <StationInput
                 onGuess={handleGuess}
-                guessedIds={new Set([...gameState.guessedIds, gameState.startId, gameState.targetId])}
+                guessedIds={new Set([...gameState.guessedIds, ...gameState.wrongGuesses, gameState.startId, gameState.targetId])}
                 startId={gameState.startId}
                 targetId={gameState.targetId}
                 disabled={gameState.isComplete}
               />
+              <button
+                onClick={handleGiveUp}
+                className="w-full py-1.5 bg-red-950/40 hover:bg-red-900/40 border border-red-900/30 rounded-lg text-xs font-semibold text-red-400 transition-colors"
+              >
+                🏳 Give Up / Reveal Route
+              </button>
             </div>
           )}
 
@@ -293,23 +397,24 @@ export default function Home() {
               targetId={gameState.targetId}
               userPath={gameState.userPath ?? null}
               isComplete={gameState.isComplete}
+              wrongGuesses={gameState.wrongGuesses}
+              tripPath={gameState.tripPath}
+              tripLines={gameState.tripLines}
             />
           </div>
 
           {/* How to play footer */}
           <div className="px-3 pb-3 pt-2 border-t border-game-border">
             <p className="text-xs text-gray-600 leading-relaxed">
-              Name intermediate stations to build a connected path between{' '}
-              <span className="text-green-400">{startStation?.name}</span> and{' '}
-              <span className="text-red-400">{targetStation?.name}</span>.
-              Adjacent stations will light up on the map.
+              Guess all the intermediate stations along the trip between the two endpoints.
+              Pre-stated lines show which routes are part of this journey.
             </p>
           </div>
         </aside>
       </div>
 
       {/* ── TOAST NOTIFICATIONS ───────────────────────────────────── */}
-      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 flex flex-col gap-2 z-50 pointer-events-none">
+      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 flex flex-col gap-2 pointer-events-none" style={{ zIndex: 10000 }}>
         {toasts.map(toast => (
           <div
             key={toast.id}
@@ -335,6 +440,8 @@ export default function Home() {
           optimalPath={gameState.optimalPath}
           userPath={gameState.userPath ?? null}
           guessedIds={gameState.guessedIds}
+          wrongGuesses={gameState.wrongGuesses}
+          tripLines={gameState.tripLines}
           onPlayAgain={handlePlayAgain}
           onClose={() => setShowResults(false)}
           mode={mode}

@@ -2,7 +2,6 @@
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { STATIONS_DEDUPED } from '@/lib/networkData';
-import { LINE_MAP } from '@/lib/networkData';
 import type { Station } from '@/types';
 
 interface StationInputProps {
@@ -75,9 +74,6 @@ export default function StationInput({
     setIsOpen(results.length > 0);
   }, [guessedIds, startId, targetId]);
 
-  useEffect(() => {
-    search(query);
-  }, [query, search]);
 
   const commit = useCallback((station: Station) => {
     onGuess(station);
@@ -122,13 +118,21 @@ export default function StationInput({
             ref={inputRef}
             type="text"
             value={query}
-            onChange={e => setQuery(e.target.value)}
+            onChange={e => {
+              const val = e.target.value;
+              setQuery(val);
+              search(val);
+            }}
             onKeyDown={onKeyDown}
             onFocus={() => query && setIsOpen(suggestions.length > 0)}
             onBlur={() => setTimeout(() => setIsOpen(false), 150)}
             disabled={disabled}
-            placeholder={disabled ? 'Game complete!' : 'Type a station name…'}
+            placeholder={disabled ? 'Game complete!' : 'Type a station…'}
+            name="station_query"
+            id="station-query-input"
             autoComplete="off"
+            autoCorrect="off"
+            autoCapitalize="none"
             spellCheck={false}
             className={`
               w-full px-4 py-3 rounded-xl text-sm font-medium
@@ -161,29 +165,6 @@ export default function StationInput({
                 onMouseDown={() => commit(station)}
                 onMouseEnter={() => setSelectedIdx(i)}
               >
-                {/* Line badges */}
-                <div className="flex gap-1 shrink-0">
-                  {station.lines.slice(0, 3).map(lineId => {
-                    const line = LINE_MAP[lineId];
-                    return (
-                      <span
-                        key={lineId}
-                        className="line-badge text-xs"
-                        style={{
-                          backgroundColor: line.color,
-                          color: line.textColor,
-                          minWidth: '1.6rem',
-                          padding: '1px 4px',
-                        }}
-                      >
-                        {lineId}
-                      </span>
-                    );
-                  })}
-                  {station.lines.length > 3 && (
-                    <span className="text-gray-500 text-xs">+{station.lines.length - 3}</span>
-                  )}
-                </div>
                 <span className="text-gray-300 text-sm flex-1">
                   {highlight(station.name, query)}
                 </span>

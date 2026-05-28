@@ -10,16 +10,16 @@ module.exports = {
     extend: {
       colors: {
         // Sydney Trains line colors (official NSW palette)
-        't1': '#F7941D',   // T1 North Shore & Western Line - Orange
+        't1': '#F99D1C',   // T1 North Shore & Western Line - Orange
         't2': '#0098CD',   // T2 Inner West & Leppington - Blue
-        't3': '#F4871F',   // T3 Bankstown Line - Orange/Amber
+        't3': '#DC3B14',   // T3 Bankstown Line - Orange/Amber
         't4': '#005AA3',   // T4 Eastern Suburbs & Illawarra - Dark Blue
-        't5': '#C4A000',   // T5 Cumberland Line - Gold
-        't6': '#6D2077',   // T6 Carlingford Line - Purple
-        't7': '#009B77',   // T7 Olympic Park Line - Teal
-        't8': '#D50032',   // T8 Airport & South Line - Red
-        't9': '#00B2A9',   // T9 Northern Line - Cyan
-        'm1': '#009B77',   // M1 Metro Northwest & City & Southwest - Green
+        't5': '#C4258F',   // T5 Cumberland Line - Gold
+        't6': '#456CAA',   // T6 Carlingford Line - Purple
+        't7': '#6F818E',   // T7 Olympic Park Line - Teal
+        't8': '#00954C',   // T8 Airport & South Line - Red
+        't9': '#D11F2F',   // T9 Northern Line - Cyan
+        'm1': '#168388',   // M1 Metro Northwest & City & Southwest - Green
         'm2': '#00AEEF',   // M2 Metro - Light Blue
         // Game UI palette
         'game': {

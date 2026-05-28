@@ -53,7 +53,7 @@ const CURATED_PAIRS: Array<[string, string]> = [
   ['strathfield', 'campbelltown'],
   ['hornsby', 'leppington'],
   ['penrith', 'central'],
-  ['carlingford', 'central'],
+  ['chatswood', 'sydenham'],
   ['olympic_park', 'north_sydney'],
   ['tallawong', 'campbelltown'],
   ['richmond', 'north_sydney'],
