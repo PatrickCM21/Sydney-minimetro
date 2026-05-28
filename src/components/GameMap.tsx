@@ -61,7 +61,7 @@ function MapWatcher({
 
 const MAP_CENTER: [number, number] = [-33.87, 151.07];
 const MAP_ZOOM = 11;
-const MAP_STYLE: React.CSSProperties = { width: '100%', height: '100%', background: '#1a1f2e' };
+const MAP_STYLE: React.CSSProperties = { width: '100%', height: '100%', background: '#e4e9f0' };
 
 // Module-level cache for Leaflet DivIcon instances to prevent visual flashing and ref-in-render lint errors.
 const iconCache = new Map<string, L.DivIcon>();
@@ -115,9 +115,9 @@ export default function GameMap({
             <!-- Halo -->
             <div class="absolute w-[24px] h-[24px] rounded-full opacity-20" style="background-color: ${color};"></div>
             <!-- Main dot -->
-            <div class="w-[14px] h-[14px] rounded-full border-[1.5px] border-[#0a0c12]" style="background-color: ${color};"></div>
+            <div class="w-[14px] h-[14px] rounded-full" style="background-color: ${color}; border: 1.5px solid #f8fafc;"></div>
             <!-- Label -->
-            <div class="absolute bottom-[18px] whitespace-nowrap text-center font-bold text-[10px] px-1 py-0.5 rounded bg-[#0a0c12]/90 border border-white/10" style="color: white; font-family: 'Plus Jakarta Sans', sans-serif; text-shadow: 0 1px 2px rgba(0,0,0,0.8);">
+            <div class="absolute bottom-[18px] whitespace-nowrap text-center font-bold text-[10px] px-1.5 py-0.5 rounded shadow-lg" style="color: #0f172a; background-color: #ffffff; border: 1px solid #cbd5e1; font-family: 'Plus Jakarta Sans', sans-serif;">
               ${name}
             </div>
           </div>
@@ -137,9 +137,9 @@ export default function GameMap({
         html: `
           <div class="relative flex items-center justify-center pointer-events-none marker-bounce">
             <!-- Main dot in grey -->
-            <div class="w-[10px] h-[10px] rounded-full border-[1.5px] border-[#0a0c12] bg-gray-500"></div>
+            <div class="w-[10px] h-[10px] rounded-full bg-gray-500" style="border: 1.5px solid #f8fafc;"></div>
             <!-- Label in grey -->
-            <div class="absolute bottom-[14px] whitespace-nowrap text-center font-bold text-[9px] px-1 py-0.5 rounded bg-gray-950/90 text-gray-400 border border-gray-800" style="font-family: 'Plus Jakarta Sans', sans-serif;">
+            <div class="absolute bottom-[14px] whitespace-nowrap text-center font-bold text-[9px] px-1.5 py-0.5 rounded shadow-lg" style="color: #475569; background-color: #ffffff; border: 1px solid #cbd5e1; font-family: 'Plus Jakarta Sans', sans-serif;">
               ${name}
             </div>
           </div>
@@ -161,10 +161,10 @@ export default function GameMap({
             <!-- Glow halo -->
             <div class="absolute w-[24px] h-[24px] rounded-full opacity-20" style="background-color: ${color};"></div>
             <!-- Main dot -->
-            <div class="w-[16px] h-[16px] rounded-full border-2 border-[#0a0c12]" style="background-color: ${color};"></div>
+            <div class="w-[16px] h-[16px] rounded-full" style="background-color: ${color}; border: 2px solid #f8fafc;"></div>
             <!-- Station Name Container -->
             <div class="absolute bottom-[20px] flex flex-col items-center whitespace-nowrap">
-              <div class="font-extrabold text-[10.5px] text-white px-1.5 py-0.5 rounded bg-[#0a0c12]/95 border border-white/20 shadow-lg" style="font-family: 'Plus Jakarta Sans', sans-serif;">
+              <div class="font-extrabold text-[10.5px] px-1.5 py-0.5 rounded shadow-lg" style="color: #0f172a; background-color: #ffffff; border: 1.5px solid #cbd5e1; font-family: 'Plus Jakarta Sans', sans-serif;">
                 ${name}
               </div>
             </div>
@@ -263,19 +263,12 @@ export default function GameMap({
         attributionControl={true}
         style={MAP_STYLE}
       >
-        {/* CartoDB Positron — minimal greyscale city tiles */}
+        {/* CartoDB Positron Map Tiles (Always Light) */}
         <TileLayer
           url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
           subdomains="abcd"
           maxZoom={19}
-        />
-
-        {/* Dark overlay to deepen the map contrast */}
-        <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png"
-          subdomains="abcd"
-          opacity={0.15}
         />
 
         <MapWatcher onMapReady={handleMapReady} />
@@ -396,10 +389,10 @@ export default function GameMap({
               style={{
                 width: 32,
                 height: 32,
-                background: 'rgba(14,20,32,0.9)',
-                border: '1px solid rgba(255,255,255,0.1)',
+                background: '#ffffff',
+                border: '1px solid #cbd5e1',
                 borderRadius: 6,
-                color: '#9ca3af',
+                color: '#475569',
                 cursor: 'pointer',
                 fontSize: btn.label === '⌂' ? 14 : 18,
                 fontWeight: 700,
@@ -407,10 +400,18 @@ export default function GameMap({
                 alignItems: 'center',
                 justifyContent: 'center',
                 backdropFilter: 'blur(8px)',
-                transition: 'color 0.15s',
+                transition: 'color 0.15s, background-color 0.15s',
               }}
-              onMouseEnter={e => ((e.target as HTMLButtonElement).style.color = '#fff')}
-              onMouseLeave={e => ((e.target as HTMLButtonElement).style.color = '#9ca3af')}
+              onMouseEnter={e => {
+                const el = e.target as HTMLButtonElement;
+                el.style.color = '#0f172a';
+                el.style.backgroundColor = '#f1f5f9';
+              }}
+              onMouseLeave={e => {
+                const el = e.target as HTMLButtonElement;
+                el.style.color = '#475569';
+                el.style.backgroundColor = '#ffffff';
+              }}
             >
               {btn.label}
             </button>
@@ -421,12 +422,14 @@ export default function GameMap({
       {/* Custom Styles and Animations */}
       <style>{`
         .leaflet-control-attribution {
-          background: rgba(10,12,18,0.7) !important;
-          color: #4b5563 !important;
+          background: rgba(255, 255, 255, 0.8) !important;
+          color: #475569 !important;
           font-size: 10px !important;
           backdrop-filter: blur(4px);
+          border-left: 1px solid #cbd5e1;
+          border-top: 1px solid #cbd5e1;
         }
-        .leaflet-control-attribution a { color: #6b7280 !important; }
+        .leaflet-control-attribution a { color: #0f172a !important; }
         .leaflet-container { font-family: 'Plus Jakarta Sans', sans-serif; }
 
         /* Remove default Leaflet icon styling */

@@ -95,7 +95,7 @@ function StationRow({
       </span>
 
       {/* Station name */}
-      <span className={`flex-1 truncate font-medium ${isEndpoint ? 'text-white' : isGuessed ? 'text-gray-300' : 'text-gray-500'}`}>
+      <span className={`flex-1 truncate font-medium ${isEndpoint ? 'text-game-text' : isGuessed ? 'text-game-text-muted' : 'text-game-text-muted/50'}`}>
         {station.name}
       </span>
 
@@ -125,8 +125,8 @@ export default function GuessHistory({
       {/* Timeline Section */}
       <div className="flex-1 flex flex-col min-h-0">
         <div className="flex items-center justify-between mb-2">
-          <h2 className="text-sm font-semibold text-gray-300">Route Timeline</h2>
-          <span className="text-xs text-gray-500 font-mono">
+          <h2 className="text-sm font-semibold text-game-text">Route Timeline</h2>
+          <span className="text-xs text-game-text-muted font-mono">
             {guessedIds.length} / {tripPath.length > 2 ? tripPath.length - 2 : 0} guessed
           </span>
         </div>
@@ -158,8 +158,8 @@ export default function GuessHistory({
       {/* Wrong Guesses Section */}
       <div className="h-32 shrink-0 border-t border-game-border/60 pt-3 flex flex-col min-h-0">
         <div className="flex items-center justify-between mb-2">
-          <h2 className="text-sm font-semibold text-gray-300">Wrong Guesses</h2>
-          <span className="text-xs text-gray-500 font-mono">{wrongGuesses.length}</span>
+          <h2 className="text-sm font-semibold text-game-text">Wrong Guesses</h2>
+          <span className="text-xs text-game-text-muted font-mono">{wrongGuesses.length}</span>
         </div>
 
         <div className="flex-1 overflow-y-auto custom-scroll pr-1 flex flex-col gap-1.5">

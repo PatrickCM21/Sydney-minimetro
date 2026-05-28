@@ -37,8 +37,8 @@ function PathDisplay({
     <div>
       <div className="flex items-center gap-2 mb-3">
         <div className="w-3 h-3 rounded-full bg-blue-500" />
-        <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Trip Route</span>
-        <span className="text-xs text-gray-500 font-mono ml-auto">
+        <span className="text-xs font-semibold text-game-text-muted uppercase tracking-wider">Trip Route</span>
+        <span className="text-xs text-game-text-muted font-mono ml-auto">
           {path.length > 2 ? path.length - 2 : 0} intermediate stops
         </span>
       </div>
@@ -58,10 +58,10 @@ function PathDisplay({
                 className={`
                   flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium border transition-all duration-300
                   ${isEndpoint 
-                    ? 'bg-blue-950/20 border-blue-900/30 text-white font-bold' 
+                    ? 'bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-900/30 text-blue-800 dark:text-blue-200 font-bold' 
                     : isGuessed 
-                      ? 'bg-green-950/20 border-green-900/30 text-green-300' 
-                      : 'bg-red-950/20 border-red-900/30 text-red-400 opacity-80'}
+                      ? 'bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-900/30 text-green-700 dark:text-green-300' 
+                      : 'bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-900/30 text-red-600 dark:text-red-400 opacity-90'}
                 `}
               >
                 <span
@@ -82,7 +82,7 @@ function PathDisplay({
                 )}
               </div>
               {i < path.length - 1 && (
-                <span className="text-gray-600 text-xs self-center">→</span>
+                <span className="text-game-text-muted/40 text-xs self-center">→</span>
               )}
             </React.Fragment>
           );
@@ -106,10 +106,10 @@ function ScoreBadge({
   if (gaveUp) {
     return (
       <div className="text-center">
-        <div className="text-4xl font-black text-gray-400 mb-1">
+        <div className="text-4xl font-black text-game-text-muted mb-1">
           TRIP REVEALED
         </div>
-        <div className="text-gray-400 text-sm">You guessed {guessedCount} of {totalCount} stations. Try again! 🏁</div>
+        <div className="text-game-text-muted text-sm">You guessed {guessedCount} of {totalCount} stations. Try again! 🏁</div>
       </div>
     );
   }
@@ -117,10 +117,10 @@ function ScoreBadge({
   if (wrongCount === 0) {
     return (
       <div className="text-center">
-        <div className="text-5xl font-black text-green-400 mb-1" style={{ textShadow: '0 0 30px rgba(34,197,94,0.5)' }}>
+        <div className="text-5xl font-black text-green-600 dark:text-green-500 mb-1" style={{ textShadow: '0 0 30px rgba(90,179,66,0.3)' }}>
           PERFECT!
         </div>
-        <div className="text-gray-400 text-sm">You guessed every station on the first try! 🎉</div>
+        <div className="text-game-text-muted text-sm">You guessed every station on the first try! 🎉</div>
       </div>
     );
   }
@@ -128,10 +128,10 @@ function ScoreBadge({
   if (wrongCount <= 2) {
     return (
       <div className="text-center">
-        <div className="text-5xl font-black text-blue-400 mb-1" style={{ textShadow: '0 0 30px rgba(59,130,246,0.5)' }}>
+        <div className="text-5xl font-black text-blue-600 dark:text-blue-400 mb-1" style={{ textShadow: '0 0 30px rgba(33,166,223,0.3)' }}>
           EXCELLENT!
         </div>
-        <div className="text-gray-400 text-sm">Just {wrongCount} wrong guess{wrongCount !== 1 ? 'es' : ''}! 🌟</div>
+        <div className="text-game-text-muted text-sm">Just {wrongCount} wrong guess{wrongCount !== 1 ? 'es' : ''}! 🌟</div>
       </div>
     );
   }
@@ -139,20 +139,20 @@ function ScoreBadge({
   if (wrongCount <= 5) {
     return (
       <div className="text-center">
-        <div className="text-5xl font-black text-amber-400 mb-1" style={{ textShadow: '0 0 30px rgba(245,158,11,0.5)' }}>
+        <div className="text-5xl font-black text-amber-600 dark:text-amber-400 mb-1" style={{ textShadow: '0 0 30px rgba(245,158,11,0.3)' }}>
           GREAT JOB!
         </div>
-        <div className="text-gray-400 text-sm">Completed with {wrongCount} wrong guesses. 👍</div>
+        <div className="text-game-text-muted text-sm">Completed with {wrongCount} wrong guesses. 👍</div>
       </div>
     );
   }
 
   return (
     <div className="text-center">
-      <div className="text-5xl font-black text-red-400 mb-1" style={{ textShadow: '0 0 30px rgba(239,68,68,0.5)' }}>
+      <div className="text-5xl font-black text-red-600 dark:text-red-400 mb-1" style={{ textShadow: '0 0 30px rgba(239,68,68,0.3)' }}>
         COMPLETED!
       </div>
-      <div className="text-gray-400 text-sm">You found them all after {wrongCount} wrong guesses. 🚉</div>
+      <div className="text-game-text-muted text-sm">You found them all after {wrongCount} wrong guesses. 🚉</div>
     </div>
   );
 }
@@ -206,7 +206,7 @@ export default function ResultsModal({
     else if (wrongCount <= 5) resultText = 'GREAT JOB';
 
     const text = [
-      `🚇 Sydney MiniMetro Route Quiz`,
+      `🚇 Trackle Route Quiz`,
       `${start} ↔ ${target}`,
       `Result: ${resultText}`,
       `Score: ${score}% (Average: ${fakeAverage}%)`,
@@ -240,16 +240,16 @@ export default function ResultsModal({
         <div className="px-6 pt-6 pb-4 border-b border-game-border">
           <div className="flex items-start justify-between">
             <div>
-              <h2 className="text-xl font-bold text-white mb-1">
+              <h2 className="text-xl font-bold text-game-text mb-1">
                 {gaveUp ? '🏳 Trip Revealed' : wrongCount === 0 ? '🏆 Perfect Journey!' : '🚉 Journey Complete'}
               </h2>
-              <p className="text-sm text-gray-500">
-                <span className="text-white font-medium">{startName}</span>
+              <p className="text-sm text-game-text-muted">
+                <span className="text-game-text font-medium">{startName}</span>
                 <span className="mx-2 text-gray-600">↔</span>
-                <span className="text-white font-medium">{targetName}</span>
+                <span className="text-game-text font-medium">{targetName}</span>
               </p>
             </div>
-            <button onClick={onClose} className="text-gray-500 hover:text-white transition-colors p-1">
+            <button onClick={onClose} className="text-game-text-muted hover:text-game-text transition-colors p-1">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M18 6 6 18M6 6l12 12" />
               </svg>
@@ -269,26 +269,26 @@ export default function ResultsModal({
         {/* Score & Average Comparison */}
         <div className="px-6 py-4 bg-game-surface/20 border-b border-game-border flex items-center justify-around">
           <div className="text-center">
-            <div className="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-1">Your Score</div>
-            <div className="text-3xl font-extrabold text-blue-400">{score}%</div>
+            <div className="text-xs text-game-text-muted font-semibold uppercase tracking-wider mb-1">Your Score</div>
+            <div className="text-3xl font-extrabold text-blue-600 dark:text-blue-400">{score}%</div>
           </div>
           <div className="h-8 w-px bg-game-border" />
           <div className="text-center">
-            <div className="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-1">Average Score Today</div>
-            <div className="text-3xl font-extrabold text-gray-400">{fakeAverage}%</div>
+            <div className="text-xs text-game-text-muted font-semibold uppercase tracking-wider mb-1">Average Score Today</div>
+            <div className="text-3xl font-extrabold text-slate-600 dark:text-gray-400">{fakeAverage}%</div>
           </div>
         </div>
 
         {/* Stats row */}
         <div className="grid grid-cols-3 divide-x divide-game-border border-b border-game-border">
           {[
-            { label: 'Correct Guesses', value: `${correctCount}/${totalStationsToGuess}`, color: '#22c55e' },
-            { label: 'Wrong Guesses', value: wrongCount, color: '#ef4444' },
-            { label: 'Accuracy', value: `${accuracy}%`, color: '#60a5fa' },
-          ].map(({ label, value, color }) => (
+            { label: 'Correct Guesses', value: `${correctCount}/${totalStationsToGuess}`, colorClass: 'text-green-600 dark:text-green-400' },
+            { label: 'Wrong Guesses', value: wrongCount, colorClass: 'text-red-600 dark:text-red-400' },
+            { label: 'Accuracy', value: `${accuracy}%`, colorClass: 'text-blue-600 dark:text-blue-400' },
+          ].map(({ label, value, colorClass }) => (
             <div key={label} className="px-4 py-3 text-center">
-              <div className="text-2xl font-black" style={{ color }}>{value}</div>
-              <div className="text-xs text-gray-500 mt-0.5">{label}</div>
+              <div className={`text-2xl font-black ${colorClass}`}>{value}</div>
+              <div className="text-xs text-game-text-muted mt-0.5">{label}</div>
             </div>
           ))}
         </div>
@@ -308,7 +308,7 @@ export default function ResultsModal({
         <div className="px-6 py-4 flex gap-3">
           <button
             onClick={handleCopyResult}
-            className="flex-1 py-2.5 px-4 rounded-xl border border-game-border text-sm font-medium text-gray-300 hover:text-white hover:border-game-muted transition-all duration-200"
+            className="flex-1 py-2.5 px-4 rounded-xl border border-game-border text-sm font-medium text-game-text-muted hover:text-game-text hover:border-game-muted transition-all duration-200"
           >
             📋 Share Result
           </button>

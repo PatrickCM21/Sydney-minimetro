@@ -19,7 +19,7 @@ function highlight(text: string, query: string): React.ReactNode {
   return (
     <>
       {text.slice(0, idx)}
-      <span className="text-white font-bold">{text.slice(idx, idx + query.length)}</span>
+      <span className="text-game-text font-bold">{text.slice(idx, idx + query.length)}</span>
       {text.slice(idx + query.length)}
     </>
   );
@@ -137,7 +137,7 @@ export default function StationInput({
             className={`
               w-full px-4 py-3 rounded-xl text-sm font-medium
               bg-game-surface border border-game-border
-              text-white placeholder-gray-500
+              text-game-text placeholder-game-text-muted
               focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500
               transition-all duration-200
               ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:border-game-muted'}
@@ -153,19 +153,17 @@ export default function StationInput({
         </div>
       </div>
 
-      {/* Autocomplete dropdown */}
       {isOpen && suggestions.length > 0 && (
-        <div className="absolute z-50 w-full mt-1 rounded-xl border border-game-border overflow-hidden shadow-2xl"
-          style={{ background: '#141a24' }}>
+        <div className="absolute z-50 w-full mt-1 rounded-xl border border-game-border overflow-hidden shadow-2xl bg-game-panel backdrop-blur-md">
           <ul ref={listRef} className="max-h-64 overflow-y-auto custom-scroll">
             {suggestions.map((station, i) => (
               <li
                 key={station.id}
-                className={`autocomplete-item ${i === selectedIdx ? 'selected bg-blue-900/30' : ''}`}
+                className={`autocomplete-item ${i === selectedIdx ? 'selected bg-blue-500/20' : ''}`}
                 onMouseDown={() => commit(station)}
                 onMouseEnter={() => setSelectedIdx(i)}
               >
-                <span className="text-gray-300 text-sm flex-1">
+                <span className="text-game-text text-sm flex-1">
                   {highlight(station.name, query)}
                 </span>
               </li>

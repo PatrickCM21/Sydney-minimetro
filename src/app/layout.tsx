@@ -3,11 +3,14 @@ import 'leaflet/dist/leaflet.css';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Sydney MiniMetro — Shortest Path Quiz',
+  title: 'Trackle — Sydney Shortest Path Quiz',
   description: 'Guess the shortest path between two Sydney train stations. A daily puzzle game for rail enthusiasts.',
-  keywords: ['sydney trains', 'quiz', 'puzzle', 'metro', 'pathfinding', 'transport'],
+  keywords: ['sydney trains', 'quiz', 'puzzle', 'metro', 'pathfinding', 'transport', 'trackle'],
+  icons: {
+    icon: '/trackle_logo.png',
+  },
   openGraph: {
-    title: 'Sydney MiniMetro',
+    title: 'Trackle',
     description: 'Can you find the shortest path between Sydney stations?',
     type: 'website',
   },
@@ -19,7 +22,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -28,8 +31,23 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
           rel="stylesheet"
         />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                const saved = localStorage.getItem('theme');
+                const t = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+                if (t === 'dark') {
+                  document.documentElement.classList.add('dark');
+                } else {
+                  document.documentElement.classList.remove('dark');
+                }
+              } catch (_) {}
+            `,
+          }}
+        />
       </head>
-      <body className="bg-game-bg text-white overflow-hidden h-screen w-screen">
+      <body className="overflow-hidden h-screen w-screen">
         {children}
       </body>
     </html>

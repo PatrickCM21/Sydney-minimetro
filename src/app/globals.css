@@ -3,14 +3,35 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --game-bg: #ffffff;
+    --game-surface: #ffffff;
+    --game-panel: rgba(255, 255, 255, 0.85);
+    --game-border: #d3d6da;
+    --game-muted: #878a8c;
+    --game-text: #1a1a1b;
+    --game-text-muted: #787c7e;
+    --panel-shadow: 0 4px 20px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  }
+
+  .dark {
+    --game-bg: #0a0c12;
+    --game-surface: #111827;
+    --game-panel: rgba(20, 26, 36, 0.7);
+    --game-border: #1e2a3a;
+    --game-muted: #374151;
+    --game-text: #f1f5f9;
+    --game-text-muted: #9ca3af;
+    --panel-shadow: 0 4px 24px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
   html {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
   body {
-    background-color: #0a0c12;
-    color: #f1f5f9;
+    @apply bg-game-bg text-game-text;
     font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
     overflow: hidden;
     height: 100vh;
@@ -30,7 +51,7 @@
     @apply bg-game-panel border border-game-border;
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    box-shadow: var(--panel-shadow);
   }
 
   /* Line badge */

@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import StationInput from '@/components/StationInput';
 import GuessHistory from '@/components/GuessHistory';
 import ResultsModal from '@/components/ResultsModal';
+import HowToPlayModal from '@/components/HowToPlayModal';
 import { STATION_MAP, LINE_MAP } from '@/lib/networkData';
 import { findLinePath, getSharedLine, bfsShortestPathWithLines } from '@/lib/pathfinding';
 import { getRandomChallenge, getDailyChallenge, getTodayString } from '@/lib/dailyChallenge';
@@ -53,8 +54,45 @@ export default function Home() {
   const [mode, setMode] = useState<'daily' | 'practice'>('daily');
   const [gameState, setGameState] = useState<GameState | null>(null);
   const [showResults, setShowResults] = useState(false);
+  const [showHowToPlay, setShowHowToPlay] = useState(false);
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
   const toastIdRef = React.useRef(0);
+  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
+
+  // Initialize theme on mount
+  useEffect(() => {
+    const saved = localStorage.getItem('theme') as 'light' | 'dark' | null;
+    const initialTheme = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const timer = setTimeout(() => {
+      setTheme(initialTheme);
+    }, 0);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Check if user has seen tutorial on mount
+  useEffect(() => {
+    const hasSeenTutorial = document.cookie.split('; ').some(row => row.startsWith('trackle_tutorial_seen='));
+    if (!hasSeenTutorial) {
+      const timer = setTimeout(() => {
+        setShowHowToPlay(true);
+      }, 0);
+      document.cookie = 'trackle_tutorial_seen=true; max-age=31536000; path=/; SameSite=Lax';
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
+  const toggleTheme = useCallback(() => {
+    setTheme(prev => {
+      const next = prev === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('theme', next);
+      if (next === 'dark') {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+      return next;
+    });
+  }, []);
 
   const addToast = useCallback((text: string, type: ToastMessage['type'] = 'info') => {
     const id = ++toastIdRef.current;
@@ -188,8 +226,7 @@ export default function Home() {
     };
     setGameState(newState);
     setTimeout(() => setShowResults(true), 400);
-    addToast(`Trip revealed. Better luck next time!`, 'info');
-  }, [gameState, addToast]);
+  }, [gameState]);
 
   const handlePlayAgain = useCallback(() => {
     startGame('practice');
@@ -213,10 +250,9 @@ export default function Home() {
         <div className="flex items-center gap-3">
           {/* Logo */}
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center">
-              <span className="text-white text-xs font-black">M</span>
-            </div>
-            <span className="text-white font-bold text-sm hidden sm:block">Sydney MiniMetro</span>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/trackle_logo.png" alt="Trackle Logo" className="w-7 h-7 object-contain" />
+            <span className="text-game-text font-bold text-sm hidden sm:block">Trackle</span>
           </div>
 
           {/* Mode tabs */}
@@ -228,7 +264,9 @@ export default function Home() {
                 onClick={() => startGame(m)}
                 className={`px-3 py-1 rounded-md text-xs font-semibold transition-all duration-200 capitalize ${
                   mode === m
-                    ? 'bg-blue-600 text-white'
+                    ? m === 'daily'
+                      ? 'bg-orange-500 text-white'
+                      : 'bg-blue-500 text-white'
                     : 'text-gray-500 hover:text-gray-300'
                 }`}
               >
@@ -245,10 +283,10 @@ export default function Home() {
               <select
                 value={gameState.startId}
                 onChange={(e) => handlePracticeChange(e.target.value, gameState.targetId)}
-                className="bg-game-surface border border-game-border text-white text-xs rounded-md px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-blue-500 font-semibold cursor-pointer hover:bg-game-surface/80 transition-colors"
+                className="bg-game-surface border border-game-border text-game-text text-xs rounded-md px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-blue-500 font-semibold cursor-pointer hover:bg-game-surface/80 transition-colors"
               >
                 {stationsList.map(s => (
-                  <option key={s.id} value={s.id} className="bg-game-bg text-white">
+                  <option key={s.id} value={s.id} className="bg-game-bg text-game-text">
                     {s.name}
                   </option>
                 ))}
@@ -257,10 +295,10 @@ export default function Home() {
               <select
                 value={gameState.targetId}
                 onChange={(e) => handlePracticeChange(gameState.startId, e.target.value)}
-                className="bg-game-surface border border-game-border text-white text-xs rounded-md px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-blue-500 font-semibold cursor-pointer hover:bg-game-surface/80 transition-colors"
+                className="bg-game-surface border border-game-border text-game-text text-xs rounded-md px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-blue-500 font-semibold cursor-pointer hover:bg-game-surface/80 transition-colors"
               >
                 {stationsList.map(s => (
-                  <option key={s.id} value={s.id} className="bg-game-bg text-white">
+                  <option key={s.id} value={s.id} className="bg-game-bg text-game-text">
                     {s.name}
                   </option>
                 ))}
@@ -270,13 +308,13 @@ export default function Home() {
             <>
               {startStation && (
                 <div className="flex items-center gap-2">
-                  <span className="text-white font-semibold">{startStation.name}</span>
+                  <span className="text-game-text font-semibold">{startStation.name}</span>
                 </div>
               )}
               <span className="text-gray-500 font-semibold">↔</span>
               {targetStation && (
                 <div className="flex items-center gap-2">
-                  <span className="text-white font-semibold">{targetStation.name}</span>
+                  <span className="text-game-text font-semibold">{targetStation.name}</span>
                 </div>
               )}
             </>
@@ -302,7 +340,35 @@ export default function Home() {
 
         {/* Guess count */}
         <div className="flex items-center gap-2">
-          <span className="text-gray-500 text-xs font-mono">
+          <button
+            onClick={toggleTheme}
+            className="p-1.5 rounded-lg border border-game-border hover:bg-game-surface text-game-text-muted hover:text-game-text transition-colors flex items-center justify-center"
+            aria-label="Toggle Theme"
+            title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+          >
+            {theme === 'dark' ? (
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="4" />
+                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+              </svg>
+            ) : (
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+              </svg>
+            )}
+          </button>
+          <button
+            onClick={() => setShowHowToPlay(true)}
+            className="p-1.5 rounded-lg border border-game-border hover:bg-game-surface text-game-text-muted hover:text-game-text transition-colors flex items-center justify-center"
+            aria-label="How to Play"
+            title="How to Play"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10" />
+              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01" />
+            </svg>
+          </button>
+          <span className="text-game-text-muted text-xs font-mono">
             {gameState.guessedIds.length} correct / {gameState.tripPath.length > 2 ? gameState.tripPath.length - 2 : 0} stations
           </span>
           {gameState.isComplete && (
@@ -342,11 +408,11 @@ export default function Home() {
             <div className="flex flex-col gap-2">
               <div className="flex items-center gap-2">
                 <span className="text-xs text-gray-500 w-16">Endpoint</span>
-                <span className="text-white font-semibold text-sm">{startStation?.name}</span>
+                <span className="text-game-text font-semibold text-sm">{startStation?.name}</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-xs text-gray-500 w-16">Endpoint</span>
-                <span className="text-white font-semibold text-sm">{targetStation?.name}</span>
+                <span className="text-game-text font-semibold text-sm">{targetStation?.name}</span>
               </div>
               {gameState.tripLines && (
                 <div className="flex items-center gap-1.5 mt-1">
@@ -382,7 +448,7 @@ export default function Home() {
               />
               <button
                 onClick={handleGiveUp}
-                className="w-full py-1.5 bg-red-950/40 hover:bg-red-900/40 border border-red-900/30 rounded-lg text-xs font-semibold text-red-400 transition-colors"
+                className="w-full py-1.5 bg-red-50 hover:bg-red-100 dark:bg-red-950/40 dark:hover:bg-red-900/40 border border-red-200 dark:border-red-900/30 rounded-lg text-xs font-semibold text-red-600 dark:text-red-400 transition-colors"
               >
                 🏳 Give Up / Reveal Route
               </button>
@@ -447,6 +513,12 @@ export default function Home() {
           mode={mode}
         />
       )}
+
+      {/* ── HOW TO PLAY TUTORIAL ──────────────────────────────────── */}
+      <HowToPlayModal
+        isOpen={showHowToPlay}
+        onClose={() => setShowHowToPlay(false)}
+      />
     </main>
   );
 }
