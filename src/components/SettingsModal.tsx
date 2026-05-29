@@ -76,7 +76,7 @@ export default function SettingsModal({
           {/* Game Difficulty */}
           <div className="flex items-center justify-between gap-4">
             <div className="flex flex-col gap-0.5 flex-1">
-              <span className="text-sm font-bold text-game-text">🔥 Hard Mode</span>
+              <span className="text-sm font-bold text-game-text">Hard Mode</span>
               <span className="text-[10px] text-game-text-muted leading-tight">
                 Only show tracks directly adjacent to correct guesses
               </span>
@@ -99,7 +99,7 @@ export default function SettingsModal({
           {/* App Lighting */}
           <div className="flex items-center justify-between gap-4">
             <div className="flex flex-col gap-0.5 flex-1">
-              <span className="text-sm font-bold text-game-text">🌙 Dark Theme</span>
+              <span className="text-sm font-bold text-game-text">Dark Theme</span>
               <span className="text-[10px] text-game-text-muted leading-tight">
                 Toggle between light and dark interface
               </span>
@@ -122,7 +122,7 @@ export default function SettingsModal({
           {/* Map Lighting */}
           <div className="flex items-center justify-between gap-4">
             <div className="flex flex-col gap-0.5 flex-1">
-              <span className="text-sm font-bold text-game-text">🌑 Dark Map</span>
+              <span className="text-sm font-bold text-game-text">Dark Map</span>
               <span className="text-[10px] text-game-text-muted leading-tight">
                 Use dark-themed styling for the map view
               </span>

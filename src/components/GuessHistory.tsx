@@ -159,7 +159,7 @@ export default function GuessHistory({
       <div className="h-32 shrink-0 border-t border-game-border/60 pt-3 flex flex-col min-h-0">
         <div className="flex items-center justify-between mb-2">
           <h2 className="text-sm font-semibold text-game-text">Wrong Guesses</h2>
-          <span className="text-xs text-game-text-muted font-mono">{wrongGuesses.length}</span>
+          <span className="text-xs text-game-text-muted font-mono">{wrongGuesses.length} / 5</span>
         </div>
 
         <div className="flex-1 overflow-y-auto custom-scroll pr-1 flex flex-col gap-1.5">

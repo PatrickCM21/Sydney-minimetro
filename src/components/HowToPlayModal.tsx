@@ -113,7 +113,7 @@ export default function HowToPlayModal({ isOpen, onClose }: HowToPlayModalProps)
               <div>
                 <h3 className="font-bold text-sm text-game-text mb-1">Win the Journey</h3>
                 <p className="text-xs text-game-text-muted leading-relaxed">
-                  Keep guessing until you connect the entire route. Try to complete the quiz with the fewest wrong guesses to get a <strong className="font-bold text-game-text">Perfect</strong> score!
+                  Keep guessing until you connect the entire route. You only get 5 wrong guesses before you fail and the route is revealed! Try to complete the quiz with the fewest wrong guesses to get a <strong className="font-bold text-game-text">Perfect</strong> score!
                 </p>
               </div>
             </div>
@@ -121,7 +121,7 @@ export default function HowToPlayModal({ isOpen, onClose }: HowToPlayModalProps)
 
           <div className="p-3 bg-game-surface/30 rounded-xl border border-game-border/30 mt-2">
             <div className="text-xs font-semibold text-game-text mb-1 flex items-center gap-1">
-              💡 Game Modes
+              Game Modes
             </div>
             <p className="text-[11px] text-game-text-muted leading-relaxed">
               • <strong className="font-bold text-game-text">Daily Challenge</strong>: The same route for everyone, updated every day. 
@@ -137,7 +137,7 @@ export default function HowToPlayModal({ isOpen, onClose }: HowToPlayModalProps)
             onClick={onClose}
             className="w-full sm:w-auto py-2 px-6 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold transition-all duration-200 active:scale-95 shadow-md hover:shadow-blue-500/20"
           >
-            Let&apos;s Play! 🎮
+            Let&apos;s Play!
           </button>
         </div>
       </div>

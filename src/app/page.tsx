@@ -166,7 +166,7 @@ export default function Home() {
     } else {
       document.documentElement.classList.remove('dark');
     }
-    addToast(nextTheme === 'dark' ? "🌙 Dark theme activated!" : "☀️ Light theme activated!", "info");
+    addToast(nextTheme === 'dark' ? "Dark theme activated!" : "Light theme activated!", "info");
   }, [theme, addToast]);
 
   const toggleHardMode = useCallback(() => {
@@ -175,7 +175,7 @@ export default function Home() {
       localStorage.setItem('trackle_hard_mode', String(next));
       return next;
     });
-    addToast(!hardMode ? "🔥 Hard mode activated! Only adjacent revealed segments will show." : "✨ Normal mode activated! Entire route tracks will show.", "info");
+    addToast(!hardMode ? "Hard mode activated! Only adjacent revealed segments will show." : "Normal mode activated! Entire route tracks will show.", "info");
   }, [hardMode, addToast]);
 
   const toggleDarkMap = useCallback(() => {
@@ -184,7 +184,7 @@ export default function Home() {
       localStorage.setItem('trackle_dark_map', String(next));
       return next;
     });
-    addToast(!darkMap ? "🗺️ Dark map style enabled!" : "🗺️ Light map style enabled!", "info");
+    addToast(!darkMap ? "Dark map style enabled!" : "Light map style enabled!", "info");
   }, [darkMap, addToast]);
 
   const stationsList = React.useMemo(() => {
@@ -315,26 +315,35 @@ export default function Home() {
 
       if (allGuessed) {
         setTimeout(() => setShowResults(true), 800);
-        addToast(`🎉 Connected! You guessed all stations on the trip!`, 'success');
+        addToast(`Connected! You guessed all stations on the trip!`, 'success');
       } else {
         addToast(`Correct! Added ${station.name}`, 'success');
       }
     } else {
       const newWrongGuesses = [...wrongGuesses, station.id];
       const hasLineOverlap = station.lines.some(l => tripLines.includes(l));
+      const isFailed = newWrongGuesses.length >= 5;
 
       const newState: GameState = {
         ...gameState,
         wrongGuesses: newWrongGuesses,
+        isComplete: isFailed ? true : gameState.isComplete,
+        userPath: isFailed ? tripPath : gameState.userPath,
       };
 
       setGameState(newState);
 
       if (gameState.mode === 'daily') {
-        saveDailyProgress(guessedIds, newWrongGuesses, false);
+        saveDailyProgress(guessedIds, newWrongGuesses, isFailed);
+        if (isFailed) {
+          saveToDailyHistory(newState);
+        }
       }
 
-      if (!hasLineOverlap) {
+      if (isFailed) {
+        setTimeout(() => setShowResults(true), 800);
+        addToast(`Game Over! 5 wrong guesses reached. The route has been revealed.`, 'error');
+      } else if (!hasLineOverlap) {
         addToast(`${station.name} is not on the correct lines!`, 'error');
       } else {
         addToast(`${station.name} is not on this trip!`, 'error');
@@ -400,7 +409,7 @@ export default function Home() {
                   : 'text-gray-500 hover:text-gray-300'
                   }`}
               >
-                {m === 'daily' ? '📅 Daily' : '🎮 Practice'}
+                {m === 'daily' ? 'Daily' : 'Practice'}
               </button>
             ))}
           </div>
@@ -582,7 +591,7 @@ export default function Home() {
                 onClick={handleGiveUp}
                 className="w-full py-1.5 bg-red-50 hover:bg-red-100 dark:bg-red-950/40 dark:hover:bg-red-900/40 border border-red-200 dark:border-red-900/30 rounded-lg text-xs font-semibold text-red-600 dark:text-red-400 transition-colors"
               >
-                🏳 Give Up / Reveal Route
+                Give Up / Reveal Route
               </button>
             </div>
           )}
