@@ -34,7 +34,7 @@ export default function HowToPlayModal({ isOpen, onClose }: HowToPlayModalProps)
     >
       <div
         className="w-full max-w-lg glass-panel rounded-2xl overflow-hidden shadow-2xl flex flex-col"
-        style={{ animation: 'slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards' }}
+        style={{ animation: 'popIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards' }}
       >
         {/* Header */}
         <div className="px-6 pt-6 pb-4 border-b border-game-border flex items-center justify-between">
@@ -43,8 +43,8 @@ export default function HowToPlayModal({ isOpen, onClose }: HowToPlayModalProps)
             <img src="/trackle_logo.png" alt="Trackle Logo" className="w-8 h-8 object-contain" />
             <h2 className="text-xl font-extrabold text-game-text">How to Play Trackle</h2>
           </div>
-          <button 
-            onClick={onClose} 
+          <button
+            onClick={onClose}
             className="text-game-text-muted hover:text-game-text transition-colors p-1"
             aria-label="Close instructions"
           >
@@ -57,7 +57,7 @@ export default function HowToPlayModal({ isOpen, onClose }: HowToPlayModalProps)
         {/* Content */}
         <div className="px-6 py-6 overflow-y-auto max-h-[70vh] flex flex-col gap-6 custom-scroll">
           <p className="text-sm text-game-text-muted leading-relaxed">
-            Welcome to <strong className="font-extrabold text-game-text">Trackle</strong>, the daily shortest path quiz for Sydney&apos;s transit network. 
+            Welcome to <strong className="font-extrabold text-game-text">Trackle</strong>, the daily shortest path quiz for Sydney&apos;s transit network.
             Your goal is to find the correct rail route connecting two stations.
           </p>
 
@@ -70,7 +70,7 @@ export default function HowToPlayModal({ isOpen, onClose }: HowToPlayModalProps)
               <div>
                 <h3 className="font-bold text-sm text-game-text mb-1">Check the Route & Lines</h3>
                 <p className="text-xs text-game-text-muted leading-relaxed">
-                  Look at the start and end stations in the sidebar. We also list the <strong className="font-bold text-game-text">official line colors</strong> (e.g., <span className="px-1.5 py-0.5 rounded bg-[#f28d21] text-white font-bold text-[9px]">T1</span>, <span className="px-1.5 py-0.5 rounded bg-[#066fb6] text-white font-bold text-[9px]">T8</span>) that the shortest path travels on.
+                  Look at the start and end stations in the sidebar. The <strong className="font-bold text-game-text">line symbols</strong> (e.g., <span className="px-1.5 py-0.5 rounded bg-[#f28d21] text-white font-bold text-[9px]">T1</span>, <span className="px-1.5 py-0.5 rounded bg-[#066fb6] text-white font-bold text-[9px]">T8</span>) will tell you the path to consider.
                 </p>
               </div>
             </div>
@@ -90,33 +90,17 @@ export default function HowToPlayModal({ isOpen, onClose }: HowToPlayModalProps)
 
             {/* Step 3 */}
             <div className="flex gap-4 items-start">
-              <div className="w-8 h-8 shrink-0 rounded-lg bg-green-500/10 text-green-700 dark:text-green-400 flex items-center justify-center font-bold text-sm border border-green-500/20">
+              <div className="w-8 h-8 shrink-0 rounded-lg bg-red-500/10 text-red-700 dark:text-red-400 flex items-center justify-center font-bold text-sm border border-red-500/20">
                 3
               </div>
               <div>
-                <h3 className="font-bold text-sm text-game-text mb-1">Analyze Your Feedback</h3>
+                <h3 className="font-bold text-sm text-game-text mb-1">Be careful with your guesses!</h3>
                 <p className="text-xs text-game-text-muted leading-relaxed">
-                  Each guess gives instant visual feedback:
-                  <br />
-                  • <span className="text-green-600 dark:text-green-400 font-bold">Green✓</span>: Correct! The station is on the route.
-                  <br />
-                  • <span className="text-red-600 dark:text-red-400 font-bold">Red✕</span>: Incorrect. The station is not on the shortest path.
+                  Guessing the wrong station will cost you one of your five available guesses.
                 </p>
               </div>
             </div>
 
-            {/* Step 4 */}
-            <div className="flex gap-4 items-start">
-              <div className="w-8 h-8 shrink-0 rounded-lg bg-[#5ab342]/10 text-[#40822f] dark:text-[#5ab342] flex items-center justify-center font-bold text-sm border border-[#5ab342]/20">
-                4
-              </div>
-              <div>
-                <h3 className="font-bold text-sm text-game-text mb-1">Win the Journey</h3>
-                <p className="text-xs text-game-text-muted leading-relaxed">
-                  Keep guessing until you connect the entire route. You only get 5 wrong guesses before you fail and the route is revealed! Try to complete the quiz with the fewest wrong guesses to get a <strong className="font-bold text-game-text">Perfect</strong> score!
-                </p>
-              </div>
-            </div>
           </div>
 
           <div className="p-3 bg-game-surface/30 rounded-xl border border-game-border/30 mt-2">
@@ -124,9 +108,9 @@ export default function HowToPlayModal({ isOpen, onClose }: HowToPlayModalProps)
               Game Modes
             </div>
             <p className="text-[11px] text-game-text-muted leading-relaxed">
-              • <strong className="font-bold text-game-text">Daily Challenge</strong>: The same route for everyone, updated every day. 
+              • <strong className="font-bold text-game-text">Daily Challenge</strong>: The same route for everyone, updated every day.
               <br />
-              • <strong className="font-bold text-game-text">Practice Mode</strong>: Generates random route combinations to train your Sydney network knowledge anytime.
+              • <strong className="font-bold text-game-text">Practice Mode</strong>: Choose your own route to <span className="font-bold italic text-game-text">train</span> your Sydney network knowledge anytime.
             </p>
           </div>
         </div>

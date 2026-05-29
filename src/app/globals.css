@@ -34,8 +34,10 @@
     @apply bg-game-bg text-game-text;
     font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
     overflow: hidden;
-    height: 100vh;
-    width: 100vw;
+    height: 100dvh;
+    width: 100%;
+    position: fixed;
+    inset: 0;
   }
 
   * {
@@ -46,6 +48,7 @@
 }
 
 @layer components {
+
   /* Glassmorphism panel */
   .glass-panel {
     @apply bg-game-panel border border-game-border;
@@ -85,9 +88,11 @@
   .custom-scroll::-webkit-scrollbar {
     width: 4px;
   }
+
   .custom-scroll::-webkit-scrollbar-track {
     background: transparent;
   }
+
   .custom-scroll::-webkit-scrollbar-thumb {
     @apply bg-game-muted rounded-full;
   }
@@ -95,24 +100,67 @@
 
 /* SVG animation keyframes */
 @keyframes drawLine {
-  0% { stroke-dashoffset: 1000; }
-  100% { stroke-dashoffset: 0; }
+  0% {
+    stroke-dashoffset: 1000;
+  }
+
+  100% {
+    stroke-dashoffset: 0;
+  }
 }
 
 @keyframes stationPulse {
-  0%, 100% { opacity: 0.4; transform: scale(1); }
-  50% { opacity: 0.8; transform: scale(1.4); }
+
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.8;
+    transform: scale(1.4);
+  }
 }
 
 @keyframes fadeInUp {
-  0% { opacity: 0; transform: translateY(8px); }
-  100% { opacity: 1; transform: translateY(0); }
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes bounceIn {
-  0% { transform: scale(0); opacity: 0; }
-  60% { transform: scale(1.15); opacity: 1; }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+
+  60% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0.67);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 /* Ensure SVG fills container */

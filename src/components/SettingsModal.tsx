@@ -88,8 +88,8 @@ export default function SettingsModal({
       }}
     >
       <div
-        className="w-full max-w-[30%] glass-panel rounded-2xl overflow-hidden shadow-2xl flex flex-col bg-game-surface mx-4"
-        style={{ animation: 'bounceIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards' }}
+        className="w-full max-w-[90%] sm:max-w-md glass-panel rounded-2xl overflow-hidden shadow-2xl flex flex-col bg-game-surface mx-4"
+        style={{ animation: 'popIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards' }}
       >
         {/* Header */}
         <div className="px-6 pt-6 pb-4 border-b border-game-border flex items-center justify-between">

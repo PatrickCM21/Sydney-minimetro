@@ -47,7 +47,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="overflow-hidden h-screen w-screen">
+      <body className="overflow-hidden h-dvh w-full">
         {children}
       </body>
     </html>

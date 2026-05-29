@@ -63,6 +63,7 @@ export default function Home() {
   const [showSettings, setShowSettings] = useState<boolean>(false);
   const [dailyHistory, setDailyHistory] = useState<DailyHistoryItem[]>([]);
   const [hardMode, setHardMode] = useState<boolean>(false);
+  const [showMobileTimeline, setShowMobileTimeline] = useState<boolean>(false);
 
   // Load daily game history on mount
   useEffect(() => {
@@ -436,7 +437,7 @@ export default function Home() {
 
   if (!gameState) {
     return (
-      <div className="w-screen h-screen flex items-center justify-center bg-game-bg">
+      <div className="w-full h-dvh flex items-center justify-center bg-game-bg">
         <div className="text-gray-500 animate-pulse text-sm">Loading challenge…</div>
       </div>
     );
@@ -446,7 +447,7 @@ export default function Home() {
   const targetStation = STATION_MAP.get(gameState.targetId);
 
   return (
-    <main className="w-screen h-screen flex flex-col overflow-hidden" id="main-game">
+    <main className="w-full h-dvh flex flex-col overflow-hidden" id="main-game">
       {/* ── TOP NAV ───────────────────────────────────────────────── */}
       <nav className="relative glass-panel border-b border-game-border z-[2000] flex items-center justify-between px-4 py-2 shrink-0" id="nav-bar">
         <div className="flex items-center gap-3">
@@ -464,7 +465,7 @@ export default function Home() {
                 key={m}
                 id={`mode-${m}`}
                 onClick={() => startGame(m)}
-                className={`px-3 py-1 rounded-md text-xs font-semibold transition-all duration-200 capitalize ${mode === m
+                className={`px-4 py-2 md:px-3 md:py-1 rounded-md text-xs font-semibold transition-all duration-200 capitalize ${mode === m
                   ? m === 'daily'
                     ? 'bg-orange-500 text-white'
                     : 'bg-blue-500 text-white'
@@ -478,7 +479,7 @@ export default function Home() {
         </div>
 
         {/* Challenge header */}
-        <div className="flex items-center gap-2 text-sm">
+        <div className="hidden md:flex items-center gap-2 text-sm">
           {mode === 'practice' ? (
             <div className="flex items-center gap-2">
               <select
@@ -544,11 +545,11 @@ export default function Home() {
           {/* Help Button */}
           <button
             onClick={() => setShowHowToPlay(true)}
-            className="p-1.5 rounded-lg border border-game-border hover:bg-game-surface text-game-text-muted hover:text-game-text transition-colors flex items-center justify-center"
+            className="p-2.5 md:p-1.5 rounded-lg border border-game-border hover:bg-game-surface text-game-text-muted hover:text-game-text transition-colors flex items-center justify-center"
             aria-label="How to Play"
             title="How to Play"
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <svg className="w-5 h-5 md:w-[14px] md:h-[14px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="12" cy="12" r="10" />
               <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01" />
             </svg>
@@ -557,17 +558,17 @@ export default function Home() {
           {/* Settings Button */}
           <button
             onClick={() => setShowSettings(true)}
-            className="p-1.5 rounded-lg border border-game-border hover:bg-game-surface text-game-text-muted hover:text-game-text transition-colors flex items-center justify-center"
+            className="p-2.5 md:p-1.5 rounded-lg border border-game-border hover:bg-game-surface text-game-text-muted hover:text-game-text transition-colors flex items-center justify-center"
             aria-label="Settings"
             title="Settings"
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <svg className="w-5 h-5 md:w-[14px] md:h-[14px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.1a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
               <circle cx="12" cy="12" r="3" />
             </svg>
           </button>
 
-          <span className="text-game-text-muted text-xs font-mono">
+          <span className="text-game-text-muted text-xs font-mono hidden sm:inline-block">
             {gameState.guessedIds.length} correct / {gameState.tripPath.length > 2 ? gameState.tripPath.length - 2 : 0} stations
           </span>
 
@@ -575,7 +576,7 @@ export default function Home() {
             <button
               id="btn-show-results"
               onClick={() => setShowResults(true)}
-              className="px-3 py-1 bg-green-600 hover:bg-green-500 rounded-lg text-xs font-semibold text-white transition-colors"
+              className="px-4 py-2 md:px-3 md:py-1 bg-green-600 hover:bg-green-500 rounded-lg text-xs font-semibold text-white transition-colors"
             >
               Results
             </button>
@@ -599,10 +600,136 @@ export default function Home() {
             hardMode={hardMode}
             darkMap={darkMap}
           />
+
+          {/* MOBILE FLOATING OBJECTIVE (only visible on mobile, md:hidden) */}
+          <div className="absolute top-3 left-3 right-16 md:hidden z-[1000] pointer-events-auto">
+            <div className="glass-panel px-3 py-2 rounded-xl shadow-lg flex flex-col gap-1">
+              <div className="flex items-center gap-1.5 text-xs">
+                <span className="text-gray-500 font-medium">Goal:</span>
+                {mode === 'practice' ? (
+                  <div className="flex items-center gap-1.5 overflow-hidden flex-1">
+                    <select
+                      value={gameState.startId}
+                      onChange={(e) => handlePracticeChange(e.target.value, gameState.targetId)}
+                      className="bg-game-surface border border-game-border text-game-text text-[11px] rounded-md px-1.5 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500 font-semibold cursor-pointer truncate max-w-[45%]"
+                    >
+                      {stationsList.map(s => (
+                        <option key={s.id} value={s.id}>
+                          {s.name}
+                        </option>
+                      ))}
+                    </select>
+                    <span className="text-gray-400 font-bold">↔</span>
+                    <select
+                      value={gameState.targetId}
+                      onChange={(e) => handlePracticeChange(gameState.startId, e.target.value)}
+                      className="bg-game-surface border border-game-border text-game-text text-[11px] rounded-md px-1.5 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500 font-semibold cursor-pointer truncate max-w-[45%]"
+                    >
+                      {stationsList.map(s => (
+                        <option key={s.id} value={s.id}>
+                          {s.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-1 text-game-text font-bold text-[11px] truncate">
+                    <span className="truncate max-w-[100px]">{startStation?.name}</span>
+                    <span className="text-gray-400">↔</span>
+                    <span className="truncate max-w-[100px]">{targetStation?.name}</span>
+                  </div>
+                )}
+              </div>
+
+              {gameState.tripLines && (
+                <div className="flex items-center gap-1.5 mt-0.5 border-t border-game-border/30 pt-1">
+                  <span className="text-gray-500 text-[10px]">Lines:</span>
+                  <div className="flex flex-wrap gap-1">
+                    {gameState.tripLines.map(lineId => {
+                      const line = LINE_MAP[lineId];
+                      return (
+                        <span
+                          key={lineId}
+                          className="line-badge text-[9px] font-bold"
+                          style={{
+                            backgroundColor: line?.color,
+                            color: line?.textColor,
+                            padding: '1px 3px',
+                            minWidth: '1.2rem',
+                          }}
+                        >
+                          {lineId}
+                        </span>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* MOBILE FLOATING ACTIONS (only visible on mobile, md:hidden) */}
+          {!gameState.isComplete && (
+            <div className="absolute bottom-6 left-6 right-6 md:hidden z-[1000] flex flex-col gap-2 pointer-events-auto">
+              <div className="glass-panel p-3 rounded-2xl shadow-xl flex flex-col gap-2.5">
+                <StationInput
+                  onGuess={handleGuess}
+                  guessedIds={new Set([...gameState.guessedIds, ...gameState.wrongGuesses, gameState.startId, gameState.targetId])}
+                  startId={gameState.startId}
+                  targetId={gameState.targetId}
+                  disabled={gameState.isComplete}
+                />
+                
+                <div className="flex items-center justify-between gap-2 mt-1">
+                  <button
+                    onClick={() => setShowMobileTimeline(true)}
+                    className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 border border-game-border hover:bg-game-surface/80 rounded-xl text-xs font-semibold text-game-text transition-colors"
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <line x1="8" y1="6" x2="21" y2="6" />
+                      <line x1="8" y1="12" x2="21" y2="12" />
+                      <line x1="8" y1="18" x2="21" y2="18" />
+                      <line x1="3" y1="6" x2="3.01" y2="6" />
+                      <line x1="3" y1="12" x2="3.01" y2="12" />
+                      <line x1="3" y1="18" x2="3.01" y2="18" />
+                    </svg>
+                    <span>
+                      Guesses ({gameState.guessedIds.length}/{gameState.tripPath.length > 2 ? gameState.tripPath.length - 2 : 0})
+                    </span>
+                    {gameState.wrongGuesses.length > 0 && (
+                      <span className="ml-1 px-1.5 py-0.5 rounded-full bg-red-100 dark:bg-red-950/60 text-red-600 dark:text-red-400 font-mono text-[10px] font-bold">
+                        {gameState.wrongGuesses.length} wrong
+                      </span>
+                    )}
+                  </button>
+
+                  {gameState.mode !== 'daily' && (
+                    <button
+                      onClick={handleGiveUp}
+                      className="py-2 px-3 bg-red-50 hover:bg-red-100 dark:bg-red-950/40 dark:hover:bg-red-900/40 border border-red-200 dark:border-red-900/30 rounded-xl text-xs font-semibold text-red-600 dark:text-red-400 transition-colors"
+                    >
+                      Give Up
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {gameState.isComplete && (
+            <div className="absolute bottom-6 left-6 right-6 md:hidden z-[1000]">
+              <button
+                onClick={() => setShowResults(true)}
+                className="w-full py-2.5 px-4 bg-green-600 hover:bg-green-500 rounded-xl text-sm font-bold text-white shadow-xl transition-all duration-200 text-center"
+              >
+                Show Results & Share
+              </button>
+            </div>
+          )}
         </div>
 
         {/* SIDE PANEL */}
-        <aside className="w-72 shrink-0 glass-panel border-l border-game-border flex flex-col overflow-hidden z-10" id="side-panel">
+        <aside className="hidden md:flex w-72 shrink-0 glass-panel border-l border-game-border flex flex-col overflow-hidden z-10" id="side-panel">
           {/* Challenge info */}
           <div className="px-4 pt-4 pb-3 border-b border-game-border">
             <div className="text-xs text-gray-500 font-medium uppercase tracking-wider mb-2">
@@ -758,6 +885,50 @@ export default function Home() {
         toggleDarkMap={toggleDarkMap}
         addToast={addToast}
       />
+      {/* ── MOBILE DRAWER ─────────────────────────────────────────── */}
+      <div
+        className={`fixed inset-0 z-[5000] md:hidden transition-opacity duration-300 ${
+          showMobileTimeline ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}
+      >
+        {/* Backdrop */}
+        <div
+          className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+          onClick={() => setShowMobileTimeline(false)}
+        />
+        {/* Sheet */}
+        <div
+          className={`absolute bottom-6 left-6 right-6 max-h-[80vh] glass-panel bg-game-surface border border-game-border rounded-2xl flex flex-col overflow-hidden transition-transform duration-300 ease-out ${
+            showMobileTimeline ? 'translate-y-0' : 'translate-y-[calc(100%+1.5rem)]'
+          }`}
+        >
+          {/* Drag Handle / Header */}
+          <div className="px-4 py-3 border-b border-game-border flex items-center justify-between shrink-0">
+            <h3 className="text-sm font-bold text-game-text">Route Timeline & Guesses</h3>
+            <button
+              onClick={() => setShowMobileTimeline(false)}
+              className="p-1 text-game-text-muted hover:text-game-text"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path d="M18 6 6 18M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          {/* Scrollable Guess History */}
+          <div className="flex-1 overflow-y-auto p-4 min-h-0">
+            <GuessHistory
+              guessedIds={gameState.guessedIds}
+              startId={gameState.startId}
+              targetId={gameState.targetId}
+              userPath={gameState.userPath ?? null}
+              isComplete={gameState.isComplete}
+              wrongGuesses={gameState.wrongGuesses}
+              tripPath={gameState.tripPath}
+              tripLines={gameState.tripLines}
+            />
+          </div>
+        </div>
+      </div>
     </main>
   );
 }

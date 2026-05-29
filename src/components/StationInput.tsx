@@ -154,7 +154,7 @@ export default function StationInput({
       </div>
 
       {isOpen && suggestions.length > 0 && (
-        <div className="absolute z-50 w-full mt-1 rounded-xl border border-game-border overflow-hidden shadow-2xl bg-game-panel backdrop-blur-md">
+        <div className="absolute z-50 w-full bottom-full mb-2 md:bottom-auto md:top-full md:mt-1 rounded-xl border border-game-border overflow-hidden shadow-2xl bg-game-panel backdrop-blur-md">
           <ul ref={listRef} className="max-h-64 overflow-y-auto custom-scroll">
             {suggestions.map((station, i) => (
               <li

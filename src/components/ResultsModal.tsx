@@ -124,7 +124,7 @@ function ScoreBadge({
 
     return (
       <div className="text-center">
-        <div className="text-5xl font-black text-green-600 dark:text-green-500 mb-1" style={{ textShadow: '0 0 30px rgba(90,179,66,0.3)' }}>
+        <div className="text-3xl sm:text-4xl md:text-5xl font-black text-green-600 dark:text-green-500 mb-1" style={{ textShadow: '0 0 30px rgba(90,179,66,0.3)' }}>
           {winTitle}
         </div>
         <div className="text-game-text-muted text-sm">{winSubtitle}</div>

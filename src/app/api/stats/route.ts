@@ -32,9 +32,10 @@ export async function GET(request: NextRequest): Promise<Response> {
     }
 
     return Response.json(data);
-  } catch (err: any) {
-    console.error('Server error fetching stats:', err);
-    return Response.json({ error: err.message || 'Internal server error' }, { status: 500 });
+  } catch (err) {
+    const error = err as Error;
+    console.error('Server error fetching stats:', error);
+    return Response.json({ error: error.message || 'Internal server error' }, { status: 500 });
   }
 }
 
@@ -60,8 +61,9 @@ export async function POST(request: NextRequest): Promise<Response> {
     }
 
     return Response.json(data || { success: true });
-  } catch (err: any) {
-    console.error('Server error updating stats:', err);
-    return Response.json({ error: err.message || 'Internal server error' }, { status: 500 });
+  } catch (err) {
+    const error = err as Error;
+    console.error('Server error updating stats:', error);
+    return Response.json({ error: error.message || 'Internal server error' }, { status: 500 });
   }
 }

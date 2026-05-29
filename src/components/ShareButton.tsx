@@ -52,7 +52,7 @@ export default function ShareButton({
       lines.push(`Total games played: ${personalStats.totalGames}`);
     }
 
-    lines.push(`trackle.app`);
+    lines.push(`playtrackle.app`);
     return lines.join('\n');
   };
 
@@ -218,7 +218,7 @@ export default function ShareButton({
         const lineColor = primaryLine?.color ?? '#f37021';
 
         const guessedSet = new Set(guessedIds);
-        let stationsToDraw: Array<{ name: string; isGuessed: boolean; isEndpoint: boolean; isEllipsis?: boolean }> = [];
+        const stationsToDraw: Array<{ name: string; isGuessed: boolean; isEndpoint: boolean; isEllipsis?: boolean }> = [];
 
         // Max 3 rows (at 3 per row = 9 stations max). If exceeds, place ellipsis in the middle.
         if (numStations <= 9) {
@@ -379,7 +379,7 @@ export default function ShareButton({
 
       ctx.font = '900 48px system-ui, sans-serif';
       ctx.fillStyle = '#f37021';
-      ctx.fillText('trackle.app', 540, 1755);
+      ctx.fillText('playtrackle.app', 540, 1755);
 
       ctx.font = '18px system-ui, sans-serif';
       ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
