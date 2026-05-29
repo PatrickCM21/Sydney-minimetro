@@ -20,6 +20,7 @@ interface ResultsModalProps {
   mode: 'daily' | 'practice';
   dailyHistory?: DailyHistoryItem[];
   date?: string;
+  addToast?: (text: string, type?: 'info' | 'success' | 'error') => void;
 }
 
 function PathDisplay({
@@ -157,8 +158,14 @@ export default function ResultsModal({
   mode,
   dailyHistory = [],
   date,
+  addToast,
 }: ResultsModalProps) {
   const overlayRef = useRef<HTMLDivElement>(null);
+  const [feedback, setFeedback] = React.useState('');
+  const [showFeedback, setShowFeedback] = React.useState(false);
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [submitStatus, setSubmitStatus] = React.useState<'idle' | 'success' | 'error'>('idle');
+
   const totalStationsToGuess = optimalPath.length > 2 ? optimalPath.length - 2 : 0;
   const correctCount = guessedIds.length;
   const wrongCount = wrongGuesses.length;
@@ -167,6 +174,48 @@ export default function ResultsModal({
   const score = totalStationsToGuess > 0
     ? Math.round((correctCount / totalStationsToGuess) * 100)
     : 100;
+
+  const handleFeedbackSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!feedback.trim()) return;
+
+    setIsSubmitting(true);
+    setSubmitStatus('idle');
+
+    try {
+      const startStation = STATION_MAP.get(startId)?.name ?? startId;
+      const targetStation = STATION_MAP.get(targetId)?.name ?? targetId;
+
+      const res = await fetch('/api/feedback', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          feedback,
+          score,
+          mode,
+          startStation,
+          targetStation,
+          guessedCount: correctCount,
+          totalCount: totalStationsToGuess,
+          wrongCount,
+        }),
+      });
+
+      if (res.ok) {
+        addToast?.('Feedback sent successfully!', 'success');
+        setFeedback('');
+        setShowFeedback(false);
+      } else {
+        setSubmitStatus('error');
+      }
+    } catch (err) {
+      setSubmitStatus('error');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const personalStats = React.useMemo(() => {
     if (mode !== 'daily' || !dailyHistory || dailyHistory.length === 0) {
@@ -306,17 +355,21 @@ export default function ResultsModal({
 
           {/* Score & Average Comparison */}
           <div className="px-6 py-4 bg-game-surface/20 border-b border-game-border flex items-center justify-around">
-            <div className="text-center">
+            <div className="text-center flex-1">
               <div className="text-xs text-game-text-muted font-semibold uppercase tracking-wider mb-1">Your Score</div>
               <div className="text-3xl font-extrabold text-blue-600 dark:text-blue-400">{score}%</div>
             </div>
-            <div className="h-8 w-px bg-game-border" />
-            <div className="text-center">
-              <div className="text-xs text-game-text-muted font-semibold uppercase tracking-wider mb-1">Average Score Today</div>
-              <div className="text-3xl font-extrabold text-slate-600 dark:text-gray-400">
-                {globalAvgScore !== null ? `${globalAvgScore}%` : `${fakeAverage}%`}
-              </div>
-            </div>
+            {mode === 'daily' && (
+              <>
+                <div className="h-8 w-px bg-game-border" />
+                <div className="text-center flex-1">
+                  <div className="text-xs text-game-text-muted font-semibold uppercase tracking-wider mb-1">Average Score Today</div>
+                  <div className="text-3xl font-extrabold text-slate-600 dark:text-gray-400">
+                    {globalAvgScore !== null ? `${globalAvgScore}%` : `${fakeAverage}%`}
+                  </div>
+                </div>
+              </>
+            )}
           </div>
 
           {/* Personal Lifetime Stats & Progress Comparison */}
@@ -415,32 +468,78 @@ export default function ResultsModal({
         </div>
 
         {/* Actions */}
-        <div className="px-6 py-4 flex gap-3 border-t border-game-border shrink-0">
-          <ShareButton
-            startId={startId}
-            targetId={targetId}
-            optimalPath={optimalPath}
-            guessedIds={guessedIds}
-            wrongGuesses={wrongGuesses}
-            tripLines={tripLines}
-            score={score}
-            personalStats={personalStats}
-          />
-          {mode === 'daily' ? (
-            <button
-              onClick={onPlayAgain}
-              className="flex-1 py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 border border-game-border text-sm font-medium text-game-text hover:text-game-text hover:border-game-muted transition-all duration-200"
-            >
-              Practice Mode
-            </button>
-          ) : (
-            <button
-              onClick={onPlayAgain}
-              className="flex-1 py-2.5 px-4 rounded-xl border border-game-border text-sm font-medium text-game-text-muted hover:text-game-text hover:border-game-muted transition-all duration-200"
-            >
-              New Game
-            </button>
+        <div className="px-6 py-4 flex flex-col gap-3 border-t border-game-border shrink-0">
+          {showFeedback && (
+            <form onSubmit={handleFeedbackSubmit} className="flex flex-col gap-2 bg-game-surface/30 p-3 rounded-xl border border-game-border/30">
+              <div className="text-xs font-semibold text-game-text-muted">Give Feedback</div>
+              <textarea
+                value={feedback}
+                onChange={e => setFeedback(e.target.value)}
+                placeholder="Spotted an issue? Have a suggestion?"
+                rows={2}
+                required
+                className="w-full text-xs p-2 bg-game-bg border border-game-border rounded-lg text-game-text focus:outline-none focus:border-blue-500"
+              />
+              <div className="flex gap-2 justify-end">
+                <button
+                  type="button"
+                  onClick={() => setShowFeedback(false)}
+                  className="px-2.5 py-1 text-xs text-game-text-muted hover:text-game-text"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="px-3 py-1 text-xs bg-blue-600 hover:bg-blue-500 text-white rounded-lg disabled:opacity-50"
+                >
+                  {isSubmitting ? 'Sending...' : 'Submit'}
+                </button>
+              </div>
+              {submitStatus === 'success' && <div className="text-[10px] text-green-500 text-right">Feedback sent successfully!</div>}
+              {submitStatus === 'error' && <div className="text-[10px] text-red-500 text-right">Failed to send feedback.</div>}
+            </form>
           )}
+
+          <div className="flex flex-col gap-3">
+            <div className="flex gap-3">
+              <ShareButton
+                startId={startId}
+                targetId={targetId}
+                optimalPath={optimalPath}
+                guessedIds={guessedIds}
+                wrongGuesses={wrongGuesses}
+                tripLines={tripLines}
+                score={score}
+                personalStats={personalStats}
+              />
+              {mode === 'daily' ? (
+                <button
+                  onClick={onPlayAgain}
+                  className="flex-1 py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 border border-game-border text-sm font-medium text-game-text hover:text-game-text hover:border-game-muted transition-all duration-200"
+                >
+                  Practice Mode
+                </button>
+              ) : (
+                <button
+                  onClick={onPlayAgain}
+                  className="flex-1 py-2.5 px-4 rounded-xl border border-game-border text-sm font-medium text-game-text-muted hover:text-game-text hover:border-game-muted transition-all duration-200"
+                >
+                  New Game
+                </button>
+              )}
+            </div>
+
+            <button
+              onClick={() => {
+                setShowFeedback(!showFeedback);
+                setSubmitStatus('idle');
+              }}
+              className="w-full py-2.5 px-4 rounded-xl border border-game-border text-xs font-semibold text-game-text-muted hover:text-game-text hover:border-game-muted transition-all duration-200"
+            >
+              {showFeedback ? 'Hide Feedback Form' : 'Give Feedback / Report a Bug'}
+            </button>
+          </div>
         </div>
       </div>
     </div>

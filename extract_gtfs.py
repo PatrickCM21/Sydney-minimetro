@@ -226,8 +226,21 @@ def extract_data():
         if stop['parent_station'] is None:
             slug = get_station_slug(stop['name'])
             if slug in visited_station_ids:
-                # If there are duplicates, pick the one that is actually parent or has coordinates
-                slug_to_stop_info[slug] = stop
+                existing = slug_to_stop_info.get(slug)
+                if not existing:
+                    slug_to_stop_info[slug] = stop
+                else:
+                    def score_id(stop_id):
+                        if stop_id.startswith('place-'):
+                            return 3 # Metro
+                        if stop_id.isdigit():
+                            return 2 # Sydney Trains
+                        if stop_id.startswith('G'):
+                            return 0 # Bus
+                        return 1 # Other
+                    
+                    if score_id(stop['id']) > score_id(existing['id']):
+                        slug_to_stop_info[slug] = stop
                 
     # Format stations.json
     stations_json = []

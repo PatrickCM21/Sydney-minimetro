@@ -11,6 +11,7 @@ interface SettingsModalProps {
   toggleTheme: () => void;
   darkMap: boolean;
   toggleDarkMap: () => void;
+  addToast?: (text: string, type?: 'info' | 'success' | 'error') => void;
 }
 
 export default function SettingsModal({
@@ -22,8 +23,47 @@ export default function SettingsModal({
   toggleTheme,
   darkMap,
   toggleDarkMap,
+  addToast,
 }: SettingsModalProps) {
   const overlayRef = useRef<HTMLDivElement>(null);
+  const [feedback, setFeedback] = React.useState('');
+  const [showFeedback, setShowFeedback] = React.useState(false);
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [submitStatus, setSubmitStatus] = React.useState<'idle' | 'success' | 'error'>('idle');
+
+  const handleFeedbackSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!feedback.trim()) return;
+
+    setIsSubmitting(true);
+    setSubmitStatus('idle');
+
+    try {
+      const res = await fetch('/api/feedback', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          feedback,
+          mode: 'settings', // Mark as settings menu feedback
+          score: 0,
+        }),
+      });
+
+      if (res.ok) {
+        addToast?.('Feedback sent successfully!', 'success');
+        setFeedback('');
+        setShowFeedback(false);
+      } else {
+        setSubmitStatus('error');
+      }
+    } catch (err) {
+      setSubmitStatus('error');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   // Close modal on ESC key
   useEffect(() => {
@@ -138,6 +178,53 @@ export default function SettingsModal({
                   }`}
               />
             </button>
+          </div>
+
+          <hr className="border-game-border" />
+
+          {/* Feedback Form */}
+          <div className="flex flex-col gap-2">
+            {!showFeedback ? (
+              <button
+                onClick={() => setShowFeedback(true)}
+                className="w-full py-2 border border-game-border hover:bg-game-surface/80 text-game-text-muted hover:text-game-text rounded-xl text-xs font-bold transition-all duration-200"
+              >
+                Give Feedback / Report a Bug
+              </button>
+            ) : (
+              <form onSubmit={handleFeedbackSubmit} className="flex flex-col gap-2 bg-game-surface/30 p-3 rounded-xl border border-game-border/30">
+                <div className="text-xs font-bold text-game-text">Give Feedback</div>
+                <textarea
+                  value={feedback}
+                  onChange={e => setFeedback(e.target.value)}
+                  placeholder="Suggestions or bug reports..."
+                  rows={3}
+                  required
+                  className="w-full text-xs p-2 bg-game-bg border border-game-border rounded-lg text-game-text focus:outline-none focus:border-blue-500"
+                />
+                <div className="flex gap-2 justify-end">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowFeedback(false);
+                      setSubmitStatus('idle');
+                    }}
+                    className="px-2.5 py-1 text-xs text-game-text-muted hover:text-game-text"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="px-3 py-1 text-xs bg-blue-600 hover:bg-blue-500 text-white rounded-lg disabled:opacity-50"
+                  >
+                    {isSubmitting ? 'Sending...' : 'Submit'}
+                  </button>
+                </div>
+                {submitStatus === 'success' && <div className="text-[10px] text-green-500 text-right">Feedback sent successfully!</div>}
+                {submitStatus === 'error' && <div className="text-[10px] text-red-500 text-right">Failed to send feedback.</div>}
+              </form>
+            )}
           </div>
         </div>
 

@@ -649,12 +649,14 @@ export default function Home() {
                 targetId={gameState.targetId}
                 disabled={gameState.isComplete}
               />
-              <button
-                onClick={handleGiveUp}
-                className="w-full py-1.5 bg-red-50 hover:bg-red-100 dark:bg-red-950/40 dark:hover:bg-red-900/40 border border-red-200 dark:border-red-900/30 rounded-lg text-xs font-semibold text-red-600 dark:text-red-400 transition-colors"
-              >
-                Give Up / Reveal Route
-              </button>
+              {gameState.mode !== 'daily' && (
+                <button
+                  onClick={handleGiveUp}
+                  className="w-full py-1.5 bg-red-50 hover:bg-red-100 dark:bg-red-950/40 dark:hover:bg-red-900/40 border border-red-200 dark:border-red-900/30 rounded-lg text-xs font-semibold text-red-600 dark:text-red-400 transition-colors"
+                >
+                  Give Up / Reveal Route
+                </button>
+              )}
             </div>
           )}
 
@@ -734,6 +736,7 @@ export default function Home() {
           mode={mode}
           dailyHistory={dailyHistory}
           date={gameState.date}
+          addToast={addToast}
         />
       )}
 
@@ -753,6 +756,7 @@ export default function Home() {
         toggleTheme={toggleTheme}
         darkMap={darkMap}
         toggleDarkMap={toggleDarkMap}
+        addToast={addToast}
       />
     </main>
   );

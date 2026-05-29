@@ -266,133 +266,155 @@ export default function GameMap({
     // (sydneytrainsdata.json has multiple shapes per line: both directions, variants)
     const drawnPairs = new Set<string>();
 
-    for (const shape of routeShapes) {
-      const lineId = shape.route_short_name as LineId;
-      if (tripLines.includes(lineId)) {
-        // Filter out T1 shapes that actually go via Epping (T9 direction)
-        if (lineId === 'T1') {
-          const geom = shape.json_geometry;
-          const isT9Shape = (rawCoords: number[][]) => {
-            return rawCoords.some(c => {
-              const [lat, lng] = mercatorToLatLng(c[0], c[1]);
-              const dLat = lat - (-33.77284);
-              const dLng = lng - 151.08217;
-              return Math.sqrt(dLat * dLat + dLng * dLng) < 0.015;
-            });
-          };
-          let passesT9 = false;
-          if (geom.type === 'LineString') {
-            passesT9 = isT9Shape(geom.coordinates as number[][]);
-          } else if (geom.type === 'MultiLineString') {
-            passesT9 = (geom.coordinates as number[][][]).some(part => isT9Shape(part));
-          }
-          if (passesT9) continue;
-        }
+    for (const pair of pairsToShow) {
+      for (const lineId of tripLines) {
+        const pairKey = `${pair[0]}|${pair[1]}|${lineId}`;
+        if (drawnPairs.has(pairKey)) continue;
 
-        // Filter out T8 shapes depending on whether it's an Airport trip or Sydenham trip
-        if (lineId === 'T8') {
-          const isAirportTrip = pathSequence.some(id => 
-            id === 'international_airport' || 
-            id === 'domestic_airport' || 
-            id === 'mascot' || 
-            id === 'green_square'
-          );
-          // Check if the shape itself passes close to the airport
-          const geom = shape.json_geometry;
-          const checkCoords = geom.type === 'LineString' 
-            ? (geom.coordinates as number[][]) 
-            : (geom.coordinates as number[][][])[0];
-          
-          const airportStation = STATION_MAP.get('international_airport');
-          let passesAirport = false;
-          if (airportStation) {
-            for (const c of checkCoords) {
-              const [lat, lng] = mercatorToLatLng(c[0], c[1]);
-              const dLat = lat - airportStation.lat;
-              const dLng = lng - airportStation.lng;
-              if (Math.sqrt(dLat * dLat + dLng * dLng) < 0.005) {
-                passesAirport = true;
-                break;
+        let bestSliced: [number, number][] | null = null;
+        let bestScore = Infinity; // Lower is better (minDA + minDB)
+
+        for (const shape of routeShapes) {
+          if (shape.route_short_name !== lineId) continue;
+
+          // Filter out T1 shapes that actually go via Epping (T9 direction)
+          if (lineId === 'T1') {
+            const geom = shape.json_geometry;
+            const isT9Shape = (rawCoords: number[][]) => {
+              return rawCoords.some(c => {
+                const [lat, lng] = mercatorToLatLng(c[0], c[1]);
+                const dLat = lat - (-33.77284);
+                const dLng = lng - 151.08217;
+                return Math.sqrt(dLat * dLat + dLng * dLng) < 0.015;
+              });
+            };
+            let passesT9 = false;
+            if (geom.type === 'LineString') {
+              passesT9 = isT9Shape(geom.coordinates as number[][]);
+            } else if (geom.type === 'MultiLineString') {
+              passesT9 = (geom.coordinates as number[][][]).some(part => isT9Shape(part));
+            }
+            if (passesT9) continue;
+          }
+
+          // Filter out T8 shapes depending on whether it's an Airport trip or Sydenham trip
+          if (lineId === 'T8') {
+            const isAirportTrip = pathSequence.some(id =>
+              id === 'international_airport' ||
+              id === 'domestic_airport' ||
+              id === 'mascot' ||
+              id === 'green_square'
+            );
+            const geom = shape.json_geometry;
+            const checkCoords = geom.type === 'LineString'
+              ? (geom.coordinates as number[][])
+              : (geom.coordinates as number[][][])[0];
+
+            const airportStation = STATION_MAP.get('international_airport');
+            let passesAirport = false;
+            if (airportStation) {
+              for (const c of checkCoords) {
+                const [lat, lng] = mercatorToLatLng(c[0], c[1]);
+                const dLat = lat - airportStation.lat;
+                const dLng = lng - airportStation.lng;
+                if (Math.sqrt(dLat * dLat + dLng * dLng) < 0.005) {
+                  passesAirport = true;
+                  break;
+                }
               }
             }
+            if (isAirportTrip && !passesAirport) continue;
+            if (!isAirportTrip && passesAirport) continue;
           }
-          if (isAirportTrip && !passesAirport) continue;
-          if (!isAirportTrip && passesAirport) continue;
-        }
 
-        const color = LINE_MAP[lineId]?.color ?? `#${shape.route_color}`;
-        const geom = shape.json_geometry;
+          const geom = shape.json_geometry;
 
-        const processCoordsForPair = (rawCoords: number[][], pair: [string, string]) => {
-          const coords = rawCoords.map((c) => mercatorToLatLng(c[0], c[1]));
-          const stationA = STATION_MAP.get(pair[0]);
-          const stationB = STATION_MAP.get(pair[1]);
-          if (!stationA || !stationB) return null;
+          const evaluateAndSlice = (rawCoords: number[][]) => {
+            const coords = rawCoords.map((c) => mercatorToLatLng(c[0], c[1]));
+            const stationA = STATION_MAP.get(pair[0]);
+            const stationB = STATION_MAP.get(pair[1]);
+            if (!stationA || !stationB) return null;
 
-          // Only draw the segment on this line if this line actually connects the pair
-          if (!stationA.lines.includes(lineId) || !stationB.lines.includes(lineId)) {
+            if (!stationA.lines.includes(lineId) || !stationB.lines.includes(lineId)) {
+              return null;
+            }
+
+            let minDA = Infinity;
+            let idxA = -1;
+            let minDB = Infinity;
+            let idxB = -1;
+
+            for (let i = 0; i < coords.length; i++) {
+              const dA = distance(stationA.lat, stationA.lng, coords[i][0], coords[i][1]);
+              if (dA < minDA) {
+                minDA = dA;
+                idxA = i;
+              }
+              const dB = distance(stationB.lat, stationB.lng, coords[i][0], coords[i][1]);
+              if (dB < minDB) {
+                minDB = dB;
+                idxB = i;
+              }
+            }
+
+            // Tight threshold (< 500m) to ensure shape closely passes passenger platforms
+            if (idxA !== -1 && idxB !== -1 && minDA < 0.005 && minDB < 0.005) {
+              const minIdx = Math.min(idxA, idxB);
+              const maxIdx = Math.max(idxA, idxB);
+              const sliced = coords.slice(minIdx, maxIdx + 1);
+              if (sliced.length < 2) return null;
+
+              // Ensure the slice is a reasonably direct path to filter out huge loops
+              const directDist = distance(stationA.lat, stationA.lng, stationB.lat, stationB.lng);
+              let pathLength = 0;
+              for (let i = 0; i < sliced.length - 1; i++) {
+                pathLength += distance(sliced[i][0], sliced[i][1], sliced[i + 1][0], sliced[i + 1][1]);
+              }
+
+              if (pathLength > 2.0 * directDist + 0.005) {
+                return null;
+              }
+
+              return { sliced, score: minDA + minDB };
+            }
             return null;
-          }
-
-          // Find closest indices in shape geometry for both stations
-          let minDA = Infinity;
-          let idxA = -1;
-          let minDB = Infinity;
-          let idxB = -1;
-
-          for (let i = 0; i < coords.length; i++) {
-            const dA = distance(stationA.lat, stationA.lng, coords[i][0], coords[i][1]);
-            if (dA < minDA) {
-              minDA = dA;
-              idxA = i;
-            }
-            const dB = distance(stationB.lat, stationB.lng, coords[i][0], coords[i][1]);
-            if (dB < minDB) {
-              minDB = dB;
-              idxB = i;
-            }
-          }
-
-          // Threshold check: both stations must be reasonably close to the track shape (~2 km)
-          if (idxA !== -1 && idxB !== -1 && minDA < 0.02 && minDB < 0.02) {
-            const minIdx = Math.min(idxA, idxB);
-            const maxIdx = Math.max(idxA, idxB);
-            const sliced = coords.slice(minIdx, maxIdx + 1);
-            if (sliced.length < 2) return null;
-
-            // Snap endpoints to exact station coordinates so the line
-            // never extends beyond the station markers.
-            const startIsA = minIdx === idxA;
-            const sStart = startIsA ? stationA : stationB;
-            const sEnd = startIsA ? stationB : stationA;
-            sliced[0] = [sStart.lat, sStart.lng];
-            sliced[sliced.length - 1] = [sEnd.lat, sEnd.lng];
-
-            return sliced;
-          }
-          return null;
-        };
-
-        for (const pair of pairsToShow) {
-          const pairKey = `${pair[0]}|${pair[1]}|${lineId}`;
-          if (drawnPairs.has(pairKey)) continue;
+          };
 
           if (geom.type === 'LineString') {
-            const sliced = processCoordsForPair(geom.coordinates as number[][], pair);
-            if (sliced) {
-              result.push({ coords: sliced, color, lineId });
-              drawnPairs.add(pairKey);
+            const res = evaluateAndSlice(geom.coordinates as number[][]);
+            if (res && res.score < bestScore) {
+              bestScore = res.score;
+              bestSliced = res.sliced;
             }
           } else if (geom.type === 'MultiLineString') {
             for (const part of (geom.coordinates as number[][][])) {
-              if (drawnPairs.has(pairKey)) break;
-              const sliced = processCoordsForPair(part, pair);
-              if (sliced) {
-                result.push({ coords: sliced, color, lineId });
-                drawnPairs.add(pairKey);
+              const res = evaluateAndSlice(part);
+              if (res && res.score < bestScore) {
+                bestScore = res.score;
+                bestSliced = res.sliced;
               }
             }
           }
+        }
+
+        if (bestSliced) {
+          const color = LINE_MAP[lineId]?.color ?? '#888';
+          const stationA = STATION_MAP.get(pair[0])!;
+          const stationB = STATION_MAP.get(pair[1])!;
+
+          const snapped = [...bestSliced];
+          const distToStartA = distance(stationA.lat, stationA.lng, snapped[0][0], snapped[0][1]);
+          const distToStartB = distance(stationB.lat, stationB.lng, snapped[0][0], snapped[0][1]);
+          if (distToStartA < distToStartB) {
+            snapped[0] = [stationA.lat, stationA.lng];
+            snapped[snapped.length - 1] = [stationB.lat, stationB.lng];
+          } else {
+            snapped[0] = [stationB.lat, stationB.lng];
+            snapped[snapped.length - 1] = [stationA.lat, stationA.lng];
+          }
+
+          result.push({ coords: snapped, color, lineId });
+          drawnPairs.add(pairKey);
         }
       }
     }
