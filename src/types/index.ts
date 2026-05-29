@@ -43,3 +43,13 @@ export interface DailyChallenge {
   target: string;
   date: string;
 }
+
+export interface DailyHistoryItem {
+  date: string;
+  startId: string;
+  targetId: string;
+  correctCount: number;
+  wrongCount: number;
+  totalStationsToGuess: number;
+  gaveUp: boolean;
+}

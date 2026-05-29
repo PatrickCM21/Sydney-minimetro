@@ -6,10 +6,11 @@ import StationInput from '@/components/StationInput';
 import GuessHistory from '@/components/GuessHistory';
 import ResultsModal from '@/components/ResultsModal';
 import HowToPlayModal from '@/components/HowToPlayModal';
+import SettingsModal from '@/components/SettingsModal';
 import { STATION_MAP, LINE_MAP } from '@/lib/networkData';
 import { findLinePath, getSharedLine, bfsShortestPathWithLines } from '@/lib/pathfinding';
 import { getRandomChallenge, getDailyChallenge, getTodayString } from '@/lib/dailyChallenge';
-import type { Station, GameState, LineId } from '@/types';
+import type { Station, GameState, LineId, DailyHistoryItem } from '@/types';
 
 // Dynamically import map (SVG heavy, no SSR needed)
 const GameMap = dynamic(() => import('@/components/GameMap'), {
@@ -58,13 +59,82 @@ export default function Home() {
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
   const toastIdRef = React.useRef(0);
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
+  const [darkMap, setDarkMap] = useState<boolean>(false);
+  const [showSettings, setShowSettings] = useState<boolean>(false);
+  const [dailyHistory, setDailyHistory] = useState<DailyHistoryItem[]>([]);
+  const [hardMode, setHardMode] = useState<boolean>(false);
 
-  // Initialize theme on mount
+  // Load daily game history on mount
   useEffect(() => {
-    const saved = localStorage.getItem('theme') as 'light' | 'dark' | null;
-    const initialTheme = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const historyJson = localStorage.getItem('trackle_daily_history');
+    if (historyJson) {
+      try {
+        const parsed = JSON.parse(historyJson);
+        if (Array.isArray(parsed)) {
+          const timer = setTimeout(() => {
+            setDailyHistory(parsed);
+          }, 0);
+          return () => clearTimeout(timer);
+        }
+      } catch (e) {
+        console.error("Failed to parse daily history", e);
+      }
+    }
+  }, []);
+
+  const saveDailyProgress = useCallback((guessedIds: string[], wrongGuesses: string[], isComplete: boolean) => {
+    const progress = {
+      date: getTodayString(),
+      guessedIds,
+      wrongGuesses,
+      isComplete,
+    };
+    localStorage.setItem('trackle_daily_state', JSON.stringify(progress));
+  }, []);
+
+  const saveToDailyHistory = useCallback((state: GameState) => {
+    if (state.mode !== 'daily' || !state.date || !state.isComplete) return;
+
+    const totalStationsToGuess = state.tripPath.length > 2 ? state.tripPath.length - 2 : 0;
+    const correctCount = state.guessedIds.length;
+    const wrongCount = state.wrongGuesses.length;
+    const gaveUp = correctCount < totalStationsToGuess;
+
+    setDailyHistory(prevHistory => {
+      const alreadyExists = prevHistory.some(item => item.date === state.date);
+      if (alreadyExists) return prevHistory;
+
+      const historyItem: DailyHistoryItem = {
+        date: state.date!,
+        startId: state.startId,
+        targetId: state.targetId,
+        correctCount,
+        wrongCount,
+        totalStationsToGuess,
+        gaveUp,
+      };
+
+      const nextHistory = [...prevHistory, historyItem];
+      localStorage.setItem('trackle_daily_history', JSON.stringify(nextHistory));
+      return nextHistory;
+    });
+  }, []);
+
+  // Initialize theme and settings on mount
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
+    const initialTheme = savedTheme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const savedHardMode = localStorage.getItem('trackle_hard_mode') === 'true';
+    const savedDarkMap = localStorage.getItem('trackle_dark_map') === 'true';
     const timer = setTimeout(() => {
       setTheme(initialTheme);
+      setHardMode(savedHardMode);
+      setDarkMap(savedDarkMap);
+      if (initialTheme === 'dark') {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
     }, 0);
     return () => clearTimeout(timer);
   }, []);
@@ -81,24 +151,41 @@ export default function Home() {
     }
   }, []);
 
-  const toggleTheme = useCallback(() => {
-    setTheme(prev => {
-      const next = prev === 'dark' ? 'light' : 'dark';
-      localStorage.setItem('theme', next);
-      if (next === 'dark') {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
-      return next;
-    });
-  }, []);
-
   const addToast = useCallback((text: string, type: ToastMessage['type'] = 'info') => {
     const id = ++toastIdRef.current;
     setToasts(t => [...t, { id, text, type }]);
     setTimeout(() => setToasts(t => t.filter(m => m.id !== id)), 3000);
   }, []);
+
+  const toggleTheme = useCallback(() => {
+    const nextTheme = theme === 'dark' ? 'light' : 'dark';
+    setTheme(nextTheme);
+    localStorage.setItem('theme', nextTheme);
+    if (nextTheme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    addToast(nextTheme === 'dark' ? "🌙 Dark theme activated!" : "☀️ Light theme activated!", "info");
+  }, [theme, addToast]);
+
+  const toggleHardMode = useCallback(() => {
+    setHardMode(prev => {
+      const next = !prev;
+      localStorage.setItem('trackle_hard_mode', String(next));
+      return next;
+    });
+    addToast(!hardMode ? "🔥 Hard mode activated! Only adjacent revealed segments will show." : "✨ Normal mode activated! Entire route tracks will show.", "info");
+  }, [hardMode, addToast]);
+
+  const toggleDarkMap = useCallback(() => {
+    setDarkMap(prev => {
+      const next = !prev;
+      localStorage.setItem('trackle_dark_map', String(next));
+      return next;
+    });
+    addToast(!darkMap ? "🗺️ Dark map style enabled!" : "🗺️ Light map style enabled!", "info");
+  }, [darkMap, addToast]);
 
   const stationsList = React.useMemo(() => {
     return Array.from(STATION_MAP.values()).sort((a, b) => a.name.localeCompare(b.name));
@@ -148,8 +235,35 @@ export default function Home() {
     }
 
     setMode(m);
-    setGameState(initGameState(startId, targetId, m, tripPath, tripLines));
-    setShowResults(false);
+    const state = initGameState(startId, targetId, m, tripPath, tripLines);
+    let isRestoredComplete = false;
+
+    if (m === 'daily') {
+      const saved = localStorage.getItem('trackle_daily_state');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (parsed && parsed.date === getTodayString()) {
+            state.guessedIds = parsed.guessedIds || [];
+            state.wrongGuesses = parsed.wrongGuesses || [];
+            state.isComplete = parsed.isComplete || false;
+            if (state.isComplete) {
+              state.userPath = tripPath;
+              isRestoredComplete = true;
+            }
+          }
+        } catch (e) {
+          console.error("Failed to parse daily state", e);
+        }
+      }
+    }
+
+    setGameState(state);
+    if (isRestoredComplete) {
+      setShowResults(true);
+    } else {
+      setShowResults(false);
+    }
   }, [addToast]);
 
   const handlePracticeChange = useCallback((newStartId: string, newTargetId: string) => {
@@ -192,6 +306,13 @@ export default function Home() {
 
       setGameState(newState);
 
+      if (gameState.mode === 'daily') {
+        saveDailyProgress(newGuessedIds, wrongGuesses, allGuessed);
+        if (allGuessed) {
+          saveToDailyHistory(newState);
+        }
+      }
+
       if (allGuessed) {
         setTimeout(() => setShowResults(true), 800);
         addToast(`🎉 Connected! You guessed all stations on the trip!`, 'success');
@@ -209,13 +330,17 @@ export default function Home() {
 
       setGameState(newState);
 
+      if (gameState.mode === 'daily') {
+        saveDailyProgress(guessedIds, newWrongGuesses, false);
+      }
+
       if (!hasLineOverlap) {
         addToast(`${station.name} is not on the correct lines!`, 'error');
       } else {
         addToast(`${station.name} is not on this trip!`, 'error');
       }
     }
-  }, [gameState, addToast]);
+  }, [gameState, addToast, saveDailyProgress, saveToDailyHistory]);
 
   const handleGiveUp = useCallback(() => {
     if (!gameState || gameState.isComplete) return;
@@ -225,8 +350,14 @@ export default function Home() {
       userPath: gameState.tripPath,
     };
     setGameState(newState);
+
+    if (gameState.mode === 'daily') {
+      saveDailyProgress(gameState.guessedIds, gameState.wrongGuesses, true);
+      saveToDailyHistory(newState);
+    }
+
     setTimeout(() => setShowResults(true), 400);
-  }, [gameState]);
+  }, [gameState, saveDailyProgress, saveToDailyHistory]);
 
   const handlePlayAgain = useCallback(() => {
     startGame('practice');
@@ -246,7 +377,7 @@ export default function Home() {
   return (
     <main className="w-screen h-screen flex flex-col overflow-hidden" id="main-game">
       {/* ── TOP NAV ───────────────────────────────────────────────── */}
-      <nav className="glass-panel border-b border-game-border z-20 flex items-center justify-between px-4 py-2 shrink-0" id="nav-bar">
+      <nav className="relative glass-panel border-b border-game-border z-[2000] flex items-center justify-between px-4 py-2 shrink-0" id="nav-bar">
         <div className="flex items-center gap-3">
           {/* Logo */}
           <div className="flex items-center gap-2">
@@ -262,13 +393,12 @@ export default function Home() {
                 key={m}
                 id={`mode-${m}`}
                 onClick={() => startGame(m)}
-                className={`px-3 py-1 rounded-md text-xs font-semibold transition-all duration-200 capitalize ${
-                  mode === m
-                    ? m === 'daily'
-                      ? 'bg-orange-500 text-white'
-                      : 'bg-blue-500 text-white'
-                    : 'text-gray-500 hover:text-gray-300'
-                }`}
+                className={`px-3 py-1 rounded-md text-xs font-semibold transition-all duration-200 capitalize ${mode === m
+                  ? m === 'daily'
+                    ? 'bg-orange-500 text-white'
+                    : 'bg-blue-500 text-white'
+                  : 'text-gray-500 hover:text-gray-300'
+                  }`}
               >
                 {m === 'daily' ? '📅 Daily' : '🎮 Practice'}
               </button>
@@ -338,25 +468,9 @@ export default function Home() {
           )}
         </div>
 
-        {/* Guess count */}
+        {/* Guess count and Settings */}
         <div className="flex items-center gap-2">
-          <button
-            onClick={toggleTheme}
-            className="p-1.5 rounded-lg border border-game-border hover:bg-game-surface text-game-text-muted hover:text-game-text transition-colors flex items-center justify-center"
-            aria-label="Toggle Theme"
-            title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-          >
-            {theme === 'dark' ? (
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="4" />
-                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
-              </svg>
-            ) : (
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
-              </svg>
-            )}
-          </button>
+          {/* Help Button */}
           <button
             onClick={() => setShowHowToPlay(true)}
             className="p-1.5 rounded-lg border border-game-border hover:bg-game-surface text-game-text-muted hover:text-game-text transition-colors flex items-center justify-center"
@@ -368,9 +482,24 @@ export default function Home() {
               <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01" />
             </svg>
           </button>
+
+          {/* Settings Button */}
+          <button
+            onClick={() => setShowSettings(true)}
+            className="p-1.5 rounded-lg border border-game-border hover:bg-game-surface text-game-text-muted hover:text-game-text transition-colors flex items-center justify-center"
+            aria-label="Settings"
+            title="Settings"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.1a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+          </button>
+
           <span className="text-game-text-muted text-xs font-mono">
             {gameState.guessedIds.length} correct / {gameState.tripPath.length > 2 ? gameState.tripPath.length - 2 : 0} stations
           </span>
+
           {gameState.isComplete && (
             <button
               id="btn-show-results"
@@ -395,6 +524,9 @@ export default function Home() {
             isComplete={gameState.isComplete}
             wrongGuesses={gameState.wrongGuesses}
             tripLines={gameState.tripLines}
+            tripPath={gameState.tripPath}
+            hardMode={hardMode}
+            darkMap={darkMap}
           />
         </div>
 
@@ -480,19 +612,37 @@ export default function Home() {
       </div>
 
       {/* ── TOAST NOTIFICATIONS ───────────────────────────────────── */}
-      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 flex flex-col gap-2 pointer-events-none" style={{ zIndex: 10000 }}>
+      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 flex flex-col gap-2 pointer-events-none" style={{ zIndex: 100000 }}>
         {toasts.map(toast => (
           <div
             key={toast.id}
             className={`
-              px-4 py-2 rounded-xl text-sm font-medium shadow-lg
-              ${toast.type === 'success' ? 'bg-green-900/90 text-green-200 border border-green-700' : ''}
-              ${toast.type === 'error' ? 'bg-red-900/90 text-red-200 border border-red-700' : ''}
-              ${toast.type === 'info' ? 'bg-game-panel/90 text-gray-300 border border-game-border' : ''}
-            `}
+            px-4 py-2.5 rounded-xl text-sm font-semibold shadow-xl border flex items-center gap-2.5 pointer-events-auto
+            ${toast.type === 'success'
+                ? 'bg-white text-emerald-950 border-emerald-300 dark:bg-slate-950 dark:text-emerald-50 dark:border-emerald-800'
+                : toast.type === 'error'
+                  ? 'bg-white text-rose-950 border-rose-300 dark:bg-slate-950 dark:text-rose-50 dark:border-rose-900'
+                  : 'bg-white text-sky-950 border-sky-300 dark:bg-slate-900 dark:text-slate-50 dark:border-slate-800'
+              }
+          `}
             style={{ animation: 'fadeInUp 0.3s ease-out forwards' }}
           >
-            {toast.text}
+            {toast.type === 'success' && (
+              <svg className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+            )}
+            {toast.type === 'error' && (
+              <svg className="w-4 h-4 text-rose-600 dark:text-rose-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            )}
+            {toast.type === 'info' && (
+              <svg className="w-4 h-4 text-sky-600 dark:text-sky-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            )}
+            <span className="leading-tight">{toast.text}</span>
           </div>
         ))}
       </div>
@@ -511,6 +661,7 @@ export default function Home() {
           onPlayAgain={handlePlayAgain}
           onClose={() => setShowResults(false)}
           mode={mode}
+          dailyHistory={dailyHistory}
         />
       )}
 
@@ -518,6 +669,18 @@ export default function Home() {
       <HowToPlayModal
         isOpen={showHowToPlay}
         onClose={() => setShowHowToPlay(false)}
+      />
+
+      {/* ── SETTINGS MODAL ────────────────────────────────────────── */}
+      <SettingsModal
+        isOpen={showSettings}
+        onClose={() => setShowSettings(false)}
+        hardMode={hardMode}
+        toggleHardMode={toggleHardMode}
+        theme={theme}
+        toggleTheme={toggleTheme}
+        darkMap={darkMap}
+        toggleDarkMap={toggleDarkMap}
       />
     </main>
   );

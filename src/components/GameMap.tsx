@@ -28,6 +28,9 @@ interface GameMapProps {
   isComplete: boolean;
   wrongGuesses?: string[];
   tripLines?: LineId[];
+  tripPath?: string[];
+  hardMode?: boolean;
+  darkMap?: boolean;
 }
 
 function mercatorToLatLng(x: number, y: number): [number, number] {
@@ -83,6 +86,9 @@ export default function GameMap({
   isComplete,
   wrongGuesses,
   tripLines,
+  tripPath,
+  hardMode = false,
+  darkMap = false,
 }: GameMapProps) {
   const [mapInstance, setMapInstance] = useState<L.Map | null>(null);
   const [routeShapes, setRouteShapes] = useState<RouteShape[]>([]);
@@ -177,15 +183,27 @@ export default function GameMap({
     return iconCache.get(cacheKey)!;
   };
 
-  const chosenStationIds = useMemo(() => {
+  const revealedSet = useMemo(() => {
+    const set = new Set<string>();
+    set.add(startId);
+    set.add(targetId);
+    
+    const stationsToReveal = (isComplete && optimalPath) ? optimalPath : guessedIds;
+    for (const id of stationsToReveal) {
+      set.add(id);
+    }
+    return set;
+  }, [startId, targetId, guessedIds, isComplete, optimalPath]);
+
+  const pathSequence = useMemo(() => {
     if (isComplete && optimalPath) {
       return optimalPath;
     }
-    return [startId, targetId, ...guessedIds];
-  }, [startId, targetId, guessedIds, isComplete, optimalPath]);
+    return tripPath || [];
+  }, [isComplete, optimalPath, tripPath]);
 
   const activePolylines = useMemo(() => {
-    if (routeShapes.length === 0 || !tripLines) return [];
+    if (routeShapes.length === 0 || !tripLines || pathSequence.length === 0) return [];
     
     const result: Array<{ coords: [number, number][]; color: string; lineId: string }> = [];
     
@@ -195,64 +213,141 @@ export default function GameMap({
       return Math.sqrt(dLat * dLat + dLng * dLng);
     };
 
-    const chosenStations = chosenStationIds
-      .map(id => STATION_MAP.get(id))
-      .filter((s): s is NonNullable<typeof s> => !!s);
-    
-    for (const shape of routeShapes) {
-      const lineId = shape.route_short_name as LineId;
-      if (tripLines.includes(lineId)) {
-        const color = LINE_MAP[lineId]?.color ?? `#${shape.route_color}`;
-        const geom = shape.json_geometry;
-        
-        const processCoords = (rawCoords: number[][]) => {
-          const coords = rawCoords.map((c) => mercatorToLatLng(c[0], c[1]));
+    if (hardMode) {
+      // Hard Mode: Segmented tracks (only between revealed adjacent stations)
+      const revealedPairs: Array<[string, string]> = [];
+      for (let i = 0; i < pathSequence.length - 1; i++) {
+        const a = pathSequence[i];
+        const b = pathSequence[i + 1];
+        if (revealedSet.has(a) && revealedSet.has(b)) {
+          revealedPairs.push([a, b]);
+        }
+      }
+
+      for (const shape of routeShapes) {
+        const lineId = shape.route_short_name as LineId;
+        if (tripLines.includes(lineId)) {
+          const color = LINE_MAP[lineId]?.color ?? `#${shape.route_color}`;
+          const geom = shape.json_geometry;
           
-          // Find close chosen stations on this line
-          const closeIndices: number[] = [];
-          for (const s of chosenStations) {
-            if (s.lines.includes(lineId)) {
-              let minD = Infinity;
-              let minIdx = -1;
-              for (let i = 0; i < coords.length; i++) {
-                const d = distance(s.lat, s.lng, coords[i][0], coords[i][1]);
-                if (d < minD) {
-                  minD = d;
-                  minIdx = i;
-                }
+          const processCoordsForPair = (rawCoords: number[][], pair: [string, string]) => {
+            const coords = rawCoords.map((c) => mercatorToLatLng(c[0], c[1]));
+            const stationA = STATION_MAP.get(pair[0]);
+            const stationB = STATION_MAP.get(pair[1]);
+            if (!stationA || !stationB) return null;
+
+            // Find closest indices in shape geometry for both stations
+            let minDA = Infinity;
+            let idxA = -1;
+            let minDB = Infinity;
+            let idxB = -1;
+
+            for (let i = 0; i < coords.length; i++) {
+              const dA = distance(stationA.lat, stationA.lng, coords[i][0], coords[i][1]);
+              if (dA < minDA) {
+                minDA = dA;
+                idxA = i;
               }
-              // Threshold: 0.02 degrees (~2 km)
-              if (minIdx !== -1 && minD < 0.02) {
-                closeIndices.push(minIdx);
+              const dB = distance(stationB.lat, stationB.lng, coords[i][0], coords[i][1]);
+              if (dB < minDB) {
+                minDB = dB;
+                idxB = i;
+              }
+            }
+
+            // Threshold check: both stations must be reasonably close to the track shape (~2 km)
+            if (idxA !== -1 && idxB !== -1 && minDA < 0.02 && minDB < 0.02) {
+              const minIdx = Math.min(idxA, idxB);
+              const maxIdx = Math.max(idxA, idxB);
+              return coords.slice(minIdx, maxIdx + 1);
+            }
+            return null;
+          };
+
+          for (const pair of revealedPairs) {
+            if (geom.type === 'LineString') {
+              const sliced = processCoordsForPair(geom.coordinates as number[][], pair);
+              if (sliced) {
+                result.push({ coords: sliced, color, lineId });
+              }
+            } else if (geom.type === 'MultiLineString') {
+              for (const part of (geom.coordinates as number[][][])) {
+                const sliced = processCoordsForPair(part, pair);
+                if (sliced) {
+                  result.push({ coords: sliced, color, lineId });
+                }
               }
             }
           }
-          
-          if (closeIndices.length >= 2) {
-            const minIdx = Math.min(...closeIndices);
-            const maxIdx = Math.max(...closeIndices);
-            return coords.slice(minIdx, maxIdx + 1);
-          }
-          return null;
-        };
+        }
+      }
+    } else {
+      // Normal Mode (Default): Draw entire track segment between any active stations on the map
+      const chosenStations = Array.from(revealedSet)
+        .map(id => STATION_MAP.get(id))
+        .filter((s): s is NonNullable<typeof s> => !!s);
 
-        if (geom.type === 'LineString') {
-          const sliced = processCoords(geom.coordinates as number[][]);
-          if (sliced) {
-            result.push({ coords: sliced, color, lineId });
-          }
-        } else if (geom.type === 'MultiLineString') {
-          for (const part of (geom.coordinates as number[][][])) {
-            const sliced = processCoords(part);
+      for (const shape of routeShapes) {
+        const lineId = shape.route_short_name as LineId;
+        if (tripLines.includes(lineId)) {
+          const color = LINE_MAP[lineId]?.color ?? `#${shape.route_color}`;
+          const geom = shape.json_geometry;
+          
+          const processCoords = (rawCoords: number[][]) => {
+            const coords = rawCoords.map((c) => mercatorToLatLng(c[0], c[1]));
+            
+            // Find close chosen stations on this line
+            const closeIndices: number[] = [];
+            for (const s of chosenStations) {
+              if (s.lines.includes(lineId)) {
+                let minD = Infinity;
+                let minIdx = -1;
+                for (let i = 0; i < coords.length; i++) {
+                  const d = distance(s.lat, s.lng, coords[i][0], coords[i][1]);
+                  if (d < minD) {
+                    minD = d;
+                    minIdx = i;
+                  }
+                }
+                // Threshold: 0.02 degrees (~2 km)
+                if (minIdx !== -1 && minD < 0.02) {
+                  closeIndices.push(minIdx);
+                }
+              }
+            }
+            
+            if (closeIndices.length >= 2) {
+              const minIdx = Math.min(...closeIndices);
+              const maxIdx = Math.max(...closeIndices);
+              return coords.slice(minIdx, maxIdx + 1);
+            }
+            return null;
+          };
+
+          if (geom.type === 'LineString') {
+            const sliced = processCoords(geom.coordinates as number[][]);
             if (sliced) {
               result.push({ coords: sliced, color, lineId });
+            }
+          } else if (geom.type === 'MultiLineString') {
+            for (const part of (geom.coordinates as number[][][])) {
+              const sliced = processCoords(part);
+              if (sliced) {
+                result.push({ coords: sliced, color, lineId });
+              }
             }
           }
         }
       }
     }
     return result;
-  }, [routeShapes, tripLines, chosenStationIds]);
+  }, [routeShapes, tripLines, pathSequence, revealedSet, hardMode]);
+
+  const mapStyle = useMemo(() => ({
+    width: '100%',
+    height: '100%',
+    background: darkMap ? '#0b0f19' : '#e4e9f0'
+  }), [darkMap]);
 
   return (
     <div style={{ position: 'relative', width: '100%', height: '100%' }}>
@@ -261,11 +356,14 @@ export default function GameMap({
         zoom={MAP_ZOOM}
         zoomControl={false}
         attributionControl={true}
-        style={MAP_STYLE}
+        style={mapStyle}
       >
-        {/* CartoDB Positron Map Tiles (Always Light) */}
+        {/* CartoDB Map Tiles based on darkMap prop */}
         <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+          url={darkMap 
+            ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+            : "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+          }
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
           subdomains="abcd"
           maxZoom={19}
@@ -389,10 +487,10 @@ export default function GameMap({
               style={{
                 width: 32,
                 height: 32,
-                background: '#ffffff',
-                border: '1px solid #cbd5e1',
+                background: darkMap ? '#1e293b' : '#ffffff',
+                border: darkMap ? '1px solid #334155' : '1px solid #cbd5e1',
                 borderRadius: 6,
-                color: '#475569',
+                color: darkMap ? '#94a3b8' : '#475569',
                 cursor: 'pointer',
                 fontSize: btn.label === '⌂' ? 14 : 18,
                 fontWeight: 700,
@@ -404,13 +502,13 @@ export default function GameMap({
               }}
               onMouseEnter={e => {
                 const el = e.target as HTMLButtonElement;
-                el.style.color = '#0f172a';
-                el.style.backgroundColor = '#f1f5f9';
+                el.style.color = darkMap ? '#ffffff' : '#0f172a';
+                el.style.backgroundColor = darkMap ? '#334155' : '#f1f5f9';
               }}
               onMouseLeave={e => {
                 const el = e.target as HTMLButtonElement;
-                el.style.color = '#475569';
-                el.style.backgroundColor = '#ffffff';
+                el.style.color = darkMap ? '#94a3b8' : '#475569';
+                el.style.backgroundColor = darkMap ? '#1e293b' : '#ffffff';
               }}
             >
               {btn.label}
