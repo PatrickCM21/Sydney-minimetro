@@ -16,6 +16,7 @@ import React, {
 } from 'react';
 import { MapContainer, TileLayer, useMap, Polyline, Marker } from 'react-leaflet';
 import L from 'leaflet';
+import 'leaflet-smoothwheelzoom';
 
 import { LINE_MAP, STATION_MAP } from '@/lib/networkData';
 import { getStationLinesOnPath } from '@/lib/pathfinding';
@@ -44,6 +45,8 @@ function mercatorToLatLng(x: number, y: number): [number, number] {
 function getLineColor(lineId: LineId): string {
   return LINE_MAP[lineId]?.color ?? '#888';
 }
+
+const customRenderer = typeof window !== 'undefined' ? L.canvas({ padding: 0.5 }) : undefined;
 
 // ─── Map event listener component (inside MapContainer) ─────────────────────
 
@@ -439,6 +442,15 @@ export default function GameMap({
         zoomControl={false}
         attributionControl={true}
         style={mapStyle}
+        zoomSnap={0}
+        touchZoom={true}
+        boxZoom={true}
+        preferCanvas={true}
+        renderer={customRenderer}
+
+        scrollWheelZoom={false}
+        smoothWheelZoom={true}
+        smoothSensitivity={25}
       >
         {/* CartoDB Map Tiles based on darkMap prop */}
         <TileLayer

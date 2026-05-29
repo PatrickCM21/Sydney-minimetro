@@ -19,7 +19,8 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "leaflet-smoothwheelzoom": ["./src/lib/Leaflet.SmoothWheelZoom.js"]
     }
   },
   "include": [
