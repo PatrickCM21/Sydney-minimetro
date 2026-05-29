@@ -135,7 +135,7 @@ export default function StationInput({
             autoCapitalize="none"
             spellCheck={false}
             className={`
-              w-full px-4 py-3 rounded-xl text-sm font-medium
+              w-full px-4 py-3 rounded-xl text-base md:text-sm font-medium
               bg-game-surface border border-game-border
               text-game-text placeholder-game-text-muted
               focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500
