@@ -347,25 +347,39 @@ export default function Home() {
     startGame('practice', newStartId, newTargetId);
   }, [startGame]);
 
-  const handleHeaderShare = useCallback(() => {
+  const handleHeaderShare = useCallback(async () => {
     if (!gameState) return;
     const { mode, startId, targetId } = gameState;
     const url = new URL(window.location.origin + window.location.pathname);
 
     let text = '';
+    const startName = STATION_MAP.get(startId)?.name ?? startId;
+    const targetName = STATION_MAP.get(targetId)?.name ?? targetId;
+
     if (mode === 'practice') {
       url.searchParams.set('mode', 'practice');
       url.searchParams.set('start', startId);
       url.searchParams.set('target', targetId);
-
-      const startName = STATION_MAP.get(startId)?.name ?? startId;
-      const targetName = STATION_MAP.get(targetId)?.name ?? targetId;
       text = `Try this Trackle Practice Route: ${startName} ↔ ${targetName}\n${url.toString()}`;
     } else {
       text = `Try today's Trackle Daily Challenge!\n${url.toString()}`;
     }
 
-    if (typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.writeText) {
+    if (typeof navigator !== 'undefined' && navigator.share) {
+      try {
+        await navigator.share({
+          title: mode === 'practice' ? `Trackle Practice: ${startName} ↔ ${targetName}` : 'Trackle Daily Challenge',
+          text: text,
+          url: url.toString(),
+        });
+        addToast("Shared successfully!", "success");
+      } catch (err) {
+        // If sharing is cancelled by user, don't show an error toast
+        if (err instanceof Error && err.name !== 'AbortError') {
+          addToast("Failed to share.", "error");
+        }
+      }
+    } else if (typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text)
         .then(() => addToast("Challenge link copied to clipboard!", "success"))
         .catch(() => addToast("Failed to copy link.", "error"));
