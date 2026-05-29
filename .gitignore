@@ -20,6 +20,8 @@
 # production
 /build
 
+/public/full_sydney_gtfs
+
 # misc
 .DS_Store
 *.pem

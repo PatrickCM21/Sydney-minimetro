@@ -100,6 +100,25 @@ export default function Home() {
     const wrongCount = state.wrongGuesses.length;
     const gaveUp = correctCount < totalStationsToGuess;
 
+    const score = totalStationsToGuess > 0
+      ? Math.round((correctCount / totalStationsToGuess) * 100)
+      : 100;
+
+    // Send statistics atomically to the database
+    fetch('/api/stats', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        date: state.date,
+        guesses: correctCount,
+        score
+      })
+    }).catch(err => {
+      console.error('Error submitting stats:', err);
+    });
+
     setDailyHistory(prevHistory => {
       const alreadyExists = prevHistory.some(item => item.date === state.date);
       if (alreadyExists) return prevHistory;
@@ -192,12 +211,48 @@ export default function Home() {
   }, []);
 
   // Start a new game
-  const startGame = useCallback((m: 'daily' | 'practice', customStartId?: string, customTargetId?: string) => {
+  const startGame = useCallback(async (m: 'daily' | 'practice', customStartId?: string, customTargetId?: string) => {
     let startId: string, targetId: string;
+    let challengeDate: string | undefined;
+
     if (m === 'daily') {
-      const c = getDailyChallenge(getTodayString());
-      startId = c.start;
-      targetId = c.target;
+      let challenge: { start: string; target: string; date: string } | null = null;
+      const cached = localStorage.getItem('trackle_daily_challenge_cached');
+      const lastCheck = localStorage.getItem('trackle_last_challenge_check');
+      const now = Date.now();
+      const ONE_HOUR = 60 * 60 * 1000;
+      let needsFetch = !cached || !lastCheck || (now - Number(lastCheck)) > ONE_HOUR;
+
+      if (!needsFetch && cached) {
+        try {
+          challenge = JSON.parse(cached);
+        } catch (e) {
+          needsFetch = true;
+        }
+      }
+
+      if (needsFetch) {
+        try {
+          const res = await fetch('/api/daily');
+          if (res.ok) {
+            challenge = await res.json();
+            if (challenge) {
+              localStorage.setItem('trackle_daily_challenge_cached', JSON.stringify(challenge));
+              localStorage.setItem('trackle_last_challenge_check', String(now));
+            }
+          }
+        } catch (e) {
+          console.error("Failed to fetch daily challenge", e);
+        }
+      }
+
+      if (!challenge) {
+        challenge = getDailyChallenge(getTodayString());
+      }
+
+      startId = challenge.start;
+      targetId = challenge.target;
+      challengeDate = challenge.date;
     } else {
       if (customStartId && customTargetId) {
         startId = customStartId;
@@ -236,14 +291,18 @@ export default function Home() {
 
     setMode(m);
     const state = initGameState(startId, targetId, m, tripPath, tripLines);
+    if (challengeDate) {
+      state.date = challengeDate;
+    }
     let isRestoredComplete = false;
 
     if (m === 'daily') {
       const saved = localStorage.getItem('trackle_daily_state');
+      const targetDate = challengeDate || getTodayString();
       if (saved) {
         try {
           const parsed = JSON.parse(saved);
-          if (parsed && parsed.date === getTodayString()) {
+          if (parsed && parsed.date === targetDate) {
             state.guessedIds = parsed.guessedIds || [];
             state.wrongGuesses = parsed.wrongGuesses || [];
             state.isComplete = parsed.isComplete || false;
@@ -251,6 +310,9 @@ export default function Home() {
               state.userPath = tripPath;
               isRestoredComplete = true;
             }
+          } else {
+            // Clear progress for a new day
+            localStorage.removeItem('trackle_daily_state');
           }
         } catch (e) {
           console.error("Failed to parse daily state", e);
@@ -671,6 +733,7 @@ export default function Home() {
           onClose={() => setShowResults(false)}
           mode={mode}
           dailyHistory={dailyHistory}
+          date={gameState.date}
         />
       )}
 

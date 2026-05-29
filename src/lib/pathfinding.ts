@@ -285,39 +285,265 @@ export function getLinesUsedByPath(path: string[]): LineId[] {
   return Array.from(lines);
 }
 
-export function bfsShortestPathWithLines(
-  startId: string,
-  targetId: string
-): { path: string[]; lines: LineId[] } | null {
-  if (startId === targetId) {
-    return { path: [startId], lines: [] };
+/**
+ * Given a path of station IDs, find the sequence of lines that covers the path
+ * with the absolute minimum number of line changes (transfers).
+ * If allowedLines restriction is provided, only lines in allowedLines are considered.
+ */
+export function getMinTransferLines(path: string[], allowedLines?: LineId[]): LineId[] {
+  if (path.length < 2) return [];
+
+  // dp[i][line] = { cost: number, prevLine: LineId | null }
+  const dp: Array<Record<string, { cost: number; prevLine: string | null }>> = [];
+
+  // Step 0: first edge
+  const u0 = path[0];
+  const v0 = path[1];
+  const edges0 = getEdgesBetween(u0, v0);
+  let lines0 = edges0.map(e => e.line);
+  if (allowedLines) {
+    lines0 = lines0.filter(l => allowedLines.includes(l));
+  }
+  if (lines0.length === 0) {
+    lines0 = edges0.map(e => e.line); // fallback
   }
 
-  const visited = new Set<string>([startId]);
-  const queue: Array<{ id: string; path: string[]; lines: LineId[] }> = [
-    { id: startId, path: [startId], lines: [] }
-  ];
+  const step0: Record<string, { cost: number; prevLine: string | null }> = {};
+  for (const line of lines0) {
+    step0[line] = { cost: 0, prevLine: null };
+  }
+  dp.push(step0);
 
-  while (queue.length > 0) {
-    const current = queue.shift()!;
-    const neighbors = ADJACENCY.get(current.id) ?? [];
-    for (const { neighbor, line } of neighbors) {
-      if (neighbor === targetId) {
-        return {
-          path: [...current.path, neighbor],
-          lines: Array.from(new Set([...current.lines, line])),
-        };
+  // Step i: subsequent edges
+  for (let i = 1; i < path.length - 1; i++) {
+    const u = path[i];
+    const v = path[i + 1];
+    const edges = getEdgesBetween(u, v);
+    let stepLines = edges.map(e => e.line);
+    if (allowedLines) {
+      stepLines = stepLines.filter(l => allowedLines.includes(l));
+    }
+    if (stepLines.length === 0) {
+      stepLines = edges.map(e => e.line); // fallback
+    }
+
+    const prevStep = dp[i - 1];
+    const currentStep: Record<string, { cost: number; prevLine: string | null }> = {};
+
+    for (const nextLine of stepLines) {
+      let minCost = Infinity;
+      let bestPrev: string | null = null;
+
+      for (const prevLine of Object.keys(prevStep)) {
+        const cost = prevStep[prevLine].cost + (prevLine === nextLine ? 0 : 1);
+        if (cost < minCost) {
+          minCost = cost;
+          bestPrev = prevLine;
+        }
       }
-      if (!visited.has(neighbor)) {
-        visited.add(neighbor);
-        queue.push({
-          id: neighbor,
-          path: [...current.path, neighbor],
-          lines: [...current.lines, line],
-        });
+
+      currentStep[nextLine] = { cost: minCost, prevLine: bestPrev };
+    }
+    dp.push(currentStep);
+  }
+
+  // Backtrack to find the optimal sequence of lines
+  const result: LineId[] = [];
+  const lastStep = dp[dp.length - 1];
+  let minCost = Infinity;
+  let currentLine: string | null = null;
+
+  for (const line of Object.keys(lastStep)) {
+    if (lastStep[line].cost < minCost) {
+      minCost = lastStep[line].cost;
+      currentLine = line;
+    }
+  }
+
+  if (currentLine !== null) {
+    let currL: string = currentLine;
+    result.unshift(currL as LineId);
+    for (let i = dp.length - 1; i > 0; i--) {
+      const prev = dp[i][currL].prevLine;
+      if (prev) {
+        result.unshift(prev as LineId);
+        currL = prev;
       }
     }
   }
 
+  return result;
+}
+
+export function bfsShortestPathWithLines(
+  startId: string,
+  targetId: string
+): { path: string[]; lines: LineId[] } | null {
+  const startStation = STATION_MAP.get(startId);
+  const targetStation = STATION_MAP.get(targetId);
+  if (!startStation || !targetStation) return null;
+
+  // We find a path that minimizes transfers first, then station hops.
+  // Queue state: { stationId: string, lineId: LineId, path: string[], lines: LineId[], transfers: number, hops: number }
+  const queue: Array<{
+    stationId: string;
+    lineId: LineId;
+    path: string[];
+    lines: LineId[];
+    transfers: number;
+    hops: number;
+  }> = [];
+
+  for (const lineId of startStation.lines) {
+    queue.push({
+      stationId: startId,
+      lineId,
+      path: [startId],
+      lines: [lineId],
+      transfers: 0,
+      hops: 0,
+    });
+  }
+
+  const dist = new Map<string, { transfers: number; hops: number }>();
+  for (const item of queue) {
+    dist.set(`${item.stationId}|${item.lineId}`, { transfers: 0, hops: 0 });
+  }
+
+  let bestResult: {
+    path: string[];
+    lines: LineId[];
+    transfers: number;
+    hops: number;
+  } | null = null;
+
+  while (queue.length > 0) {
+    // Sort to get the element with the minimum transfers, then minimum hops
+    queue.sort((a, b) => {
+      if (a.transfers !== b.transfers) {
+        return a.transfers - b.transfers;
+      }
+      return a.hops - b.hops;
+    });
+
+    const curr = queue.shift()!;
+    const currKey = `${curr.stationId}|${curr.lineId}`;
+
+    const recorded = dist.get(currKey);
+    if (recorded) {
+      if (curr.transfers > recorded.transfers ||
+        (curr.transfers === recorded.transfers && curr.hops > recorded.hops)) {
+        continue;
+      }
+    }
+
+    if (curr.stationId === targetId) {
+      if (!bestResult ||
+        curr.transfers < bestResult.transfers ||
+        (curr.transfers === bestResult.transfers && curr.hops < bestResult.hops)) {
+        bestResult = curr;
+      }
+      continue;
+    }
+
+    // 1. Move to adjacent stations on the SAME line
+    const neighbors = ADJACENCY.get(curr.stationId) ?? [];
+    for (const { neighbor, line: edgeLine } of neighbors) {
+      if (edgeLine !== curr.lineId) continue;
+
+      const nextTransfers = curr.transfers;
+      const nextHops = curr.hops + 1;
+      const nextKey = `${neighbor}|${curr.lineId}`;
+
+      const prevDist = dist.get(nextKey);
+      if (!prevDist ||
+        nextTransfers < prevDist.transfers ||
+        (nextTransfers === prevDist.transfers && nextHops < prevDist.hops)) {
+
+        dist.set(nextKey, { transfers: nextTransfers, hops: nextHops });
+        queue.push({
+          stationId: neighbor,
+          lineId: curr.lineId,
+          path: [...curr.path, neighbor],
+          lines: curr.lines,
+          transfers: nextTransfers,
+          hops: nextHops,
+        });
+      }
+    }
+
+    // 2. Transfer to another line at the current station
+    const currentStation = STATION_MAP.get(curr.stationId);
+    if (currentStation) {
+      for (const nextLineId of currentStation.lines) {
+        if (nextLineId === curr.lineId) continue;
+
+        const nextTransfers = curr.transfers + 1;
+        const nextHops = curr.hops;
+        const nextKey = `${curr.stationId}|${nextLineId}`;
+
+        const prevDist = dist.get(nextKey);
+        if (!prevDist ||
+          nextTransfers < prevDist.transfers ||
+          (nextTransfers === prevDist.transfers && nextHops < prevDist.hops)) {
+
+          dist.set(nextKey, { transfers: nextTransfers, hops: nextHops });
+          queue.push({
+            stationId: curr.stationId,
+            lineId: nextLineId,
+            path: curr.path,
+            lines: [...curr.lines, nextLineId],
+            transfers: nextTransfers,
+            hops: nextHops,
+          });
+        }
+      }
+    }
+  }
+
+  if (bestResult) {
+    // Get unique lines used, preserving their first occurrence order
+    const uniqueLines: LineId[] = [];
+    for (const line of bestResult.lines) {
+      if (!uniqueLines.includes(line)) {
+        uniqueLines.push(line);
+      }
+    }
+    return {
+      path: bestResult.path,
+      lines: uniqueLines,
+    };
+  }
+
   return null;
 }
+
+/**
+ * Maps each station ID along a path to the line it uses in that path.
+ * Prefers keeping the same line across adjacent segments to minimize transfers.
+ */
+export function getStationLinesOnPath(path: string[], tripLines: LineId[]): Record<string, LineId> {
+  const stationLinesMap: Record<string, LineId> = {};
+  if (!path || path.length === 0) return stationLinesMap;
+  if (path.length === 1) {
+    const s = STATION_MAP.get(path[0]);
+    if (s) stationLinesMap[path[0]] = s.lines[0];
+    return stationLinesMap;
+  }
+
+  const stepLines = getMinTransferLines(path, tripLines);
+
+  for (let i = 0; i < path.length; i++) {
+    const id = path[i];
+    if (i === path.length - 1) {
+      // Start station (at the end of the backward path): use the departing line
+      stationLinesMap[id] = stepLines[path.length - 2] || tripLines[0];
+    } else {
+      // All other stations: use the arriving line (stepLines[i] in the backward direction)
+      stationLinesMap[id] = stepLines[i] || tripLines[0];
+    }
+  }
+
+  return stationLinesMap;
+}
+

@@ -2,6 +2,7 @@
 
 import React, { useRef } from 'react';
 import { STATION_MAP, LINE_MAP } from '@/lib/networkData';
+import { getStationLinesOnPath } from '@/lib/pathfinding';
 import type { LineId, DailyHistoryItem } from '@/types';
 import ShareButton from '@/components/ShareButton';
 
@@ -18,6 +19,7 @@ interface ResultsModalProps {
   onClose: () => void;
   mode: 'daily' | 'practice';
   dailyHistory?: DailyHistoryItem[];
+  date?: string;
 }
 
 function PathDisplay({
@@ -35,6 +37,10 @@ function PathDisplay({
 }) {
   const guessedSet = new Set(guessedIds);
 
+  const stationLinesMap = React.useMemo(() => {
+    return getStationLinesOnPath(path, tripLines || []);
+  }, [path, tripLines]);
+
   return (
     <div>
       <div className="flex items-center gap-2 mb-3">
@@ -49,7 +55,7 @@ function PathDisplay({
         {path.map((id, i) => {
           const station = STATION_MAP.get(id);
           if (!station) return null;
-          const activeLine = station.lines.find(l => tripLines.includes(l)) ?? station.lines[0];
+          const activeLine = stationLinesMap[id] || station.lines.find(l => tripLines.includes(l)) || station.lines[0];
           const line = LINE_MAP[activeLine];
           const isEndpoint = id === startId || id === targetId;
           const isGuessed = guessedSet.has(id);
@@ -150,6 +156,7 @@ export default function ResultsModal({
   onClose,
   mode,
   dailyHistory = [],
+  date,
 }: ResultsModalProps) {
   const overlayRef = useRef<HTMLDivElement>(null);
   const totalStationsToGuess = optimalPath.length > 2 ? optimalPath.length - 2 : 0;
@@ -222,6 +229,21 @@ export default function ResultsModal({
     };
   }, [mode, dailyHistory, totalStationsToGuess, correctCount]);
 
+  const [globalAvgScore, setGlobalAvgScore] = React.useState<number | null>(null);
+
+  React.useEffect(() => {
+    if (isOpen && mode === 'daily' && date) {
+      fetch(`/api/stats?date=${date}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data && typeof data.avg_score === 'number' && data.total_submissions > 0) {
+            setGlobalAvgScore(Math.round(data.avg_score));
+          }
+        })
+        .catch(err => console.error("Error fetching stats:", err));
+    }
+  }, [isOpen, mode, date]);
+
   const fakeAverage = React.useMemo(() => {
     let seed = 0;
     const combined = `${startId}-${targetId}-${new Date().getDate()}`;
@@ -291,7 +313,9 @@ export default function ResultsModal({
             <div className="h-8 w-px bg-game-border" />
             <div className="text-center">
               <div className="text-xs text-game-text-muted font-semibold uppercase tracking-wider mb-1">Average Score Today</div>
-              <div className="text-3xl font-extrabold text-slate-600 dark:text-gray-400">{fakeAverage}%</div>
+              <div className="text-3xl font-extrabold text-slate-600 dark:text-gray-400">
+                {globalAvgScore !== null ? `${globalAvgScore}%` : `${fakeAverage}%`}
+              </div>
             </div>
           </div>
 

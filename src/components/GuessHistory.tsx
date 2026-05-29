@@ -1,7 +1,6 @@
-'use client';
-
-import React from 'react';
+import React, { useMemo } from 'react';
 import { STATION_MAP, LINE_MAP } from '@/lib/networkData';
+import { getStationLinesOnPath } from '@/lib/pathfinding';
 import type { LineId } from '@/types';
 
 interface GuessHistoryProps {
@@ -15,19 +14,23 @@ interface GuessHistoryProps {
   tripLines: LineId[];
 }
 
+interface StationRowProps {
+  id: string;
+  isEndpoint?: boolean;
+  isRevealed?: boolean;
+  isGuessed?: boolean;
+  tripLines?: LineId[];
+  lineId?: LineId;
+}
+
 function StationRow({
   id,
   isEndpoint,
   isRevealed,
   isGuessed,
   tripLines,
-}: {
-  id: string;
-  isEndpoint?: boolean;
-  isRevealed?: boolean;
-  isGuessed?: boolean;
-  tripLines?: LineId[];
-}) {
+  lineId,
+}: StationRowProps) {
   const station = STATION_MAP.get(id);
   if (!station) return null;
 
@@ -48,7 +51,7 @@ function StationRow({
     );
   }
 
-  const activeLine = station.lines.find(l => tripLines?.includes(l)) ?? station.lines[0];
+  const activeLine = lineId ?? (station.lines.find(l => tripLines?.includes(l)) ?? station.lines[0]);
   const line = LINE_MAP[activeLine];
 
   const color = line?.color ?? '#3b82f6';
@@ -57,10 +60,10 @@ function StationRow({
     <div
       className={`
         flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all duration-300
-        ${isEndpoint 
-          ? 'border' 
-          : isGuessed 
-            ? 'bg-game-surface/60 border border-game-border/40' 
+        ${isEndpoint
+          ? 'border'
+          : isGuessed
+            ? 'bg-game-surface/60 border border-game-border/40'
             : 'bg-red-950/10 border border-red-900/20 opacity-70'}
         animate-fade-in
       `}
@@ -69,7 +72,7 @@ function StationRow({
       {/* Indicator */}
       <div className="shrink-0 w-6 text-center">
         {isEndpoint ? (
-          <span 
+          <span
             className="text-[9px] font-black px-1 py-0.5 rounded border border-opacity-30"
             style={{
               color: color,
@@ -120,6 +123,10 @@ export default function GuessHistory({
 }: GuessHistoryProps) {
   const guessedSet = new Set(guessedIds);
 
+  const stationLinesMap = useMemo(() => {
+    return getStationLinesOnPath(tripPath, tripLines || []);
+  }, [tripPath, tripLines]);
+
   return (
     <div className="flex flex-col h-full gap-4">
       {/* Timeline Section */}
@@ -143,6 +150,7 @@ export default function GuessHistory({
                   isRevealed={isRevealed}
                   isGuessed={guessedSet.has(id)}
                   tripLines={tripLines}
+                  lineId={stationLinesMap[id]}
                 />
                 {index < tripPath.length - 1 && (
                   <div className="flex justify-center my-0.5">

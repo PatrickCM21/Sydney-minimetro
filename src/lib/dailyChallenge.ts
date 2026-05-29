@@ -15,60 +15,8 @@
 
 import type { DailyChallenge } from '@/types';
 
-// Curated pairs: interesting journeys that require navigation decisions.
-// Both stations must exist in networkData.ts.
-const CURATED_PAIRS: Array<[string, string]> = [
-  ['berowra', 'cronulla'],
-  ['richmond', 'waterfall'],
-  ['tallawong', 'leppington'],
-  ['emu_plains', 'bondi_junction'],
-  ['campbelltown', 'chatswood'],
-  ['penrith', 'macarthur'],
-  ['richmond', 'central'],
-  ['berowra', 'bankstown'],
-  ['tallawong', 'central'],
-  ['hornsby', 'hurstville'],
-  ['liverpool', 'chatswood'],
-  ['parramatta', 'bondi_junction'],
-  ['blacktown', 'kogarah'],
-  ['epping', 'central'],
-  ['strathfield', 'hornsby'],
-  ['campbelltown', 'north_sydney'],
-  ['redfern', 'chatswood'],
-  ['central', 'cronulla'],
-  ['wynyard', 'bankstown'],
-  ['parramatta', 'campbelltown'],
-  ['lidcombe', 'north_sydney'],
-  ['burwood', 'hurstville'],
-  ['st_leonards', 'central'],
-  ['epping', 'parramatta'],
-  ['gordon', 'macarthur'],
-  ['richmond', 'emu_plains'],
-  ['berowra', 'campbelltown'],
-  ['tallawong', 'bondi_junction'],
-  ['north_sydney', 'bankstown'],
-  ['chatswood', 'cronulla'],
-  ['central', 'waterfall'],
-  ['parramatta', 'north_sydney'],
-  ['strathfield', 'campbelltown'],
-  ['hornsby', 'leppington'],
-  ['penrith', 'central'],
-  ['chatswood', 'sydenham'],
-  ['olympic_park', 'north_sydney'],
-  ['tallawong', 'campbelltown'],
-  ['richmond', 'north_sydney'],
-  ['emu_plains', 'central'],
-  ['berowra', 'central'],
-  ['central', 'bondi_junction'],
-  ['wynyard', 'central'],
-  ['blacktown', 'central'],
-  ['parramatta', 'central'],
-  ['liverpool', 'central'],
-  ['hurstville', 'north_sydney'],
-  ['chatswood', 'central'],
-  ['strathfield', 'central'],
-  ['redfern', 'north_sydney'],
-];
+import { CURATED_PAIRS } from './curatedPairs';
+
 
 /**
  * Simple integer hash of a date string for deterministic seeding.
@@ -106,8 +54,14 @@ export function getRandomChallenge(): Omit<DailyChallenge, 'date'> {
 }
 
 /**
- * Gets today's date as YYYY-MM-DD (UTC).
+ * Gets today's date as YYYY-MM-DD (UTC). Specifically, bases it on sydney time
  */
 export function getTodayString(): string {
-  return new Date().toISOString().split('T')[0];
+  // Forces the date calculation into Sydney's timezone format (YYYY-MM-DD)
+  return new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Australia/Sydney',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(new Date());
 }
