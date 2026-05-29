@@ -143,13 +143,32 @@ export default function StationInput({
               ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:border-game-muted'}
             `}
           />
-          {/* Search icon */}
-          <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <circle cx="11" cy="11" r="8" />
-              <path d="m21 21-4.35-4.35" />
-            </svg>
-          </div>
+          {/* Search / Clear Button */}
+          {query ? (
+            <button
+              type="button"
+              onClick={() => {
+                setQuery('');
+                setSuggestions([]);
+                setIsOpen(false);
+                inputRef.current?.focus();
+              }}
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-game-text hover:bg-game-border/30 p-1.5 rounded-lg transition-colors flex items-center justify-center pointer-events-auto cursor-pointer"
+              aria-label="Clear search"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+          ) : (
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.35-4.35" />
+              </svg>
+            </div>
+          )}
         </div>
       </div>
 

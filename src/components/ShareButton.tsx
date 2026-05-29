@@ -28,7 +28,7 @@ export default function ShareButton({
   score,
   personalStats,
 }: ShareButtonProps) {
-  const [shareStatus, setShareStatus] = useState<'idle' | 'generating' | 'success' | 'error'>('idle');
+  const [shareStatus, setShareStatus] = useState<'idle' | 'generating' | 'success'>('idle');
 
   const totalStationsToGuess = optimalPath.length > 2 ? optimalPath.length - 2 : 0;
   const correctCount = guessedIds.length;
@@ -418,7 +418,7 @@ export default function ShareButton({
       }
     } catch (err) {
       console.error('Error sharing Story:', err);
-      setShareStatus('error');
+      setShareStatus('idle');
     }
 
     setTimeout(() => setShareStatus('idle'), 4000);
@@ -434,14 +434,11 @@ export default function ShareButton({
           ? 'bg-amber-600 shadow-amber-500/20 cursor-wait'
           : shareStatus === 'success'
             ? 'bg-emerald-600 shadow-emerald-500/20'
-            : shareStatus === 'error'
-              ? 'bg-red-600 shadow-red-500/20'
-              : 'bg-green-600 hover:bg-green-500 shadow-green-500/20'}
+            : 'bg-green-600 hover:bg-green-500 shadow-green-500/20'}
       `}
     >
       {shareStatus === 'generating' && 'Generating...'}
       {shareStatus === 'success' && 'Copied! ✓'}
-      {shareStatus === 'error' && 'Failed to share'}
       {shareStatus === 'idle' && 'Share'}
     </button>
   );

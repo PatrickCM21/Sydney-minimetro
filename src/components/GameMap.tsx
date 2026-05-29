@@ -342,43 +342,56 @@ export default function GameMap({
               return null;
             }
 
-            let minDA = Infinity;
-            let idxA = -1;
-            let minDB = Infinity;
-            let idxB = -1;
-
+            const candidatesA: number[] = [];
+            const candidatesB: number[] = [];
             for (let i = 0; i < coords.length; i++) {
               const dA = distance(stationA.lat, stationA.lng, coords[i][0], coords[i][1]);
-              if (dA < minDA) {
-                minDA = dA;
-                idxA = i;
+              if (dA < 0.005) {
+                candidatesA.push(i);
               }
               const dB = distance(stationB.lat, stationB.lng, coords[i][0], coords[i][1]);
-              if (dB < minDB) {
-                minDB = dB;
-                idxB = i;
+              if (dB < 0.005) {
+                candidatesB.push(i);
               }
             }
 
-            // Tight threshold (< 500m) to ensure shape closely passes passenger platforms
-            if (idxA !== -1 && idxB !== -1 && minDA < 0.005 && minDB < 0.005) {
-              const minIdx = Math.min(idxA, idxB);
-              const maxIdx = Math.max(idxA, idxB);
-              const sliced = coords.slice(minIdx, maxIdx + 1);
-              if (sliced.length < 2) return null;
+            if (candidatesA.length === 0 || candidatesB.length === 0) {
+              return null;
+            }
 
-              // Ensure the slice is a reasonably direct path to filter out huge loops
-              const directDist = distance(stationA.lat, stationA.lng, stationB.lat, stationB.lng);
-              let pathLength = 0;
-              for (let i = 0; i < sliced.length - 1; i++) {
-                pathLength += distance(sliced[i][0], sliced[i][1], sliced[i + 1][0], sliced[i + 1][1]);
+            let bestSlice: [number, number][] | null = null;
+            let bestPathLength = Infinity;
+            let bestScore = Infinity;
+
+            const directDist = distance(stationA.lat, stationA.lng, stationB.lat, stationB.lng);
+
+            for (const idxA of candidatesA) {
+              for (const idxB of candidatesB) {
+                const minIdx = Math.min(idxA, idxB);
+                const maxIdx = Math.max(idxA, idxB);
+                if (maxIdx - minIdx < 1) continue;
+
+                const sliced = coords.slice(minIdx, maxIdx + 1);
+
+                let pathLength = 0;
+                for (let k = 0; k < sliced.length - 1; k++) {
+                  pathLength += distance(sliced[k][0], sliced[k][1], sliced[k + 1][0], sliced[k + 1][1]);
+                }
+
+                if (pathLength <= 2.0 * directDist + 0.005) {
+                  const score = distance(stationA.lat, stationA.lng, coords[idxA][0], coords[idxA][1]) +
+                                distance(stationB.lat, stationB.lng, coords[idxB][0], coords[idxB][1]);
+                  if (pathLength < bestPathLength) {
+                    bestPathLength = pathLength;
+                    bestSlice = sliced;
+                    bestScore = score;
+                  }
+                }
               }
+            }
 
-              if (pathLength > 2.0 * directDist + 0.005) {
-                return null;
-              }
-
-              return { sliced, score: minDA + minDB };
+            if (bestSlice) {
+              return { sliced: bestSlice, score: bestScore };
             }
             return null;
           };

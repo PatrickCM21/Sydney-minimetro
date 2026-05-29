@@ -254,6 +254,11 @@ export default function Home() {
       startId = challenge.start;
       targetId = challenge.target;
       challengeDate = challenge.date;
+
+      // Clear url params
+      if (typeof window !== 'undefined') {
+        window.history.replaceState(null, '', window.location.pathname);
+      }
     } else {
       if (customStartId && customTargetId) {
         startId = customStartId;
@@ -262,6 +267,15 @@ export default function Home() {
         const c = getRandomChallenge();
         startId = c.start;
         targetId = c.target;
+      }
+
+      // Update/Set URL params
+      if (typeof window !== 'undefined') {
+        const searchParams = new URLSearchParams();
+        searchParams.set('mode', 'practice');
+        searchParams.set('start', startId);
+        searchParams.set('target', targetId);
+        window.history.replaceState(null, '', `?${searchParams.toString()}`);
       }
     }
 
@@ -333,10 +347,46 @@ export default function Home() {
     startGame('practice', newStartId, newTargetId);
   }, [startGame]);
 
+  const handleHeaderShare = useCallback(() => {
+    if (!gameState) return;
+    const { mode, startId, targetId } = gameState;
+    const url = new URL(window.location.origin + window.location.pathname);
+
+    let text = '';
+    if (mode === 'practice') {
+      url.searchParams.set('mode', 'practice');
+      url.searchParams.set('start', startId);
+      url.searchParams.set('target', targetId);
+
+      const startName = STATION_MAP.get(startId)?.name ?? startId;
+      const targetName = STATION_MAP.get(targetId)?.name ?? targetId;
+      text = `Try this Trackle Practice Route: ${startName} ↔ ${targetName}\n${url.toString()}`;
+    } else {
+      text = `Try today's Trackle Daily Challenge!\n${url.toString()}`;
+    }
+
+    if (typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text)
+        .then(() => addToast("Challenge link copied to clipboard!", "success"))
+        .catch(() => addToast("Failed to copy link.", "error"));
+    } else {
+      addToast("Clipboard not supported.", "error");
+    }
+  }, [gameState, addToast]);
+
   // Initialize on mount
   useEffect(() => {
     const timer = setTimeout(() => {
-      startGame('daily');
+      const searchParams = new URLSearchParams(window.location.search);
+      const urlMode = searchParams.get('mode');
+      const urlStart = searchParams.get('start');
+      const urlTarget = searchParams.get('target');
+
+      if (urlMode === 'practice' && urlStart && urlTarget) {
+        startGame('practice', urlStart, urlTarget);
+      } else {
+        startGame('daily');
+      }
     }, 0);
     return () => clearTimeout(timer);
   }, [startGame]);
@@ -523,7 +573,7 @@ export default function Home() {
           )}
           {gameState.tripLines && (
             <div className="hidden sm:flex items-center gap-1.5 ml-4 border-l border-game-border pl-4">
-              <span className="text-gray-500 text-xs">Use lines:</span>
+              <span className="text-gray-500 dark:text-white text-xs">Use lines:</span>
               {gameState.tripLines.map(lineId => {
                 const line = LINE_MAP[lineId];
                 return (
@@ -542,12 +592,32 @@ export default function Home() {
 
         {/* Guess count and Settings */}
         <div className="flex items-center gap-2">
+          {/* Portfolio Button */}
+          <a
+            href="https://patrickcm.dev/profile"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-2.5 md:p-1.5 rounded-lg border border-game-border hover:bg-game-surface text-game-text-muted hover:text-game-text transition-colors flex items-center justify-center"
+            aria-label="my portfolio"
+            title="My Portfolio"
+          >
+            <svg
+              className="w-5 h-5 md:w-[14px] md:h-[14px]"
+              viewBox="0 0 88.473015 88.321014"
+              fill="currentColor"
+            >
+              <path d="m 88.473015,44.237014 c 0,23.238 -17.918,42.275 -40.689,44.084 l -9.803,-23.71 c 1.374,-2.009 2.179,-4.436 2.179,-7.047 0,-0.234 -0.008,-0.467 -0.021,-0.698 l 15.283,-10.544 c 0.073,0 0.144,10e-4 0.216,10e-4 9.199,0 16.683,-7.483 16.683,-16.683 0,-9.199 -7.484,-16.682 -16.683,-16.682 -9.199,0 -16.684,7.483 -16.684,16.682 0,0.127 0.003,0.253 0.006,0.379 l -10.73,15.038 c -0.195,-0.008 -0.394,-0.015 -0.592,-0.015 -6.906,0 -12.522,5.617 -12.522,12.522 0,6.061 4.326,11.129 10.055,12.277 l 7.01,16.956 C 13.613015,81.547014 0,64.488014 0,44.237014 0,19.805014 19.806015,0 44.235015,0 c 24.433,0 44.238,19.806014 44.238,44.237014 z" />
+              <path d="m 21.351015,60.600014 2.245,5.434 c -2.005,-0.963 -3.684,-2.629 -4.606,-4.841 -1.992,-4.782 0.277,-10.295 5.063,-12.288 2.314,-0.965 4.869,-0.971 7.189,-0.014 2.321,0.955 4.131,2.757 5.097,5.074 0.957,2.299 0.922,4.762 0.105,6.926 l -2.321,-5.613 c -1.47,-3.527 -5.52,-5.195 -9.047,-3.725 -3.528,1.467 -5.196,5.52 -3.725,9.047 z" />
+              <path d="m 55.638015,18.525014 c 6.129,0 11.116,4.986 11.116,11.116 0,6.129 -4.987,11.116 -11.116,11.116 -6.13,0 -11.115,-4.987 -11.115,-11.116 10e-4,-6.13 4.986,-11.116 11.115,-11.116 z m 0.019,19.448 c 4.612,0 8.35,-3.739 8.35,-8.351 0,-4.612 -3.738,-8.351 -8.35,-8.351 -4.612,0 -8.35,3.739 -8.35,8.351 0,4.612 3.739,8.351 8.35,8.351 z" />
+            </svg>
+          </a>
+
           {/* Help Button */}
           <button
             onClick={() => setShowHowToPlay(true)}
             className="p-2.5 md:p-1.5 rounded-lg border border-game-border hover:bg-game-surface text-game-text-muted hover:text-game-text transition-colors flex items-center justify-center"
-            aria-label="How to Play"
-            title="How to Play"
+            aria-label="help"
+            title="Help"
           >
             <svg className="w-5 h-5 md:w-[14px] md:h-[14px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="12" cy="12" r="10" />
@@ -559,7 +629,7 @@ export default function Home() {
           <button
             onClick={() => setShowSettings(true)}
             className="p-2.5 md:p-1.5 rounded-lg border border-game-border hover:bg-game-surface text-game-text-muted hover:text-game-text transition-colors flex items-center justify-center"
-            aria-label="Settings"
+            aria-label="settings"
             title="Settings"
           >
             <svg className="w-5 h-5 md:w-[14px] md:h-[14px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -604,46 +674,60 @@ export default function Home() {
           {/* MOBILE FLOATING OBJECTIVE (only visible on mobile, md:hidden) */}
           <div className="absolute top-3 left-3 right-16 md:hidden z-[1000] pointer-events-auto">
             <div className="glass-panel px-3 py-2 rounded-xl shadow-lg flex flex-col gap-1">
-              <div className="flex items-center gap-1.5 text-xs">
-                <span className="text-gray-500 font-medium">Goal:</span>
-                {mode === 'practice' ? (
-                  <div className="flex items-center gap-1.5 overflow-hidden flex-1">
-                    <select
-                      value={gameState.startId}
-                      onChange={(e) => handlePracticeChange(e.target.value, gameState.targetId)}
-                      className="bg-game-surface border border-game-border text-game-text text-[11px] rounded-md px-1.5 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500 font-semibold cursor-pointer truncate max-w-[45%]"
-                    >
-                      {stationsList.map(s => (
-                        <option key={s.id} value={s.id}>
-                          {s.name}
-                        </option>
-                      ))}
-                    </select>
-                    <span className="text-gray-400 font-bold">↔</span>
-                    <select
-                      value={gameState.targetId}
-                      onChange={(e) => handlePracticeChange(gameState.startId, e.target.value)}
-                      className="bg-game-surface border border-game-border text-game-text text-[11px] rounded-md px-1.5 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500 font-semibold cursor-pointer truncate max-w-[45%]"
-                    >
-                      {stationsList.map(s => (
-                        <option key={s.id} value={s.id}>
-                          {s.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-1 text-game-text font-bold text-[11px] truncate">
-                    <span className="truncate max-w-[100px]">{startStation?.name}</span>
-                    <span className="text-gray-400">↔</span>
-                    <span className="truncate max-w-[100px]">{targetStation?.name}</span>
-                  </div>
-                )}
+              <div className="flex items-center justify-between gap-2 text-xs">
+                <div className="flex items-center gap-1.5 flex-1 min-w-0">
+                  <span className="text-gray-500 dark:text-white font-medium">Goal:</span>
+                  {mode === 'practice' ? (
+                    <div className="flex items-center gap-1.5 overflow-hidden flex-1">
+                      <select
+                        value={gameState.startId}
+                        onChange={(e) => handlePracticeChange(e.target.value, gameState.targetId)}
+                        className="bg-game-surface border border-game-border text-game-text text-[11px] rounded-md px-1.5 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500 font-semibold cursor-pointer truncate max-w-[45%]"
+                      >
+                        {stationsList.map(s => (
+                          <option key={s.id} value={s.id}>
+                            {s.name}
+                          </option>
+                        ))}
+                      </select>
+                      <span className="text-gray-400 font-bold">↔</span>
+                      <select
+                        value={gameState.targetId}
+                        onChange={(e) => handlePracticeChange(gameState.startId, e.target.value)}
+                        className="bg-game-surface border border-game-border text-game-text text-[11px] rounded-md px-1.5 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500 font-semibold cursor-pointer truncate max-w-[45%]"
+                      >
+                        {stationsList.map(s => (
+                          <option key={s.id} value={s.id}>
+                            {s.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-1 text-game-text font-bold text-[11px] truncate">
+                      <span className="truncate max-w-[100px]">{startStation?.name}</span>
+                      <span className="text-gray-400">↔</span>
+                      <span className="truncate max-w-[100px]">{targetStation?.name}</span>
+                    </div>
+                  )}
+                </div>
+                <button
+                  onClick={handleHeaderShare}
+                  className="px-2 py-1 bg-blue-600 hover:bg-blue-500 rounded-md text-[9px] font-bold text-white shadow transition-all duration-200 flex items-center gap-1 shrink-0"
+                  title="Share this challenge link"
+                >
+                  <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+                    <polyline points="16 6 12 2 8 6" />
+                    <line x1="12" y1="2" x2="12" y2="15" />
+                  </svg>
+                  Share
+                </button>
               </div>
 
               {gameState.tripLines && (
                 <div className="flex items-center gap-1.5 mt-0.5 border-t border-game-border/30 pt-1">
-                  <span className="text-gray-500 text-[10px]">Lines:</span>
+                  <span className="text-gray-500 dark:text-white text-[10px]">Lines:</span>
                   <div className="flex flex-wrap gap-1">
                     {gameState.tripLines.map(lineId => {
                       const line = LINE_MAP[lineId];
@@ -679,7 +763,7 @@ export default function Home() {
                   targetId={gameState.targetId}
                   disabled={gameState.isComplete}
                 />
-                
+
                 <div className="flex items-center justify-between gap-2 mt-1">
                   <button
                     onClick={() => setShowMobileTimeline(true)}
@@ -732,8 +816,22 @@ export default function Home() {
         <aside className="hidden md:flex w-72 shrink-0 glass-panel border-l border-game-border flex flex-col overflow-hidden z-10" id="side-panel">
           {/* Challenge info */}
           <div className="px-4 pt-4 pb-3 border-b border-game-border">
-            <div className="text-xs text-gray-500 font-medium uppercase tracking-wider mb-2">
-              {mode === 'daily' ? `Daily Challenge · ${getTodayString()}` : 'Practice Mode'}
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs text-gray-500 font-medium uppercase tracking-wider truncate mr-1">
+                {mode === 'daily' ? `Daily Challenge · ${getTodayString()}` : 'Practice Mode'}
+              </span>
+              <button
+                onClick={handleHeaderShare}
+                className="px-2 py-1 bg-blue-600 hover:bg-blue-500 rounded-md text-[10px] font-bold text-white shadow transition-all duration-200 flex items-center gap-1 shrink-0"
+                title="Share this challenge link"
+              >
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+                  <polyline points="16 6 12 2 8 6" />
+                  <line x1="12" y1="2" x2="12" y2="15" />
+                </svg>
+                Share
+              </button>
             </div>
             <div className="flex flex-col gap-2">
               <div className="flex items-center gap-2">
@@ -887,9 +985,8 @@ export default function Home() {
       />
       {/* ── MOBILE DRAWER ─────────────────────────────────────────── */}
       <div
-        className={`fixed inset-0 z-[5000] md:hidden transition-opacity duration-300 ${
-          showMobileTimeline ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
-        }`}
+        className={`fixed inset-0 z-[5000] md:hidden transition-opacity duration-300 ${showMobileTimeline ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+          }`}
       >
         {/* Backdrop */}
         <div
@@ -898,9 +995,8 @@ export default function Home() {
         />
         {/* Sheet */}
         <div
-          className={`absolute bottom-6 left-6 right-6 max-h-[80vh] glass-panel bg-game-surface border border-game-border rounded-2xl flex flex-col overflow-hidden transition-transform duration-300 ease-out ${
-            showMobileTimeline ? 'translate-y-0' : 'translate-y-[calc(100%+1.5rem)]'
-          }`}
+          className={`absolute bottom-6 left-6 right-6 max-h-[80vh] glass-panel bg-game-surface border border-game-border rounded-2xl flex flex-col overflow-hidden transition-transform duration-300 ease-out ${showMobileTimeline ? 'translate-y-0' : 'translate-y-[calc(100%+1.5rem)]'
+            }`}
         >
           {/* Drag Handle / Header */}
           <div className="px-4 py-3 border-b border-game-border flex items-center justify-between shrink-0">
