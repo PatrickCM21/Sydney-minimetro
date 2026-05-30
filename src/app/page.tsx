@@ -287,7 +287,7 @@ export default function Home() {
 
       // Clear url params
       if (typeof window !== 'undefined') {
-        window.history.replaceState(null, '', window.location.pathname);
+        window.history.replaceState({}, '', window.location.pathname);
       }
     } else {
       if (customStartId && customTargetId) {
@@ -319,7 +319,7 @@ export default function Home() {
         searchParams.set('mode', 'practice');
         searchParams.set('start', startId);
         searchParams.set('target', targetId);
-        window.history.replaceState(null, '', `?${searchParams.toString()}`);
+        window.history.replaceState({}, '', `?${searchParams.toString()}`);
       }
     }
 
@@ -681,23 +681,23 @@ export default function Home() {
       )}
 
       {/* ── TOP NAV ───────────────────────────────────────────────── */}
-      <nav className="relative glass-panel border-b border-game-border z-[2000] flex items-center justify-between px-4 py-2 shrink-0" id="nav-bar">
-        <div className="flex items-center gap-3">
+      <nav className="relative glass-panel border-b border-game-border z-[2000] flex items-center justify-between px-4 py-2 md:py-2.5 md:px-6 shrink-0" id="nav-bar">
+        <div className="flex items-center gap-3 md:gap-3.5">
           {/* Logo */}
           <div className="flex items-center gap-2">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/trackle_logo.png" alt="Trackle Logo" className="w-7 h-7 object-contain" />
-            <span className="text-game-text font-bold text-sm hidden sm:block">Trackle</span>
+            <img src="/trackle_logo.png" alt="Trackle Logo" className="w-7 h-7 md:w-8 md:h-8 object-contain" />
+            <span className="text-game-text font-bold text-sm md:text-base hidden sm:block">Trackle</span>
           </div>
 
           {/* Mode tabs */}
-          <div className="flex gap-1 bg-game-surface rounded-lg p-0.5 ml-2">
+          <div className="flex gap-1 bg-game-surface rounded-lg p-0.5 ml-2 md:ml-3">
             {(['daily', 'practice'] as const).map(m => (
               <button
                 key={m}
                 id={`mode-${m}`}
                 onClick={() => startGame(m)}
-                className={`px-4 py-2 md:px-3 md:py-1 rounded-md text-xs font-semibold transition-all duration-200 capitalize ${mode === m
+                className={`px-4 py-2 md:px-3 md:py-1 rounded-md text-xs md:text-sm font-semibold transition-all duration-200 capitalize ${mode === m
                   ? m === 'daily'
                     ? 'bg-orange-500 text-white'
                     : 'bg-blue-500 text-white'
@@ -711,7 +711,7 @@ export default function Home() {
         </div>
 
         {/* Challenge header */}
-        <div className="hidden md:flex items-center gap-2 text-sm">
+        <div className="hidden md:flex items-center gap-2 md:gap-2.5 text-sm md:text-base">
           {mode === 'practice' ? (
             <div className="flex items-center gap-2">
               <select
@@ -725,7 +725,7 @@ export default function Home() {
                   </option>
                 ))}
               </select>
-              <span className="text-gray-500 font-semibold">↔</span>
+              <span className="text-gray-500 font-semibold md:text-base">↔</span>
               <select
                 value={gameState.targetId}
                 onChange={(e) => handlePracticeChange(gameState.startId, e.target.value)}
@@ -742,26 +742,26 @@ export default function Home() {
             <>
               {startStation && (
                 <div className="flex items-center gap-2">
-                  <span className="text-game-text font-semibold">{startStation.name}</span>
+                  <span className="text-game-text font-bold md:text-base">{startStation.name}</span>
                 </div>
               )}
-              <span className="text-gray-500 font-semibold">↔</span>
+              <span className="text-gray-500 font-bold md:text-base">↔</span>
               {targetStation && (
                 <div className="flex items-center gap-2">
-                  <span className="text-game-text font-semibold">{targetStation.name}</span>
+                  <span className="text-game-text font-bold md:text-base">{targetStation.name}</span>
                 </div>
               )}
             </>
           )}
           {gameState.tripLines && (
             <div className="hidden sm:flex items-center gap-1.5 ml-4 border-l border-game-border pl-4">
-              <span className="text-gray-500 dark:text-white text-xs">Use lines:</span>
+              <span className="text-gray-500 dark:text-white text-xs md:text-sm font-medium">Use lines:</span>
               {gameState.tripLines.map(lineId => {
                 const line = LINE_MAP[lineId];
                 return (
                   <span
                     key={lineId}
-                    className="line-badge text-xs font-semibold"
+                    className="line-badge text-xs md:text-sm font-semibold md:px-2 md:py-0.5"
                     style={{ backgroundColor: line?.color, color: line?.textColor }}
                   >
                     {lineId}
@@ -773,7 +773,7 @@ export default function Home() {
         </div>
 
         {/* Guess count and Settings */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 md:gap-2.5">
           {/* Portfolio Button */}
           <a
             href="https://patrickcm.dev/profile"
@@ -784,7 +784,7 @@ export default function Home() {
             title="My Portfolio"
           >
             <svg
-              className="w-5 h-5 md:w-[14px] md:h-[14px]"
+              className="w-5 h-5 md:w-[15px] md:h-[15px]"
               viewBox="0 0 88.473015 88.321014"
               fill="currentColor"
             >
@@ -801,7 +801,7 @@ export default function Home() {
             aria-label="help"
             title="Help"
           >
-            <svg className="w-5 h-5 md:w-[14px] md:h-[14px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <svg className="w-5 h-5 md:w-[15px] md:h-[15px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="12" cy="12" r="10" />
               <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01" />
             </svg>
@@ -814,13 +814,13 @@ export default function Home() {
             aria-label="settings"
             title="Settings"
           >
-            <svg className="w-5 h-5 md:w-[14px] md:h-[14px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <svg className="w-5 h-5 md:w-[15px] md:h-[15px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.1a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
               <circle cx="12" cy="12" r="3" />
             </svg>
           </button>
 
-          <span className="text-game-text-muted text-xs font-mono hidden sm:inline-block">
+          <span className="text-game-text-muted text-xs md:text-sm font-mono hidden sm:inline-block">
             {guessedIds.length} correct / {tripPath.length > 2 ? tripPath.length - 2 : 0} stations
           </span>
 
@@ -996,7 +996,7 @@ export default function Home() {
         </div>
 
         {/* SIDE PANEL */}
-        <aside className="hidden md:flex w-72 shrink-0 glass-panel border-l border-game-border flex flex-col overflow-hidden z-10" id="side-panel">
+        <aside className="hidden md:flex w-72 md:w-80 shrink-0 glass-panel border-l border-game-border flex flex-col overflow-hidden z-10" id="side-panel">
           {isDevRouteViewerActive ? (
             <div className="flex-1 flex flex-col min-h-0 overflow-hidden animate-fade-in">
               {/* Header */}

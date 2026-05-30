@@ -1,367 +1,1466 @@
 export const CURATED_PAIRS: Array<[string, string]> = [
-  ['chester_hill', 'green_square'],
-  ['crows_nest', 'tempe'],
-  ['hills_showground', 'strathfield'],
-  ['minto', 'padstow'],
-  ['westmead', 'summer_hill'],
-  ['toongabbie', 'yennora'],
-  ['mount_druitt', 'granville'],
-  ['martin_place', 'wentworthville'],
-  ['olympic_park', 'bexley_north'],
-  ['chatswood', 'domestic_airport'],
-  ['kings_cross', 'pennant_hills'],
-  ['leumeah', 'padstow'],
-  ['merrylands', 'rhodes'],
-  ['north_ryde', 'mount_colah'],
-  ['stanmore', 'rockdale'],
-  ['st_leonards', 'hornsby'],
-  ['castle_hill', 'victoria_cross'],
-  ['hills_showground', 'mount_kuring-gai'],
-  ['north_ryde', 'north_strathfield'],
-  ['kingswood', 'granville'],
-  ['blacktown', 'burwood'],
-  ['canley_vale', 'yagoona'],
-  ['macdonaldtown', 'bankstown'],
-  ['hills_showground', 'wollstonecraft'],
-  ['ashfield', 'villawood'],
-  ['mulgrave', 'wentworthville'],
-  ['hurstville', 'international_airport'],
-  ['birrong', 'ingleburn'],
-  ['rockdale', 'beverly_hills'],
-  ['merrylands', 'meadowbank'],
-  ['wollstonecraft', 'denistone'],
-  ['werrington', 'harris_park'],
-  ['lindfield', 'newtown'],
-  ['stanmore', 'birrong'],
-  ['westmead', 'bondi_junction'],
-  ['rouse_hill', 'denistone'],
-  ['central', 'toongabbie'],
-  ['banksia', 'rhodes'],
-  ['st_leonards', 'croydon'],
-  ['lidcombe', 'rockdale'],
-  ['westmead', 'sefton'],
-  ['gadigal', 'carlton'],
-  ['emu_plains', 'berala'],
-  ['lidcombe', 'st_leonards'],
-  ['chatswood', 'international_airport'],
-  ['north_ryde', 'green_square'],
-  ['wynyard', 'beecroft'],
-  ['chatswood', 'mount_colah'],
-  ['redfern', 'gordon'],
-  ['strathfield', 'artarmon'],
-  ['macdonaldtown', 'cheltenham'],
-  ['wentworthville', 'lewisham'],
-  ['cherrybrook', 'clyde'],
-  ['yagoona', 'holsworthy'],
-  ['killara', 'pennant_hills'],
-  ['merrylands', 'petersham'],
-  ['victoria_cross', 'international_airport'],
-  ['wynyard', 'beverly_hills'],
-  ['macquarie_park', 'berowra'],
-  ['homebush', 'rockdale'],
-  ['parramatta', 'denistone'],
-  ['villawood', 'rhodes'],
-  ['museum', 'olympic_park'],
-  ['redfern', 'kogarah'],
-  ['lewisham', 'rockdale'],
-  ['clarendon', 'mount_druitt'],
-  ['kogarah', 'narwee'],
-  ['macquarie_university', 'mount_kuring-gai'],
-  ['cherrybrook', 'waverton'],
-  ['berala', 'kingsgrove'],
-  ['doonside', 'clyde'],
-  ['parramatta', 'tempe'],
-  ['macquarie_park', 'ashfield'],
-  ['blacktown', 'redfern'],
-  ['chatswood', 'tempe'],
-  ['bexley_north', 'meadowbank'],
-  ['bardwell_park', 'rhodes'],
-  ['lindfield', 'west_ryde'],
-  ['chester_hill', 'wolli_creek'],
-  ['redfern', 'eastwood'],
-  ['central', 'carramar'],
-  ['town_hall', 'bankstown'],
-  ['burwood', 'hurstville'],
-  ['marayong', 'lidcombe'],
-  ['edgecliff', 'bardwell_park'],
-  ['wentworthville', 'chester_hill'],
-  ['rockdale', 'rhodes'],
-  ['tempe', 'como'],
-  ['birrong', 'kings_cross'],
-  ['macquarie_university', 'circular_quay'],
-  ['circular_quay', 'denistone'],
-  ['chester_hill', 'kings_cross'],
-  ['waterloo', 'yennora'],
-  ['guildford', 'green_square'],
-  ['yagoona', 'ingleburn'],
-  ['toongabbie', 'fairfield'],
-  ['central', 'chester_hill'],
-  ['gordon', 'macdonaldtown'],
-  ['wynyard', 'turrella'],
-  ['wentworthville', 'international_airport'],
-  ['chester_hill', 'west_ryde'],
-  ['wolli_creek', 'holsworthy'],
-  ['croydon', 'rockdale'],
-  ['werrington', 'wentworthville'],
-  ['tempe', 'revesby'],
-  ['clyde', 'holsworthy'],
-  ['epping', 'town_hall'],
-  ['doonside', 'redfern'],
-  ['castle_hill', 'barangaroo'],
-  ['granville', 'mascot'],
-  ['waverton', 'merrylands'],
-  ['wentworthville', 'edgecliff'],
-  ['macquarie_university', 'burwood'],
-  ['marayong', 'merrylands'],
-  ['summer_hill', 'museum'],
-  ['penshurst', 'loftus'],
-  ['granville', 'bardwell_park'],
-  ['marayong', 'north_strathfield'],
-  ['regents_park', 'ingleburn'],
-  ['cabramatta', 'flemington'],
-  ['north_sydney', 'rockdale'],
-  ['sefton', 'leumeah'],
-  ['killara', 'normanhurst'],
-  ['martin_place', 'lewisham'],
-  ['wentworthville', 'petersham'],
-  ['thornleigh', 'concord_west'],
-  ['toongabbie', 'stanmore'],
-  ['ashfield', 'leightonfield'],
-  ['merrylands', 'kings_cross'],
-  ['wentworthville', 'warwick_farm'],
-  ['petersham', 'yagoona'],
-  ['st_leonards', 'denistone'],
-  ['petersham', 'arncliffe'],
-  ['north_sydney', 'meadowbank'],
-  ['redfern', 'carlton'],
-  ['werrington', 'pendle_hill'],
-  ['barangaroo', 'west_ryde'],
-  ['fairfield', 'ashfield'],
-  ['liverpool', 'olympic_park'],
-  ['north_ryde', 'bondi_junction'],
-  ['cherrybrook', 'turramurra'],
-  ['crows_nest', 'newtown'],
-  ['gadigal', 'guildford'],
-  ['villawood', 'narwee'],
-  ['central', 'wentworthville'],
-  ['st_peters', 'revesby'],
-  ['st_leonards', 'flemington'],
-  ['newtown', 'kogarah'],
-  ['epping', 'olympic_park'],
-  ['milsons_point', 'birrong'],
-  ['milsons_point', 'killara'],
-  ['newtown', 'banksia'],
-  ['pymble', 'denistone'],
-  ['guildford', 'st_peters'],
-  ['pendle_hill', 'burwood'],
-  ['homebush', 'beverly_hills'],
-  ['kellyville', 'rhodes'],
-  ['st_peters', 'panania'],
-  ['mortdale', 'loftus'],
-  ['crows_nest', 'thornleigh'],
-  ['st_peters', 'eastwood'],
-  ['merrylands', 'circular_quay'],
-  ['wentworthville', 'leightonfield'],
-  ['sefton', 'bondi_junction'],
-  ['bardwell_park', 'concord_west'],
-  ['beecroft', 'north_strathfield'],
-  ['parramatta', 'meadowbank'],
-  ['artarmon', 'tempe'],
-  ['gadigal', 'cheltenham'],
-  ['lindfield', 'meadowbank'],
-  ['rouse_hill', 'macquarie_university'],
-  ['mortdale', 'international_airport'],
-  ['penshurst', 'mascot'],
-  ['wentworthville', 'canley_vale'],
-  ['cabramatta', 'olympic_park'],
-  ['sydenham', 'artarmon'],
-  ['canley_vale', 'beverly_hills'],
-  ['crows_nest', 'warrawee'],
-  ['villawood', 'olympic_park'],
-  ['harris_park', 'museum'],
-  ['chester_hill', 'domestic_airport'],
-  ['mortdale', 'domestic_airport'],
-  ['circular_quay', 'eastwood'],
-  ['domestic_airport', 'west_ryde'],
-  ['yagoona', 'international_airport'],
-  ['wynyard', 'pymble'],
-  ['central', 'cabramatta'],
-  ['merrylands', 'tempe'],
-  ['guildford', 'bankstown'],
-  ['tallawong', 'macquarie_park'],
-  ['newtown', 'eastwood'],
-  ['clyde', 'macquarie_fields'],
-  ['glenfield', 'bardwell_park'],
-  ['norwest', 'st_leonards'],
-  ['crows_nest', 'arncliffe'],
-  ['redfern', 'padstow'],
-  ['granville', 'edmondson_park'],
-  ['seven_hills', 'croydon'],
-  ['epping', 'warrawee'],
-  ['seven_hills', 'regents_park'],
-  ['olympic_park', 'cheltenham'],
-  ['narwee', 'domestic_airport'],
-  ['north_ryde', 'redfern'],
-  ['edmondson_park', 'bardwell_park'],
-  ['macquarie_university', 'mount_colah'],
-  ['guildford', 'revesby'],
-  ['victoria_cross', 'thornleigh'],
-  ['barangaroo', 'westmead'],
-  ['berala', 'rockdale'],
-  ['asquith', 'denistone'],
-  ['flemington', 'beecroft'],
-  ['central', 'riverwood'],
-  ['wentworthville', 'stanmore'],
-  ['guildford', 'st_james'],
-  ['circular_quay', 'kogarah'],
-  ['st_leonards', 'summer_hill'],
-  ['marayong', 'regents_park'],
-  ['merrylands', 'st_peters'],
-  ['wolli_creek', 'west_ryde'],
-  ['vineyard', 'parramatta'],
-  ['granville', 'wolli_creek'],
-  ['north_sydney', 'west_ryde'],
-  ['edgecliff', 'cheltenham'],
-  ['domestic_airport', 'eastwood'],
-  ['wynyard', 'killara'],
-  ['roseville', 'waitara'],
-  ['yennora', 'lewisham'],
-  ['lindfield', 'olympic_park'],
-  ['victoria_cross', 'stanmore'],
-  ['toongabbie', 'birrong'],
-  ['rooty_hill', 'harris_park'],
-  ['epping', 'green_square'],
-  ['lidcombe', 'casula'],
-  ['norwest', 'waitara'],
-  ['stanmore', 'villawood'],
-  ['homebush', 'bexley_north'],
-  ['doonside', 'flemington'],
-  ['stanmore', 'leightonfield'],
-  ['international_airport', 'west_ryde'],
-  ['rouse_hill', 'rhodes'],
-  ['macquarie_university', 'newtown'],
-  ['leightonfield', 'minto'],
-  ['epping', 'berowra'],
-  ['doonside', 'burwood'],
-  ['macquarie_university', 'north_sydney'],
-  ['hills_showground', 'concord_west'],
-  ['auburn', 'st_james'],
-  ['carlton', 'gymea'],
-  ['fairfield', 'revesby'],
-  ['seven_hills', 'fairfield'],
-  ['westmead', 'edgecliff'],
-  ['edgecliff', 'banksia'],
-  ['edmondson_park', 'kingsgrove'],
-  ['emu_plains', 'strathfield'],
-  ['allawah', 'bardwell_park'],
-  ['barangaroo', 'leightonfield'],
-  ['summer_hill', 'bankstown'],
-  ['lewisham', 'tempe'],
-  ['waitara', 'denistone'],
-  ['toongabbie', 'strathfield'],
-  ['waitara', 'west_ryde'],
-  ['waverton', 'international_airport'],
-  ['east_richmond', 'seven_hills'],
-  ['chatswood', 'granville'],
-  ['chatswood', 'flemington'],
-  ['berala', 'edgecliff'],
-  ['artarmon', 'flemington'],
-  ['burwood', 'rockdale'],
-  ['st_leonards', 'petersham'],
-  ['wollstonecraft', 'turramurra'],
-  ['pymble', 'kings_cross'],
-  ['epping', 'parramatta'],
-  ['kings_cross', 'wolli_creek'],
-  ['regents_park', 'bondi_junction'],
-  ['sefton', 'green_square'],
-  ['chatswood', 'petersham'],
-  ['epping', 'newtown'],
-  ['waverton', 'lewisham'],
-  ['lidcombe', 'museum'],
-  ['crows_nest', 'petersham'],
-  ['toongabbie', 'st_peters'],
-  ['clarendon', 'kingswood'],
-  ['international_airport', 'concord_west'],
-  ['narwee', 'north_strathfield'],
-  ['lindfield', 'ashfield'],
-  ['martin_place', 'harris_park'],
-  ['green_square', 'west_ryde'],
-  ['sydenham', 'revesby'],
-  ['kogarah', 'riverwood'],
-  ['gordon', 'circular_quay'],
-  ['toongabbie', 'mascot'],
-  ['macquarie_park', 'lidcombe'],
-  ['roseville', 'tempe'],
-  ['flemington', 'denistone'],
-  ['chatswood', 'summer_hill'],
-  ['cherrybrook', 'regents_park'],
-  ['birrong', 'mascot'],
-  ['merrylands', 'bankstown'],
-  ['bella_vista', 'waitara'],
-  ['north_ryde', 'concord_west'],
-  ['seven_hills', 'lidcombe'],
-  ['central', 'beecroft'],
-  ['waverton', 'olympic_park'],
-  ['edmondson_park', 'bexley_north'],
-  ['leppington', 'macarthur'],
-  ['emu_plains', 'auburn'],
-  ['waverton', 'wahroonga'],
-  ['epping', 'mount_kuring-gai'],
-  ['central', 'hurstville'],
-  ['wynyard', 'bexley_north'],
-  ['tallawong', 'cheltenham'],
-  ['north_sydney', 'gordon'],
-  ['wentworthville', 'newtown'],
-  ['killara', 'mount_colah'],
-  ['parramatta', 'liverpool'],
-  ['st_leonards', 'ashfield'],
-  ['croydon', 'villawood'],
-  ['berala', 'turrella'],
-  ['glenfield', 'birrong'],
-  ['gadigal', 'rockdale'],
-  ['east_richmond', 'doonside'],
-  ['harris_park', 'summer_hill'],
-  ['kingswood', 'wentworthville'],
-  ['epping', 'mount_colah'],
-  ['lewisham', 'mascot'],
-  ['merrylands', 'east_hills'],
-  ['epping', 'macdonaldtown'],
-  ['granville', 'holsworthy'],
-  ['epping', 'gordon'],
-  ['cherrybrook', 'macdonaldtown'],
-  ['petersham', 'rockdale'],
-  ['mount_colah', 'west_ryde'],
-  ['cabramatta', 'north_strathfield'],
-  ['guildford', 'minto'],
-  ['gadigal', 'bardwell_park'],
-  ['epping', 'north_sydney'],
-  ['canley_vale', 'green_square'],
-  ['macquarie_park', 'newtown'],
-  ['richmond', 'marayong'],
-  ['macquarie_university', 'wahroonga'],
-  ['newtown', 'chester_hill'],
-  ['macquarie_university', 'turramurra'],
-  ['kings_cross', 'kingsgrove'],
-  ['blacktown', 'regents_park'],
-  ['waverton', 'sefton'],
-  ['victoria_cross', 'ashfield'],
-  ['summer_hill', 'arncliffe'],
-  ['toongabbie', 'ashfield'],
-  ['lewisham', 'domestic_airport'],
-  ['newtown', 'villawood'],
-  ['castle_hill', 'homebush'],
-  ['museum', 'international_airport'],
-  ['macquarie_park', 'edgecliff'],
-  ['wollstonecraft', 'eastwood'],
-  ['regents_park', 'international_airport'],
-  ['bankstown', 'holsworthy'],
-  ['ashfield', 'turrella'],
-  ['yennora', 'revesby'],
-  ['granville', 'west_ryde'],
-  ['pendle_hill', 'concord_west'],
-  ['schofields', 'harris_park'],
-  ['edgecliff', 'bankstown'],
-  ['granville', 'panania'],
-  ['seven_hills', 'merrylands'],
-  ['wentworthville', 'macdonaldtown'],
+  [
+    "bondi_junction",
+    "petersham"
+  ],
+  [
+    "kellyville",
+    "rhodes"
+  ],
+  [
+    "gordon",
+    "mount_kuring_gai"
+  ],
+  [
+    "minto",
+    "sefton"
+  ],
+  [
+    "martin_place",
+    "eastwood"
+  ],
+  [
+    "bondi_junction",
+    "wollstonecraft"
+  ],
+  [
+    "narwee",
+    "macdonaldtown"
+  ],
+  [
+    "waterloo",
+    "denistone"
+  ],
+  [
+    "ashfield",
+    "bankstown"
+  ],
+  [
+    "riverwood",
+    "international_airport"
+  ],
+  [
+    "auburn",
+    "north_sydney"
+  ],
+  [
+    "allawah",
+    "croydon"
+  ],
+  [
+    "bexley_north",
+    "martin_place"
+  ],
+  [
+    "yagoona",
+    "waverton"
+  ],
+  [
+    "meadowbank",
+    "tempe"
+  ],
+  [
+    "lewisham",
+    "olympic_park"
+  ],
+  [
+    "cherrybrook",
+    "north_sydney"
+  ],
+  [
+    "carlton",
+    "burwood"
+  ],
+  [
+    "yennora",
+    "sefton"
+  ],
+  [
+    "harris_park",
+    "st_peters"
+  ],
+  [
+    "rouse_hill",
+    "crows_nest"
+  ],
+  [
+    "st_james",
+    "eastwood"
+  ],
+  [
+    "carramar",
+    "redfern"
+  ],
+  [
+    "banksia",
+    "riverwood"
+  ],
+  [
+    "merrylands",
+    "blacktown"
+  ],
+  [
+    "north_strathfield",
+    "macquarie_university"
+  ],
+  [
+    "beverly_hills",
+    "mascot"
+  ],
+  [
+    "arncliffe",
+    "villawood"
+  ],
+  [
+    "chatswood",
+    "thornleigh"
+  ],
+  [
+    "yennora",
+    "croydon"
+  ],
+  [
+    "artarmon",
+    "hornsby"
+  ],
+  [
+    "wolli_creek",
+    "macquarie_university"
+  ],
+  [
+    "allawah",
+    "north_strathfield"
+  ],
+  [
+    "marayong",
+    "east_richmond"
+  ],
+  [
+    "green_square",
+    "summer_hill"
+  ],
+  [
+    "victoria_cross",
+    "kogarah"
+  ],
+  [
+    "mount_kuring_gai",
+    "eastwood"
+  ],
+  [
+    "harris_park",
+    "holsworthy"
+  ],
+  [
+    "kellyville",
+    "crows_nest"
+  ],
+  [
+    "allawah",
+    "caringbah"
+  ],
+  [
+    "berala",
+    "liverpool"
+  ],
+  [
+    "rooty_hill",
+    "auburn"
+  ],
+  [
+    "eastwood",
+    "town_hall"
+  ],
+  [
+    "ingleburn",
+    "leightonfield"
+  ],
+  [
+    "harris_park",
+    "wynyard"
+  ],
+  [
+    "kings_cross",
+    "macquarie_university"
+  ],
+  [
+    "st_james",
+    "lewisham"
+  ],
+  [
+    "wynyard",
+    "parramatta"
+  ],
+  [
+    "pennant_hills",
+    "tallawong"
+  ],
+  [
+    "carlton",
+    "kingsgrove"
+  ],
+  [
+    "macdonaldtown",
+    "toongabbie"
+  ],
+  [
+    "macquarie_park",
+    "north_strathfield"
+  ],
+  [
+    "chester_hill",
+    "summer_hill"
+  ],
+  [
+    "guildford",
+    "leppington"
+  ],
+  [
+    "waterloo",
+    "allawah"
+  ],
+  [
+    "birrong",
+    "denistone"
+  ],
+  [
+    "stanmore",
+    "bexley_north"
+  ],
+  [
+    "macquarie_university",
+    "gadigal"
+  ],
+  [
+    "villawood",
+    "wolli_creek"
+  ],
+  [
+    "yennora",
+    "minto"
+  ],
+  [
+    "eastwood",
+    "gadigal"
+  ],
+  [
+    "clyde",
+    "arncliffe"
+  ],
+  [
+    "glenfield",
+    "turrella"
+  ],
+  [
+    "castle_hill",
+    "concord_west"
+  ],
+  [
+    "chester_hill",
+    "leppington"
+  ],
+  [
+    "macquarie_fields",
+    "harris_park"
+  ],
+  [
+    "banksia",
+    "yagoona"
+  ],
+  [
+    "hornsby",
+    "hills_showground"
+  ],
+  [
+    "villawood",
+    "ingleburn"
+  ],
+  [
+    "wolli_creek",
+    "waverton"
+  ],
+  [
+    "rouse_hill",
+    "eastwood"
+  ],
+  [
+    "narwee",
+    "liverpool"
+  ],
+  [
+    "st_leonards",
+    "edgecliff"
+  ],
+  [
+    "pendle_hill",
+    "villawood"
+  ],
+  [
+    "padstow",
+    "campbelltown"
+  ],
+  [
+    "circular_quay",
+    "kogarah"
+  ],
+  [
+    "parramatta",
+    "rooty_hill"
+  ],
+  [
+    "ingleburn",
+    "harris_park"
+  ],
+  [
+    "denistone",
+    "lewisham"
+  ],
+  [
+    "olympic_park",
+    "toongabbie"
+  ],
+  [
+    "cronulla",
+    "mortdale"
+  ],
+  [
+    "carramar",
+    "narwee"
+  ],
+  [
+    "berowra",
+    "castle_hill"
+  ],
+  [
+    "woolooware",
+    "mortdale"
+  ],
+  [
+    "ashfield",
+    "birrong"
+  ],
+  [
+    "fairfield",
+    "padstow"
+  ],
+  [
+    "olympic_park",
+    "macquarie_park"
+  ],
+  [
+    "warwick_farm",
+    "birrong"
+  ],
+  [
+    "allawah",
+    "burwood"
+  ],
+  [
+    "harris_park",
+    "barangaroo"
+  ],
+  [
+    "fairfield",
+    "panania"
+  ],
+  [
+    "thornleigh",
+    "concord_west"
+  ],
+  [
+    "clyde",
+    "barangaroo"
+  ],
+  [
+    "newtown",
+    "kingsgrove"
+  ],
+  [
+    "burwood",
+    "pennant_hills"
+  ],
+  [
+    "mount_colah",
+    "killara"
+  ],
+  [
+    "kogarah",
+    "kirrawee"
+  ],
+  [
+    "gadigal",
+    "beverly_hills"
+  ],
+  [
+    "wentworthville",
+    "berala"
+  ],
+  [
+    "summer_hill",
+    "meadowbank"
+  ],
+  [
+    "gadigal",
+    "padstow"
+  ],
+  [
+    "wynyard",
+    "kogarah"
+  ],
+  [
+    "carramar",
+    "concord_west"
+  ],
+  [
+    "granville",
+    "east_hills"
+  ],
+  [
+    "castle_hill",
+    "edgecliff"
+  ],
+  [
+    "wentworthville",
+    "concord_west"
+  ],
+  [
+    "canley_vale",
+    "minto"
+  ],
+  [
+    "warwick_farm",
+    "bankstown"
+  ],
+  [
+    "harris_park",
+    "edgecliff"
+  ],
+  [
+    "lewisham",
+    "west_ryde"
+  ],
+  [
+    "st_peters",
+    "macquarie_university"
+  ],
+  [
+    "clyde",
+    "milsons_point"
+  ],
+  [
+    "croydon",
+    "rockdale"
+  ],
+  [
+    "chatswood",
+    "bardwell_park"
+  ],
+  [
+    "toongabbie",
+    "windsor"
+  ],
+  [
+    "leightonfield",
+    "edmondson_park"
+  ],
+  [
+    "padstow",
+    "arncliffe"
+  ],
+  [
+    "waterloo",
+    "cheltenham"
+  ],
+  [
+    "chester_hill",
+    "merrylands"
+  ],
+  [
+    "banksia",
+    "olympic_park"
+  ],
+  [
+    "green_square",
+    "meadowbank"
+  ],
+  [
+    "sefton",
+    "guildford"
+  ],
+  [
+    "wollstonecraft",
+    "banksia"
+  ],
+  [
+    "domestic_airport",
+    "macquarie_university"
+  ],
+  [
+    "meadowbank",
+    "leightonfield"
+  ],
+  [
+    "harris_park",
+    "kings_cross"
+  ],
+  [
+    "mascot",
+    "north_ryde"
+  ],
+  [
+    "west_ryde",
+    "berala"
+  ],
+  [
+    "windsor",
+    "wentworthville"
+  ],
+  [
+    "ashfield",
+    "kings_cross"
+  ],
+  [
+    "burwood",
+    "castle_hill"
+  ],
+  [
+    "turrella",
+    "wollstonecraft"
+  ],
+  [
+    "merrylands",
+    "yagoona"
+  ],
+  [
+    "thornleigh",
+    "victoria_cross"
+  ],
+  [
+    "sydenham",
+    "wollstonecraft"
+  ],
+  [
+    "lewisham",
+    "turrella"
+  ],
+  [
+    "rhodes",
+    "chatswood"
+  ],
+  [
+    "seven_hills",
+    "east_richmond"
+  ],
+  [
+    "parramatta",
+    "croydon"
+  ],
+  [
+    "banksia",
+    "panania"
+  ],
+  [
+    "mount_colah",
+    "macquarie_university"
+  ],
+  [
+    "chester_hill",
+    "guildford"
+  ],
+  [
+    "carlton",
+    "green_square"
+  ],
+  [
+    "schofields",
+    "clyde"
+  ],
+  [
+    "bella_vista",
+    "thornleigh"
+  ],
+  [
+    "leppington",
+    "beverly_hills"
+  ],
+  [
+    "wollstonecraft",
+    "olympic_park"
+  ],
+  [
+    "arncliffe",
+    "edgecliff"
+  ],
+  [
+    "castle_hill",
+    "redfern"
+  ],
+  [
+    "bardwell_park",
+    "sefton"
+  ],
+  [
+    "petersham",
+    "rockdale"
+  ],
+  [
+    "beecroft",
+    "tallawong"
+  ],
+  [
+    "erskineville",
+    "villawood"
+  ],
+  [
+    "newtown",
+    "carlton"
+  ],
+  [
+    "pennant_hills",
+    "barangaroo"
+  ],
+  [
+    "harris_park",
+    "domestic_airport"
+  ],
+  [
+    "ashfield",
+    "banksia"
+  ],
+  [
+    "berala",
+    "denistone"
+  ],
+  [
+    "wollstonecraft",
+    "castle_hill"
+  ],
+  [
+    "lewisham",
+    "international_airport"
+  ],
+  [
+    "cabramatta",
+    "bankstown"
+  ],
+  [
+    "penshurst",
+    "strathfield"
+  ],
+  [
+    "meadowbank",
+    "st_peters"
+  ],
+  [
+    "regents_park",
+    "petersham"
+  ],
+  [
+    "wynyard",
+    "roseville"
+  ],
+  [
+    "east_hills",
+    "tempe"
+  ],
+  [
+    "burwood",
+    "cherrybrook"
+  ],
+  [
+    "burwood",
+    "seven_hills"
+  ],
+  [
+    "turrella",
+    "mortdale"
+  ],
+  [
+    "crows_nest",
+    "thornleigh"
+  ],
+  [
+    "westmead",
+    "chester_hill"
+  ],
+  [
+    "panania",
+    "guildford"
+  ],
+  [
+    "denistone",
+    "kellyville"
+  ],
+  [
+    "wynyard",
+    "villawood"
+  ],
+  [
+    "macdonaldtown",
+    "carlton"
+  ],
+  [
+    "padstow",
+    "waterloo"
+  ],
+  [
+    "riverstone",
+    "harris_park"
+  ],
+  [
+    "rockdale",
+    "north_strathfield"
+  ],
+  [
+    "bardwell_park",
+    "stanmore"
+  ],
+  [
+    "turramurra",
+    "berowra"
+  ],
+  [
+    "bondi_junction",
+    "cheltenham"
+  ],
+  [
+    "cabramatta",
+    "beverly_hills"
+  ],
+  [
+    "waverton",
+    "lidcombe"
+  ],
+  [
+    "concord_west",
+    "rockdale"
+  ],
+  [
+    "erskineville",
+    "north_ryde"
+  ],
+  [
+    "circular_quay",
+    "granville"
+  ],
+  [
+    "leightonfield",
+    "concord_west"
+  ],
+  [
+    "leumeah",
+    "riverwood"
+  ],
+  [
+    "harris_park",
+    "circular_quay"
+  ],
+  [
+    "tempe",
+    "crows_nest"
+  ],
+  [
+    "turrella",
+    "north_strathfield"
+  ],
+  [
+    "auburn",
+    "wollstonecraft"
+  ],
+  [
+    "victoria_cross",
+    "arncliffe"
+  ],
+  [
+    "concord_west",
+    "bardwell_park"
+  ],
+  [
+    "north_sydney",
+    "regents_park"
+  ],
+  [
+    "domestic_airport",
+    "hurstville"
+  ],
+  [
+    "north_strathfield",
+    "fairfield"
+  ],
+  [
+    "seven_hills",
+    "lidcombe"
+  ],
+  [
+    "hurstville",
+    "turrella"
+  ],
+  [
+    "homebush",
+    "macquarie_university"
+  ],
+  [
+    "schofields",
+    "werrington"
+  ],
+  [
+    "macarthur",
+    "riverwood"
+  ],
+  [
+    "epping",
+    "flemington"
+  ],
+  [
+    "gadigal",
+    "turramurra"
+  ],
+  [
+    "carlton",
+    "narwee"
+  ],
+  [
+    "eastwood",
+    "museum"
+  ],
+  [
+    "gordon",
+    "town_hall"
+  ],
+  [
+    "st_peters",
+    "crows_nest"
+  ],
+  [
+    "denistone",
+    "museum"
+  ],
+  [
+    "regents_park",
+    "bondi_junction"
+  ],
+  [
+    "victoria_cross",
+    "bexley_north"
+  ],
+  [
+    "eastwood",
+    "homebush"
+  ],
+  [
+    "seven_hills",
+    "clyde"
+  ],
+  [
+    "epping",
+    "green_square"
+  ],
+  [
+    "summer_hill",
+    "waverton"
+  ],
+  [
+    "st_leonards",
+    "kings_cross"
+  ],
+  [
+    "narwee",
+    "barangaroo"
+  ],
+  [
+    "homebush",
+    "cheltenham"
+  ],
+  [
+    "milsons_point",
+    "villawood"
+  ],
+  [
+    "waterloo",
+    "revesby"
+  ],
+  [
+    "yennora",
+    "rhodes"
+  ],
+  [
+    "olympic_park",
+    "kogarah"
+  ],
+  [
+    "barangaroo",
+    "bardwell_park"
+  ],
+  [
+    "rhodes",
+    "merrylands"
+  ],
+  [
+    "wollstonecraft",
+    "clyde"
+  ],
+  [
+    "waterloo",
+    "narwee"
+  ],
+  [
+    "hurstville",
+    "croydon"
+  ],
+  [
+    "central",
+    "westmead"
+  ],
+  [
+    "north_ryde",
+    "bardwell_park"
+  ],
+  [
+    "mount_kuring_gai",
+    "pymble"
+  ],
+  [
+    "guildford",
+    "ingleburn"
+  ],
+  [
+    "banksia",
+    "chester_hill"
+  ],
+  [
+    "ashfield",
+    "macquarie_university"
+  ],
+  [
+    "pendle_hill",
+    "st_peters"
+  ],
+  [
+    "strathfield",
+    "wollstonecraft"
+  ],
+  [
+    "flemington",
+    "castle_hill"
+  ],
+  [
+    "allawah",
+    "auburn"
+  ],
+  [
+    "edmondson_park",
+    "bexley_north"
+  ],
+  [
+    "killara",
+    "eastwood"
+  ],
+  [
+    "harris_park",
+    "arncliffe"
+  ],
+  [
+    "riverwood",
+    "canley_vale"
+  ],
+  [
+    "roseville",
+    "pennant_hills"
+  ],
+  [
+    "pymble",
+    "bondi_junction"
+  ],
+  [
+    "macquarie_fields",
+    "berala"
+  ],
+  [
+    "rooty_hill",
+    "guildford"
+  ],
+  [
+    "erskineville",
+    "epping"
+  ],
+  [
+    "canley_vale",
+    "tempe"
+  ],
+  [
+    "redfern",
+    "artarmon"
+  ],
+  [
+    "north_strathfield",
+    "bardwell_park"
+  ],
+  [
+    "waterloo",
+    "carramar"
+  ],
+  [
+    "beverly_hills",
+    "stanmore"
+  ],
+  [
+    "pennant_hills",
+    "killara"
+  ],
+  [
+    "regents_park",
+    "arncliffe"
+  ],
+  [
+    "petersham",
+    "domestic_airport"
+  ],
+  [
+    "westmead",
+    "bankstown"
+  ],
+  [
+    "gordon",
+    "waterloo"
+  ],
+  [
+    "east_hills",
+    "chester_hill"
+  ],
+  [
+    "auburn",
+    "edgecliff"
+  ],
+  [
+    "north_ryde",
+    "lidcombe"
+  ],
+  [
+    "bardwell_park",
+    "croydon"
+  ],
+  [
+    "sydenham",
+    "wentworthville"
+  ],
+  [
+    "artarmon",
+    "berala"
+  ],
+  [
+    "croydon",
+    "narwee"
+  ],
+  [
+    "cherrybrook",
+    "warrawee"
+  ],
+  [
+    "edgecliff",
+    "birrong"
+  ],
+  [
+    "villawood",
+    "panania"
+  ],
+  [
+    "mount_colah",
+    "cherrybrook"
+  ],
+  [
+    "merrylands",
+    "st_marys"
+  ],
+  [
+    "blacktown",
+    "flemington"
+  ],
+  [
+    "leightonfield",
+    "waterloo"
+  ],
+  [
+    "wolli_creek",
+    "st_leonards"
+  ],
+  [
+    "circular_quay",
+    "yennora"
+  ],
+  [
+    "denistone",
+    "turramurra"
+  ],
+  [
+    "auburn",
+    "bardwell_park"
+  ],
+  [
+    "birrong",
+    "kogarah"
+  ],
+  [
+    "westmead",
+    "stanmore"
+  ],
+  [
+    "roseville",
+    "kellyville"
+  ],
+  [
+    "parramatta",
+    "international_airport"
+  ],
+  [
+    "cabramatta",
+    "town_hall"
+  ],
+  [
+    "museum",
+    "roseville"
+  ],
+  [
+    "lidcombe",
+    "macquarie_park"
+  ],
+  [
+    "beverly_hills",
+    "berala"
+  ],
+  [
+    "lewisham",
+    "north_sydney"
+  ],
+  [
+    "lindfield",
+    "thornleigh"
+  ],
+  [
+    "regents_park",
+    "international_airport"
+  ],
+  [
+    "kings_cross",
+    "yagoona"
+  ],
+  [
+    "fairfield",
+    "gadigal"
+  ],
+  [
+    "sefton",
+    "international_airport"
+  ],
+  [
+    "turramurra",
+    "eastwood"
+  ],
+  [
+    "pymble",
+    "kings_cross"
+  ],
+  [
+    "merrylands",
+    "circular_quay"
+  ],
+  [
+    "international_airport",
+    "north_sydney"
+  ],
+  [
+    "north_ryde",
+    "wahroonga"
+  ],
+  [
+    "allawah",
+    "homebush"
+  ],
+  [
+    "bardwell_park",
+    "berala"
+  ],
+  [
+    "hills_showground",
+    "artarmon"
+  ],
+  [
+    "wentworthville",
+    "summer_hill"
+  ],
+  [
+    "granville",
+    "edgecliff"
+  ],
+  [
+    "cherrybrook",
+    "mount_kuring_gai"
+  ],
+  [
+    "flemington",
+    "bardwell_park"
+  ],
+  [
+    "regents_park",
+    "st_leonards"
+  ],
+  [
+    "crows_nest",
+    "auburn"
+  ],
+  [
+    "yennora",
+    "erskineville"
+  ],
+  [
+    "chatswood",
+    "hornsby"
+  ],
+  [
+    "cheltenham",
+    "pymble"
+  ],
+  [
+    "artarmon",
+    "erskineville"
+  ],
+  [
+    "barangaroo",
+    "leightonfield"
+  ],
+  [
+    "wentworthville",
+    "macdonaldtown"
+  ],
+  [
+    "mascot",
+    "westmead"
+  ],
+  [
+    "waitara",
+    "denistone"
+  ],
+  [
+    "stanmore",
+    "waverton"
+  ],
+  [
+    "st_leonards",
+    "hills_showground"
+  ],
+  [
+    "pendle_hill",
+    "green_square"
+  ],
+  [
+    "merrylands",
+    "edgecliff"
+  ],
+  [
+    "crows_nest",
+    "sefton"
+  ],
+  [
+    "turramurra",
+    "beecroft"
+  ],
+  [
+    "st_peters",
+    "guildford"
+  ],
+  [
+    "berala",
+    "macquarie_park"
+  ],
+  [
+    "birrong",
+    "rockdale"
+  ],
+  [
+    "north_sydney",
+    "merrylands"
+  ],
+  [
+    "wollstonecraft",
+    "mascot"
+  ],
+  [
+    "edgecliff",
+    "killara"
+  ],
+  [
+    "redfern",
+    "yennora"
+  ],
+  [
+    "turrella",
+    "clyde"
+  ],
+  [
+    "wolli_creek",
+    "granville"
+  ],
+  [
+    "st_james",
+    "lindfield"
+  ],
+  [
+    "wollstonecraft",
+    "domestic_airport"
+  ],
+  [
+    "barangaroo",
+    "birrong"
+  ],
+  [
+    "tempe",
+    "guildford"
+  ],
+  [
+    "artarmon",
+    "international_airport"
+  ],
+  [
+    "lidcombe",
+    "epping"
+  ],
+  [
+    "toongabbie",
+    "homebush"
+  ],
+  [
+    "westmead",
+    "st_peters"
+  ],
+  [
+    "north_sydney",
+    "berala"
+  ],
+  [
+    "museum",
+    "harris_park"
+  ],
+  [
+    "roseville",
+    "green_square"
+  ],
+  [
+    "sydenham",
+    "villawood"
+  ],
+  [
+    "circular_quay",
+    "yagoona"
+  ],
+  [
+    "turrella",
+    "roseville"
+  ],
+  [
+    "rockdale",
+    "auburn"
+  ],
+  [
+    "milsons_point",
+    "petersham"
+  ],
+  [
+    "artarmon",
+    "rouse_hill"
+  ],
+  [
+    "mascot",
+    "leightonfield"
+  ],
+  [
+    "parramatta",
+    "newtown"
+  ],
+  [
+    "castle_hill",
+    "lindfield"
+  ],
+  [
+    "harris_park",
+    "bardwell_park"
+  ],
+  [
+    "merrylands",
+    "tempe"
+  ],
+  [
+    "crows_nest",
+    "olympic_park"
+  ],
+  [
+    "parramatta",
+    "erskineville"
+  ],
+  [
+    "kings_cross",
+    "merrylands"
+  ],
+  [
+    "green_square",
+    "westmead"
+  ],
+  [
+    "bankstown",
+    "sydenham"
+  ],
+  [
+    "st_james",
+    "artarmon"
+  ],
+  [
+    "green_square",
+    "lindfield"
+  ],
+  [
+    "guildford",
+    "waterloo"
+  ],
+  [
+    "kingsgrove",
+    "auburn"
+  ],
+  [
+    "waverton",
+    "merrylands"
+  ],
+  [
+    "north_ryde",
+    "homebush"
+  ],
+  [
+    "north_sydney",
+    "flemington"
+  ],
+  [
+    "flemington",
+    "bexley_north"
+  ],
+  [
+    "gadigal",
+    "canley_vale"
+  ],
+  [
+    "martin_place",
+    "guildford"
+  ],
+  [
+    "st_peters",
+    "merrylands"
+  ],
+  [
+    "guildford",
+    "victoria_cross"
+  ],
+  [
+    "sydenham",
+    "fairfield"
+  ],
+  [
+    "merrylands",
+    "arncliffe"
+  ]
 ];
