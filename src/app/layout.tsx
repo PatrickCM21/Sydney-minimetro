@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import 'leaflet/dist/leaflet.css';
 import './globals.css';
+import { Analytics } from '@vercel/analytics/next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 export const metadata: Metadata = {
   title: 'Trackle — Sydney Shortest Path Quiz',
@@ -49,6 +51,8 @@ export default function RootLayout({
       </head>
       <body className="overflow-hidden h-dvh w-full">
         {children}
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

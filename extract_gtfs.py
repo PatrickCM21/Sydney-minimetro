@@ -4,6 +4,78 @@ import math
 import os
 from collections import defaultdict
 
+VALID_STATIONS_BY_LINE = {
+    'T1': {
+        "berowra", "mount_kuring_gai", "mount_colah", "asquith", "hornsby", "waitara", "wahroonga", 
+        "warrawee", "turramurra", "pymble", "gordon", "killara", "lindfield", "roseville", "chatswood", 
+        "artarmon", "st_leonards", "wollstonecraft", "waverton", "north_sydney", "milsons_point", 
+        "wynyard", "town_hall", "central", "redfern", "ashfield", "croydon", "burwood", "strathfield", 
+        "homebush", "flemington", "lidcombe", "auburn", "clyde", "granville", "harris_park", "parramatta", 
+        "westmead", "wentworthville", "pendle_hill", "toongabbie", "seven_hills", "blacktown", "doonside", 
+        "rooty_hill", "mount_druitt", "st_marys", "werrington", "kingswood", "penrith", "emu_plains",
+        "marayong", "quakers_hill", "schofields", "riverstone", "vineyard", "mulgrave", "windsor", 
+        "clarendon", "east_richmond", "richmond"
+    },
+    'T2': {
+        "central", "museum", "st_james", "circular_quay", "wynyard", "town_hall", "redfern", 
+        "macdonaldtown", "newtown", "stanmore", "petersham", "lewisham", "summer_hill", "ashfield", 
+        "croydon", "burwood", "strathfield", "homebush", "flemington", "lidcombe", "auburn", "clyde", 
+        "granville", "merrylands", "guildford", "yennora", "fairfield", "canley_vale", "cabramatta", 
+        "warwick_farm", "liverpool", "casula", "glenfield", "edmondson_park", "leppington", "harris_park", 
+        "parramatta"
+    },
+    'T3': {
+        "central", "museum", "st_james", "circular_quay", "wynyard", "town_hall", "redfern", 
+        "macdonaldtown", "newtown", "stanmore", "petersham", "lewisham", "summer_hill", "ashfield", 
+        "croydon", "burwood", "strathfield", "homebush", "flemington", "lidcombe", "berala", 
+        "regents_park", "sefton", "chester_hill", "leightonfield", "villawood", "carramar", 
+        "cabramatta", "warwick_farm", "liverpool", "casula", "glenfield", "macquarie_fields", 
+        "ingleburn", "minto", "leumeah", "campbelltown", "macarthur", "birrong", "yagoona", "bankstown"
+    },
+    'T4': {
+        "bondi_junction", "edgecliff", "kings_cross", "martin_place", "town_hall", "central", "redfern", 
+        "erskineville", "st_peters", "sydenham", "tempe", "wolli_creek", "arncliffe", "banksia", 
+        "rockdale", "kogarah", "carlton", "allawah", "hurstville", "penshurst", "mortdale", "oatley", 
+        "como", "jannali", "sutherland", "kirrawee", "gymea", "miranda", "caringbah", "woolooware", 
+        "cronulla", "loftus", "engadine", "heathcote", "waterfall", "helensburgh"
+    },
+    'T5': {
+        "richmond", "east_richmond", "clarendon", "windsor", "mulgrave", "vineyard", "riverstone", 
+        "schofields", "quakers_hill", "marayong", "blacktown", "seven_hills", "toongabbie", 
+        "pendle_hill", "wentworthville", "westmead", "parramatta", "harris_park", "merrylands", 
+        "guildford", "yennora", "fairfield", "canley_vale", "cabramatta", "warwick_farm", "liverpool", 
+        "casula", "glenfield", "edmondson_park", "leppington", "st_marys", "werrington", "kingswood", 
+        "penrith", "emu_plains", "campbelltown", "macarthur"
+    },
+    'T6': {
+        "lidcombe", "berala", "regents_park", "birrong", "yagoona", "bankstown"
+    },
+    'T7': {
+        "lidcombe", "olympic_park"
+    },
+    'T8': {
+        "central", "museum", "st_james", "circular_quay", "wynyard", "town_hall", "green_square", 
+        "mascot", "domestic_airport", "international_airport", "wolli_creek", "turrella", 
+        "bardwell_park", "bexley_north", "kingsgrove", "beverly_hills", "narwee", "riverwood", 
+        "padstow", "revesby", "panania", "east_hills", "holsworthy", "glenfield", "macquarie_fields", 
+        "ingleburn", "minto", "leumeah", "campbelltown", "macarthur", "edmondson_park", "leppington", 
+        "redfern", "erskineville", "st_peters", "sydenham"
+    },
+    'T9': {
+        "hornsby", "normanhurst", "thornleigh", "pennant_hills", "beecroft", "cheltenham", "epping", 
+        "eastwood", "denistone", "west_ryde", "meadowbank", "rhodes", "concord_west", "north_strathfield", 
+        "strathfield", "burwood", "croydon", "ashfield", "redfern", "central", "town_hall", "wynyard", 
+        "milsons_point", "north_sydney", "waverton", "wollstonecraft", "st_leonards", "artarmon", 
+        "chatswood", "roseville", "lindfield", "killara", "gordon"
+    },
+    'M1': {
+        "tallawong", "rouse_hill", "kellyville", "bella_vista", "norwest", "hills_showground", 
+        "castle_hill", "cherrybrook", "epping", "macquarie_university", "macquarie_park", 
+        "north_ryde", "chatswood", "crows_nest", "victoria_cross", "barangaroo", "martin_place", 
+        "gadigal", "central", "waterloo", "sydenham"
+    }
+}
+
 # Spherical Mercator projection parameters
 R_MAJOR = 6378137.0
 
@@ -132,14 +204,37 @@ def extract_data():
         route_short = trips[tid]['route_short_name']
         shape_id = trips[tid]['shape_id']
         
-        # Convert stop IDs to normalized slugs
-        slug_seq = tuple(get_station_slug(stops[sid]['name']) for sid in seq if sid in stops)
-        if not slug_seq:
-            continue
-            
-        route_sequences[route_short].add(slug_seq)
-        if shape_id:
-            route_seq_to_shapes[(route_short, slug_seq)][shape_id] += 1
+        # Convert stop IDs to normalized slugs and filter by line whitelist
+        allowed_slugs = VALID_STATIONS_BY_LINE.get(route_short, set())
+        raw_slugs = [get_station_slug(stops[sid]['name']) for sid in seq if sid in stops]
+        
+        # Split sequence on invalid stations to avoid collapsing gaps
+        subseqs = []
+        current_subseq = []
+        for slug in raw_slugs:
+            if slug in allowed_slugs:
+                current_subseq.append(slug)
+            else:
+                if len(current_subseq) >= 2:
+                    deduped = []
+                    for s in current_subseq:
+                        if not deduped or deduped[-1] != s:
+                            deduped.append(s)
+                    if len(deduped) >= 2:
+                        subseqs.append(tuple(deduped))
+                current_subseq = []
+        if len(current_subseq) >= 2:
+            deduped = []
+            for s in current_subseq:
+                if not deduped or deduped[-1] != s:
+                    deduped.append(s)
+            if len(deduped) >= 2:
+                subseqs.append(tuple(deduped))
+                
+        for slug_seq in subseqs:
+            route_sequences[route_short].add(slug_seq)
+            if shape_id:
+                route_seq_to_shapes[(route_short, slug_seq)][shape_id] += 1
             
     # Filter out subsequences for each route to keep only the maximal mainline segments
     print("Filtering subsequences...")
@@ -149,20 +244,121 @@ def extract_data():
         kept_route_segments[rshort] = kept
         print(f"  Route {rshort}: kept {len(kept)} / {len(seqs)} segments.")
         
-    # Select the representative shape IDs for the kept segments
+    # Override kept_route_segments with clean, fully local, whitelisted passenger-facing segments
+    kept_route_segments = {
+        'T1': [
+            ("berowra", "mount_kuring_gai", "mount_colah", "asquith", "hornsby", "waitara", "wahroonga", "warrawee", "turramurra", "pymble", "gordon", "killara", "lindfield", "roseville", "chatswood", "artarmon", "st_leonards", "wollstonecraft", "waverton", "north_sydney", "milsons_point", "wynyard", "town_hall", "central"),
+            ("central", "town_hall", "wynyard", "milsons_point", "north_sydney", "waverton", "wollstonecraft", "st_leonards", "artarmon", "chatswood", "roseville", "lindfield", "killara", "gordon", "pymble", "turramurra", "warrawee", "wahroonga", "waitara", "hornsby", "asquith", "mount_colah", "mount_kuring_gai", "berowra"),
+            ("central", "redfern", "strathfield", "burwood", "croydon", "ashfield", "homebush", "flemington", "lidcombe", "auburn", "clyde", "granville", "harris_park", "parramatta", "westmead", "wentworthville", "pendle_hill", "toongabbie", "seven_hills", "blacktown", "marayong", "quakers_hill", "schofields", "riverstone", "vineyard", "mulgrave", "windsor", "clarendon", "east_richmond", "richmond"),
+            ("richmond", "east_richmond", "clarendon", "windsor", "mulgrave", "vineyard", "riverstone", "schofields", "quakers_hill", "marayong", "blacktown", "seven_hills", "toongabbie", "pendle_hill", "wentworthville", "westmead", "parramatta", "harris_park", "granville", "clyde", "auburn", "lidcombe", "flemington", "homebush", "ashfield", "croydon", "burwood", "strathfield", "redfern", "central"),
+            ("central", "redfern", "strathfield", "burwood", "croydon", "ashfield", "homebush", "flemington", "lidcombe", "auburn", "clyde", "granville", "harris_park", "parramatta", "westmead", "wentworthville", "pendle_hill", "toongabbie", "seven_hills", "blacktown", "doonside", "rooty_hill", "mount_druitt", "st_marys", "werrington", "kingswood", "penrith", "emu_plains"),
+            ("emu_plains", "penrith", "kingswood", "werrington", "st_marys", "mount_druitt", "rooty_hill", "doonside", "blacktown", "seven_hills", "toongabbie", "pendle_hill", "wentworthville", "westmead", "parramatta", "harris_park", "granville", "clyde", "auburn", "lidcombe", "flemington", "homebush", "ashfield", "croydon", "burwood", "strathfield", "redfern", "central")
+        ],
+        'T2': [
+            ("central", "museum", "st_james", "circular_quay", "wynyard", "town_hall", "central"),
+            ("central", "town_hall", "wynyard", "circular_quay", "st_james", "museum", "central"),
+            ("central", "redfern", "macdonaldtown", "newtown", "stanmore", "petersham", "lewisham", "summer_hill", "ashfield", "croydon", "burwood", "strathfield", "homebush", "flemington", "lidcombe", "auburn", "clyde", "granville", "merrylands", "guildford", "yennora", "fairfield", "canley_vale", "cabramatta", "warwick_farm", "liverpool", "casula", "glenfield", "edmondson_park", "leppington"),
+            ("leppington", "edmondson_park", "glenfield", "casula", "liverpool", "warwick_farm", "cabramatta", "canley_vale", "fairfield", "yennora", "guildford", "merrylands", "granville", "clyde", "auburn", "lidcombe", "flemington", "homebush", "strathfield", "burwood", "croydon", "ashfield", "summer_hill", "lewisham", "petersham", "stanmore", "newtown", "macdonaldtown", "redfern", "central"),
+            ("central", "redfern", "macdonaldtown", "newtown", "stanmore", "petersham", "lewisham", "summer_hill", "ashfield", "croydon", "burwood", "strathfield", "homebush", "flemington", "lidcombe", "auburn", "clyde", "granville", "harris_park", "parramatta"),
+            ("parramatta", "harris_park", "granville", "clyde", "auburn", "lidcombe", "flemington", "homebush", "strathfield", "burwood", "croydon", "ashfield", "summer_hill", "lewisham", "petersham", "stanmore", "newtown", "macdonaldtown", "redfern", "central")
+        ],
+        'T3': [
+            ("liverpool", "warwick_farm", "cabramatta", "carramar", "villawood", "leightonfield", "chester_hill", "sefton", "regents_park", "berala", "lidcombe", "flemington", "homebush", "strathfield", "burwood", "croydon", "ashfield", "summer_hill", "lewisham", "petersham", "stanmore", "newtown", "macdonaldtown", "redfern", "central"),
+            ("central", "redfern", "macdonaldtown", "newtown", "stanmore", "petersham", "lewisham", "summer_hill", "ashfield", "croydon", "burwood", "strathfield", "homebush", "flemington", "lidcombe", "berala", "regents_park", "sefton", "chester_hill", "leightonfield", "villawood", "carramar", "cabramatta", "warwick_farm", "liverpool"),
+            ("central", "museum", "st_james", "circular_quay", "wynyard", "town_hall", "central"),
+            ("central", "town_hall", "wynyard", "circular_quay", "st_james", "museum", "central"),
+            ("cabramatta", "carramar", "villawood", "leightonfield", "chester_hill", "sefton", "birrong", "yagoona", "bankstown"),
+            ("bankstown", "yagoona", "birrong", "sefton", "chester_hill", "leightonfield", "villawood", "carramar", "cabramatta")
+        ],
+        'T4': [
+            ("cronulla", "woolooware", "caringbah", "miranda", "gymea", "kirrawee", "sutherland", "jannali", "como", "oatley", "mortdale", "penshurst", "hurstville", "allawah", "carlton", "kogarah", "rockdale", "banksia", "arncliffe", "wolli_creek", "tempe", "sydenham", "st_peters", "erskineville", "redfern", "central", "town_hall", "martin_place", "kings_cross", "edgecliff", "bondi_junction"),
+            ("bondi_junction", "edgecliff", "kings_cross", "martin_place", "town_hall", "central", "redfern", "erskineville", "st_peters", "sydenham", "tempe", "wolli_creek", "arncliffe", "banksia", "rockdale", "kogarah", "carlton", "allawah", "hurstville", "penshurst", "mortdale", "oatley", "como", "jannali", "sutherland", "kirrawee", "gymea", "miranda", "caringbah", "woolooware", "cronulla"),
+            ("helensburgh", "waterfall", "heathcote", "engadine", "loftus", "sutherland", "jannali", "como", "oatley", "mortdale", "penshurst", "hurstville", "allawah", "carlton", "kogarah", "rockdale", "banksia", "arncliffe", "wolli_creek", "tempe", "sydenham", "st_peters", "erskineville", "redfern", "central", "town_hall", "martin_place", "kings_cross", "edgecliff", "bondi_junction"),
+            ("bondi_junction", "edgecliff", "kings_cross", "martin_place", "town_hall", "central", "redfern", "erskineville", "st_peters", "sydenham", "tempe", "wolli_creek", "arncliffe", "banksia", "rockdale", "kogarah", "carlton", "allawah", "hurstville", "penshurst", "mortdale", "oatley", "como", "jannali", "sutherland", "loftus", "engadine", "heathcote", "waterfall", "helensburgh")
+        ],
+        'T5': [
+            ("richmond", "east_richmond", "clarendon", "windsor", "mulgrave", "vineyard", "riverstone", "schofields", "quakers_hill", "marayong", "blacktown", "seven_hills", "toongabbie", "pendle_hill", "wentworthville", "westmead", "parramatta", "harris_park", "merrylands", "guildford", "yennora", "fairfield", "canley_vale", "cabramatta", "warwick_farm", "liverpool", "casula", "glenfield", "edmondson_park", "leppington"),
+            ("leppington", "edmondson_park", "glenfield", "casula", "liverpool", "warwick_farm", "cabramatta", "canley_vale", "fairfield", "yennora", "guildford", "merrylands", "harris_park", "parramatta", "westmead", "wentworthville", "pendle_hill", "toongabbie", "seven_hills", "blacktown", "marayong", "quakers_hill", "schofields", "riverstone", "vineyard", "mulgrave", "windsor", "clarendon", "east_richmond", "richmond"),
+            ("penrith", "kingswood", "werrington", "st_marys", "mount_druitt", "rooty_hill", "doonside", "blacktown", "seven_hills", "toongabbie", "pendle_hill", "wentworthville", "westmead", "parramatta", "harris_park", "merrylands", "guildford", "yennora", "fairfield", "canley_vale", "cabramatta", "warwick_farm", "liverpool"),
+            ("liverpool", "warwick_farm", "cabramatta", "canley_vale", "fairfield", "yennora", "guildford", "merrylands", "harris_park", "parramatta", "westmead", "wentworthville", "pendle_hill", "toongabbie", "seven_hills", "blacktown", "doonside", "rooty_hill", "mount_druitt", "st_marys", "werrington", "kingswood", "penrith")
+        ],
+        'T6': [
+            ("lidcombe", "berala", "regents_park", "birrong", "yagoona", "bankstown"),
+            ("bankstown", "yagoona", "birrong", "regents_park", "berala", "lidcombe")
+        ],
+        'T7': [
+            ("lidcombe", "olympic_park"),
+            ("olympic_park", "lidcombe")
+        ],
+        'T8': [
+            ("macarthur", "campbelltown", "leumeah", "minto", "ingleburn", "macquarie_fields", "glenfield", "holsworthy", "east_hills", "panania", "revesby", "padstow", "riverwood", "narwee", "beverly_hills", "kingsgrove", "bexley_north", "bardwell_park", "turrella", "wolli_creek", "international_airport", "domestic_airport", "mascot", "green_square", "central", "museum", "st_james", "circular_quay", "wynyard", "town_hall", "central"),
+            ("central", "town_hall", "wynyard", "circular_quay", "st_james", "museum", "central", "green_square", "mascot", "domestic_airport", "international_airport", "wolli_creek", "turrella", "bardwell_park", "bexley_north", "kingsgrove", "beverly_hills", "narwee", "riverwood", "padstow", "revesby", "panania", "east_hills", "holsworthy", "glenfield", "macquarie_fields", "ingleburn", "minto", "leumeah", "campbelltown", "macarthur"),
+            ("leppington", "edmondson_park", "glenfield", "holsworthy", "east_hills", "panania", "revesby", "padstow", "riverwood", "narwee", "beverly_hills", "kingsgrove", "bexley_north", "bardwell_park", "turrella", "wolli_creek", "international_airport", "domestic_airport", "mascot", "green_square", "central", "museum", "st_james", "circular_quay", "wynyard", "town_hall", "central"),
+            ("central", "town_hall", "wynyard", "circular_quay", "st_james", "museum", "central", "green_square", "mascot", "domestic_airport", "international_airport", "wolli_creek", "turrella", "bardwell_park", "bexley_north", "kingsgrove", "beverly_hills", "narwee", "riverwood", "padstow", "revesby", "panania", "east_hills", "holsworthy", "glenfield", "edmondson_park", "leppington"),
+            ("macarthur", "campbelltown", "leumeah", "minto", "ingleburn", "macquarie_fields", "glenfield", "holsworthy", "east_hills", "panania", "revesby", "padstow", "riverwood", "narwee", "beverly_hills", "kingsgrove", "bexley_north", "bardwell_park", "turrella", "wolli_creek", "sydenham", "st_peters", "erskineville", "redfern", "central"),
+            ("central", "redfern", "erskineville", "st_peters", "sydenham", "wolli_creek", "turrella", "bardwell_park", "bexley_north", "kingsgrove", "beverly_hills", "narwee", "riverwood", "padstow", "revesby", "panania", "east_hills", "holsworthy", "glenfield", "macquarie_fields", "ingleburn", "minto", "leumeah", "campbelltown", "macarthur")
+        ],
+        'T9': [
+            ("hornsby", "normanhurst", "thornleigh", "pennant_hills", "beecroft", "cheltenham", "epping", "eastwood", "denistone", "west_ryde", "meadowbank", "rhodes", "concord_west", "north_strathfield", "strathfield", "burwood", "croydon", "ashfield", "redfern", "central"),
+            ("central", "redfern", "ashfield", "croydon", "burwood", "strathfield", "north_strathfield", "concord_west", "rhodes", "meadowbank", "west_ryde", "denistone", "eastwood", "epping", "cheltenham", "beecroft", "pennant_hills", "thornleigh", "normanhurst", "hornsby"),
+            ("gordon", "killara", "lindfield", "roseville", "chatswood", "artarmon", "st_leonards", "wollstonecraft", "waverton", "north_sydney", "milsons_point", "wynyard", "town_hall", "central"),
+            ("central", "town_hall", "wynyard", "milsons_point", "north_sydney", "waverton", "wollstonecraft", "st_leonards", "artarmon", "chatswood", "roseville", "lindfield", "killara", "gordon")
+        ],
+        'M1': [
+            ("tallawong", "rouse_hill", "kellyville", "bella_vista", "norwest", "hills_showground", "castle_hill", "cherrybrook", "epping", "macquarie_university", "macquarie_park", "north_ryde", "chatswood", "crows_nest", "victoria_cross", "barangaroo", "martin_place", "gadigal", "central", "waterloo", "sydenham"),
+            ("sydenham", "waterloo", "central", "gadigal", "martin_place", "barangaroo", "victoria_cross", "crows_nest", "chatswood", "north_ryde", "macquarie_park", "macquarie_university", "epping", "cherrybrook", "castle_hill", "hills_showground", "norwest", "bella_vista", "kellyville", "rouse_hill", "tallawong")
+        ]
+    }
+        
+    # Select the representative shape IDs for the kept segments using endpoint matching
     print("Selecting representative shapes...")
     selected_shapes = set()
     shape_to_route_info = {} # shape_id -> {short_name, color}
     
+    # Restructure route_seq_to_shapes to index by rshort and seq for easier lookup
+    nested_route_seq_to_shapes = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
+    for (rshort, seq), shape_counts in route_seq_to_shapes.items():
+        nested_route_seq_to_shapes[rshort][seq] = shape_counts
+        
     for rshort, segments in kept_route_segments.items():
         # Get the color of this route (use the first route_id color we find)
         color = next(r['color'] for r in routes.values() if r['short_name'] == rshort)
         
         for segment in segments:
-            # Find the most popular shape for this segment
-            shape_counts = route_seq_to_shapes[(rshort, segment)]
-            if shape_counts:
-                best_shape = max(shape_counts, key=shape_counts.get)
+            start_station = segment[0]
+            end_station = segment[-1]
+            
+            best_shape = None
+            best_overlap = 0
+            best_shape_count = 0
+            
+            # Find shape covering both endpoints of the segment with max overlap
+            for gtfs_seq, shape_counts in nested_route_seq_to_shapes[rshort].items():
+                gtfs_set = set(gtfs_seq)
+                if start_station in gtfs_set and end_station in gtfs_set:
+                    overlap = len(set(segment).intersection(gtfs_set))
+                    if overlap > best_overlap:
+                        best_overlap = overlap
+                        best_s = max(shape_counts, key=shape_counts.get)
+                        best_shape = best_s
+                        best_shape_count = shape_counts[best_s]
+                    elif overlap == best_overlap and best_overlap > 0:
+                        best_s = max(shape_counts, key=shape_counts.get)
+                        if shape_counts[best_s] > best_shape_count:
+                            best_shape = best_s
+                            best_shape_count = shape_counts[best_s]
+                            
+            # Fallback to maximum overlap if no shape covers both endpoints
+            if not best_shape:
+                for gtfs_seq, shape_counts in nested_route_seq_to_shapes[rshort].items():
+                    overlap = len(set(segment).intersection(set(gtfs_seq)))
+                    if overlap > best_overlap:
+                        best_overlap = overlap
+                        best_s = max(shape_counts, key=shape_counts.get)
+                        best_shape = best_s
+                        best_shape_count = shape_counts[best_s]
+                        
+            if best_shape:
                 selected_shapes.add(best_shape)
                 shape_to_route_info[best_shape] = {
                     'short_name': rshort,
@@ -182,8 +378,8 @@ def extract_data():
                 seq = int(row['shape_pt_sequence'])
                 lat = float(row['shape_pt_lat'])
                 lon = float(row['shape_pt_lon'])
-                x, y = lat_lng_to_mercator(lat, lon)
-                shape_points[sh_id].append((seq, [x, y]))
+                # Store coordinates directly as [longitude, latitude] degrees
+                shape_points[sh_id].append((seq, [lon, lat]))
                 
     # Format shapes for sydneytrainsdata.json
     print("Formatting route shapes...")
@@ -367,19 +563,40 @@ def extract_data():
     ts_content.append("")
     ts_content.append("function buildEdgesList(): Edge[] {")
     ts_content.append("  const edges: Edge[] = [];")
-    ts_content.append("  const edgeKeys = new Set<string>();")
     ts_content.append("  for (const [lineId, segments] of Object.entries(lineSegments)) {")
     ts_content.append("    const line = lineId as LineId;")
+    ts_content.append("    const candidatePairs = new Set<string>();")
     ts_content.append("    for (const segment of segments) {")
     ts_content.append("      for (let i = 0; i < segment.length - 1; i++) {")
-    ts_content.append("        const from = segment[i];")
-    ts_content.append("        const to = segment[i + 1];")
-    ts_content.append("        const [a, b] = [from, to].sort();")
-    ts_content.append("        const key = `${a}|${b}|${line}`;")
-    ts_content.append("        if (!edgeKeys.has(key)) {")
-    ts_content.append("          edgeKeys.add(key);")
-    ts_content.append("          edges.push({ from, to, line });")
+    ts_content.append("        const [a, b] = [segment[i], segment[i + 1]].sort();")
+    ts_content.append("        candidatePairs.add(`${a}|${b}`);")
+    ts_content.append("      }")
+    ts_content.append("    }")
+    ts_content.append("    for (const pairStr of candidatePairs) {")
+    ts_content.append("      const [a, b] = pairStr.split('|');")
+    ts_content.append("      let hasAdjacentOccurrence = false;")
+    ts_content.append("      for (const segment of segments) {")
+    ts_content.append("        const indicesA: number[] = [];")
+    ts_content.append("        const indicesB: number[] = [];")
+    ts_content.append("        for (let idx = 0; idx < segment.length; idx++) {")
+    ts_content.append("          if (segment[idx] === a) indicesA.push(idx);")
+    ts_content.append("          if (segment[idx] === b) indicesB.push(idx);")
     ts_content.append("        }")
+    ts_content.append("        if (indicesA.length === 0 || indicesB.length === 0) continue;")
+    ts_content.append("        let minDistance = Infinity;")
+    ts_content.append("        for (const idxA of indicesA) {")
+    ts_content.append("          for (const idxB of indicesB) {")
+    ts_content.append("            const dist = Math.abs(idxA - idxB);")
+    ts_content.append("            if (dist < minDistance) minDistance = dist;")
+    ts_content.append("          }")
+    ts_content.append("        }")
+    ts_content.append("        if (minDistance === 1) {")
+    ts_content.append("          hasAdjacentOccurrence = true;")
+    ts_content.append("          break;")
+    ts_content.append("        }")
+    ts_content.append("      }")
+    ts_content.append("      if (hasAdjacentOccurrence) {")
+    ts_content.append("        edges.push({ from: a, to: b, line });")
     ts_content.append("      }")
     ts_content.append("    }")
     ts_content.append("  }")

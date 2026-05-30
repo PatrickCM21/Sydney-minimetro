@@ -1,192 +1,167 @@
-[
-  {
-    "id": "allawah",
+{
+  "STN-ALW": {
+    "id": "STN-ALW",
     "name": "Allawah",
-    "lines": [
+    "interchanges": [
       "T4"
     ],
     "lat": -33.96972995,
     "lng": 151.11454867
   },
-  {
-    "id": "arncliffe",
+  "STN-ARN": {
+    "id": "STN-ARN",
     "name": "Arncliffe",
-    "lines": [
+    "interchanges": [
       "T4"
     ],
     "lat": -33.93678246,
     "lng": 151.147174
   },
-  {
-    "id": "artarmon",
+  "STN-ATM": {
+    "id": "STN-ATM",
     "name": "Artarmon",
-    "lines": [
+    "interchanges": [
       "T1",
       "T9"
     ],
     "lat": -33.80854241,
     "lng": 151.18470089
   },
-  {
-    "id": "ashfield",
+  "STN-ASH": {
+    "id": "STN-ASH",
     "name": "Ashfield",
-    "lines": [
-      "T1",
+    "interchanges": [
       "T2",
-      "T3",
-      "T9"
+      "T3"
     ],
     "lat": -33.88763777,
     "lng": 151.12585123
   },
-  {
-    "id": "asquith",
+  "STN-ASQ": {
+    "id": "STN-ASQ",
     "name": "Asquith",
-    "lines": [
-      "T1",
-      "T9"
+    "interchanges": [
+      "T1"
     ],
     "lat": -33.68852348,
     "lng": 151.10820109
   },
-  {
-    "id": "auburn",
+  "STN-AUB": {
+    "id": "STN-AUB",
     "name": "Auburn",
-    "lines": [
+    "interchanges": [
       "T1",
       "T2"
     ],
     "lat": -33.8494301,
     "lng": 151.03301684
   },
-  {
-    "id": "banksia",
+  "STN-BKS": {
+    "id": "STN-BKS",
     "name": "Banksia",
-    "lines": [
+    "interchanges": [
       "T4"
     ],
     "lat": -33.94499641,
     "lng": 151.14058914
   },
-  {
-    "id": "bankstown",
+  "STN-BNK": {
+    "id": "STN-BNK",
     "name": "Bankstown",
-    "lines": [
-      "T2",
+    "interchanges": [
+      "M1",
       "T6"
     ],
     "lat": -33.91784784,
     "lng": 151.03465392
   },
-  {
-    "id": "barangaroo",
-    "name": "Barangaroo",
-    "lines": [
-      "M1"
-    ],
-    "lat": -33.85957698,
-    "lng": 151.20261517
-  },
-  {
-    "id": "bardwell_park",
+  "STN-BPK": {
+    "id": "STN-BPK",
     "name": "Bardwell Park",
-    "lines": [
+    "interchanges": [
       "T8"
     ],
     "lat": -33.93141993,
     "lng": 151.12526266
   },
-  {
-    "id": "beecroft",
+  "STN-BCF": {
+    "id": "STN-BCF",
     "name": "Beecroft",
-    "lines": [
+    "interchanges": [
       "T9"
     ],
     "lat": -33.74927233,
     "lng": 151.06660668
   },
-  {
-    "id": "bella_vista",
-    "name": "Bella Vista",
-    "lines": [
-      "M1"
-    ],
-    "lat": -33.73056616,
-    "lng": 150.94401959
-  },
-  {
-    "id": "berala",
+  "STN-BEJ": {
+    "id": "STN-BEJ",
     "name": "Berala",
-    "lines": [
+    "interchanges": [
       "T3",
       "T6"
     ],
     "lat": -33.87178351,
     "lng": 151.03252488
   },
-  {
-    "id": "berowra",
+  "STN-BEW": {
+    "id": "STN-BEW",
     "name": "Berowra",
-    "lines": [
-      "T1",
-      "T9"
+    "interchanges": [
+      "T1"
     ],
     "lat": -33.62338518,
     "lng": 151.15323454
   },
-  {
-    "id": "beverly_hills",
+  "STN-BVH": {
+    "id": "STN-BVH",
     "name": "Beverly Hills",
-    "lines": [
+    "interchanges": [
       "T8"
     ],
     "lat": -33.94912063,
     "lng": 151.08086032
   },
-  {
-    "id": "bexley_north",
+  "STN-BXN": {
+    "id": "STN-BXN",
     "name": "Bexley North",
-    "lines": [
+    "interchanges": [
       "T8"
     ],
     "lat": -33.93750842,
     "lng": 151.11377376
   },
-  {
-    "id": "birrong",
+  "STN-BIO": {
+    "id": "STN-BIO",
     "name": "Birrong",
-    "lines": [
-      "T2",
+    "interchanges": [
       "T6"
     ],
     "lat": -33.89258874,
     "lng": 151.02427803
   },
-  {
-    "id": "blacktown",
+  "STN-BAK": {
+    "id": "STN-BAK",
     "name": "Blacktown",
-    "lines": [
+    "interchanges": [
       "T1",
-      "T5",
-      "T7"
+      "T5"
     ],
     "lat": -33.76854404,
     "lng": 150.90708043
   },
-  {
-    "id": "bondi_junction",
+  "STN-BJN": {
+    "id": "STN-BJN",
     "name": "Bondi Junction",
-    "lines": [
+    "interchanges": [
       "T4"
     ],
     "lat": -33.89119702,
     "lng": 151.24837675
   },
-  {
-    "id": "burwood",
+  "STN-BUW": {
+    "id": "STN-BUW",
     "name": "Burwood",
-    "lines": [
-      "T1",
+    "interchanges": [
       "T2",
       "T3",
       "T9"
@@ -194,10 +169,10 @@
     "lat": -33.87710168,
     "lng": 151.10385716
   },
-  {
-    "id": "cabramatta",
+  "STN-CAB": {
+    "id": "STN-CAB",
     "name": "Cabramatta",
-    "lines": [
+    "interchanges": [
       "T2",
       "T3",
       "T5"
@@ -205,79 +180,66 @@
     "lat": -33.89474039,
     "lng": 150.93887636
   },
-  {
-    "id": "campbelltown",
+  "STN-CTN": {
+    "id": "STN-CTN",
     "name": "Campbelltown",
-    "lines": [
-      "T3",
-      "T5",
+    "interchanges": [
       "T8"
     ],
     "lat": -34.06355569,
     "lng": 150.81463149
   },
-  {
-    "id": "canley_vale",
+  "STN-CVE": {
+    "id": "STN-CVE",
     "name": "Canley Vale",
-    "lines": [
+    "interchanges": [
       "T2",
       "T5"
     ],
     "lat": -33.88732821,
     "lng": 150.94353766
   },
-  {
-    "id": "caringbah",
+  "STN-CIH": {
+    "id": "STN-CIH",
     "name": "Caringbah",
-    "lines": [
+    "interchanges": [
       "T4"
     ],
     "lat": -34.04157831,
     "lng": 151.12202571
   },
-  {
-    "id": "carlton",
+  "STN-CLJ": {
+    "id": "STN-CLJ",
     "name": "Carlton",
-    "lines": [
+    "interchanges": [
       "T4"
     ],
     "lat": -33.96824293,
     "lng": 151.12450153
   },
-  {
-    "id": "carramar",
+  "STN-CRR": {
+    "id": "STN-CRR",
     "name": "Carramar",
-    "lines": [
-      "T2",
+    "interchanges": [
       "T3"
     ],
     "lat": -33.88445193,
     "lng": 150.96098356
   },
-  {
-    "id": "castle_hill",
-    "name": "Castle Hill",
-    "lines": [
-      "M1"
-    ],
-    "lat": -33.73162575,
-    "lng": 151.00728849
-  },
-  {
-    "id": "casula",
+  "STN-CSL": {
+    "id": "STN-CSL",
     "name": "Casula",
-    "lines": [
+    "interchanges": [
       "T2",
-      "T3",
       "T5"
     ],
     "lat": -33.95021052,
     "lng": 150.91182891
   },
-  {
-    "id": "central",
+  "STN-CEN": {
+    "id": "STN-CEN",
     "name": "Central",
-    "lines": [
+    "interchanges": [
       "M1",
       "T1",
       "T2",
@@ -290,10 +252,10 @@
     "lat": -33.88402424,
     "lng": 151.20620308
   },
-  {
-    "id": "chatswood",
+  "STN-CWD": {
+    "id": "STN-CWD",
     "name": "Chatswood",
-    "lines": [
+    "interchanges": [
       "M1",
       "T1",
       "T9"
@@ -301,324 +263,286 @@
     "lat": -33.79723668,
     "lng": 151.18093364
   },
-  {
-    "id": "cheltenham",
+  "STN-CHA": {
+    "id": "STN-CHA",
     "name": "Cheltenham",
-    "lines": [
+    "interchanges": [
       "T9"
     ],
     "lat": -33.75561151,
     "lng": 151.07845967
   },
-  {
-    "id": "cherrybrook",
-    "name": "Cherrybrook",
-    "lines": [
-      "M1"
-    ],
-    "lat": -33.73665917,
-    "lng": 151.03199446
-  },
-  {
-    "id": "chester_hill",
+  "STN-CHH": {
+    "id": "STN-CHH",
     "name": "Chester Hill",
-    "lines": [
-      "T2",
+    "interchanges": [
       "T3"
     ],
     "lat": -33.8836589,
     "lng": 151.0002517
   },
-  {
-    "id": "circular_quay",
+  "STN-CQY": {
+    "id": "STN-CQY",
     "name": "Circular Quay",
-    "lines": [
+    "interchanges": [
       "T2",
       "T3",
-      "T4",
       "T8"
     ],
     "lat": -33.86135094,
     "lng": 151.21081302
   },
-  {
-    "id": "clarendon",
+  "STN-CRD": {
+    "id": "STN-CRD",
     "name": "Clarendon",
-    "lines": [
+    "interchanges": [
       "T1",
       "T5"
     ],
     "lat": -33.60858478,
     "lng": 150.78789489
   },
-  {
-    "id": "clyde",
+  "STN-CYE": {
+    "id": "STN-CYE",
     "name": "Clyde",
-    "lines": [
+    "interchanges": [
       "T1",
       "T2"
     ],
     "lat": -33.83595319,
     "lng": 151.01694198
   },
-  {
-    "id": "como",
+  "STN-CMO": {
+    "id": "STN-CMO",
     "name": "Como",
-    "lines": [
+    "interchanges": [
       "T4"
     ],
     "lat": -34.00461939,
     "lng": 151.06824108
   },
-  {
-    "id": "concord_west",
+  "STN-CDW": {
+    "id": "STN-CDW",
     "name": "Concord West",
-    "lines": [
+    "interchanges": [
       "T9"
     ],
     "lat": -33.84860505,
     "lng": 151.08562376
   },
-  {
-    "id": "cronulla",
+  "STN-CNL": {
+    "id": "STN-CNL",
     "name": "Cronulla",
-    "lines": [
+    "interchanges": [
       "T4"
     ],
     "lat": -34.05578475,
     "lng": 151.15149843
   },
-  {
-    "id": "crows_nest",
-    "name": "Crows Nest",
-    "lines": [
-      "M1"
-    ],
-    "lat": -33.8256203,
-    "lng": 151.19913651
-  },
-  {
-    "id": "croydon",
+  "STN-CYD": {
+    "id": "STN-CYD",
     "name": "Croydon",
-    "lines": [
-      "T1",
+    "interchanges": [
       "T2",
-      "T3",
-      "T9"
+      "T3"
     ],
     "lat": -33.88307479,
     "lng": 151.11520613
   },
-  {
-    "id": "denistone",
+  "STN-DST": {
+    "id": "STN-DST",
     "name": "Denistone",
-    "lines": [
+    "interchanges": [
       "T9"
     ],
     "lat": -33.79962625,
     "lng": 151.08692825
   },
-  {
-    "id": "domestic_airport",
+  "STN-DOM": {
+    "id": "STN-DOM",
     "name": "Domestic Airport",
-    "lines": [
+    "interchanges": [
       "T8"
     ],
     "lat": -33.93362984,
     "lng": 151.18065972
   },
-  {
-    "id": "doonside",
+  "STN-DOD": {
+    "id": "STN-DOD",
     "name": "Doonside",
-    "lines": [
-      "T1",
-      "T5"
+    "interchanges": [
+      "T1"
     ],
     "lat": -33.76389763,
     "lng": 150.86869678
   },
-  {
-    "id": "east_hills",
+  "STN-EHS": {
+    "id": "STN-EHS",
     "name": "East Hills",
-    "lines": [
+    "interchanges": [
       "T8"
     ],
     "lat": -33.9618174,
     "lng": 150.98472867
   },
-  {
-    "id": "east_richmond",
+  "STN-ERD": {
+    "id": "STN-ERD",
     "name": "East Richmond",
-    "lines": [
+    "interchanges": [
       "T1",
       "T5"
     ],
     "lat": -33.60172876,
     "lng": 150.75891556
   },
-  {
-    "id": "eastwood",
+  "STN-EWD": {
+    "id": "STN-EWD",
     "name": "Eastwood",
-    "lines": [
+    "interchanges": [
       "T9"
     ],
     "lat": -33.79030086,
     "lng": 151.08229721
   },
-  {
-    "id": "edgecliff",
+  "STN-ECL": {
+    "id": "STN-ECL",
     "name": "Edgecliff",
-    "lines": [
+    "interchanges": [
       "T4"
     ],
     "lat": -33.87937104,
     "lng": 151.23625289
   },
-  {
-    "id": "edmondson_park",
+  "STN-EDP": {
+    "id": "STN-EDP",
     "name": "Edmondson Park",
-    "lines": [
+    "interchanges": [
       "T2",
-      "T5",
-      "T8"
+      "T5"
     ],
     "lat": -33.96932346,
     "lng": 150.85880158
   },
-  {
-    "id": "emu_plains",
+  "STN-EPS": {
+    "id": "STN-EPS",
     "name": "Emu Plains",
-    "lines": [
-      "T1",
-      "T5"
+    "interchanges": [
+      "T1"
     ],
     "lat": -33.74572534,
     "lng": 150.67142718
   },
-  {
-    "id": "engadine",
+  "STN-EGD": {
+    "id": "STN-EGD",
     "name": "Engadine",
-    "lines": [
+    "interchanges": [
       "T4"
     ],
     "lat": -34.06770196,
     "lng": 151.01486023
   },
-  {
-    "id": "epping",
+  "STN-EPG": {
+    "id": "STN-EPG",
     "name": "Epping",
-    "lines": [
+    "interchanges": [
       "M1",
       "T9"
     ],
     "lat": -33.77283671,
     "lng": 151.08208231
   },
-  {
-    "id": "erskineville",
+  "STN-EKV": {
+    "id": "STN-EKV",
     "name": "Erskineville",
-    "lines": [
-      "T4",
+    "interchanges": [
       "T8"
     ],
     "lat": -33.90018265,
     "lng": 151.1854959
   },
-  {
-    "id": "fairfield",
+  "STN-FFL": {
+    "id": "STN-FFL",
     "name": "Fairfield",
-    "lines": [
+    "interchanges": [
       "T2",
       "T5"
     ],
     "lat": -33.87224505,
     "lng": 150.95725354
   },
-  {
-    "id": "flemington",
+  "STN-FMG": {
+    "id": "STN-FMG",
     "name": "Flemington",
-    "lines": [
-      "T1",
+    "interchanges": [
       "T2",
       "T3"
     ],
     "lat": -33.86491214,
     "lng": 151.07017841
   },
-  {
-    "id": "gadigal",
-    "name": "Gadigal",
-    "lines": [
-      "M1"
-    ],
-    "lat": -33.87308122,
-    "lng": 151.20872206
-  },
-  {
-    "id": "glenfield",
+  "STN-GFD": {
+    "id": "STN-GFD",
     "name": "Glenfield",
-    "lines": [
+    "interchanges": [
       "T2",
-      "T3",
       "T5",
       "T8"
     ],
     "lat": -33.97220759,
     "lng": 150.89306653
   },
-  {
-    "id": "gordon",
+  "STN-GDN": {
+    "id": "STN-GDN",
     "name": "Gordon",
-    "lines": [
+    "interchanges": [
       "T1",
       "T9"
     ],
     "lat": -33.75591148,
     "lng": 151.15444755
   },
-  {
-    "id": "granville",
+  "STN-GAV": {
+    "id": "STN-GAV",
     "name": "Granville",
-    "lines": [
+    "interchanges": [
       "T1",
-      "T2",
-      "T7"
+      "T2"
     ],
     "lat": -33.83275764,
     "lng": 151.01186867
   },
-  {
-    "id": "green_square",
+  "STN-GQE": {
+    "id": "STN-GQE",
     "name": "Green Square",
-    "lines": [
+    "interchanges": [
       "T8"
     ],
     "lat": -33.90607818,
     "lng": 151.20257663
   },
-  {
-    "id": "guildford",
+  "STN-GUD": {
+    "id": "STN-GUD",
     "name": "Guildford",
-    "lines": [
+    "interchanges": [
       "T2",
       "T5"
     ],
     "lat": -33.85443792,
     "lng": 150.98439283
   },
-  {
-    "id": "gymea",
+  "STN-GYM": {
+    "id": "STN-GYM",
     "name": "Gymea",
-    "lines": [
+    "interchanges": [
       "T4"
     ],
     "lat": -34.0348695,
     "lng": 151.08526089
   },
-  {
-    "id": "harris_park",
+  "STN-HPK": {
+    "id": "STN-HPK",
     "name": "Harris Park",
-    "lines": [
+    "interchanges": [
       "T1",
       "T2",
       "T5"
@@ -626,211 +550,186 @@
     "lat": -33.82335268,
     "lng": 151.00765002
   },
-  {
-    "id": "heathcote",
+  "STN-HTC": {
+    "id": "STN-HTC",
     "name": "Heathcote",
-    "lines": [
+    "interchanges": [
       "T4"
     ],
     "lat": -34.08791879,
     "lng": 151.00833242
   },
-  {
-    "id": "helensburgh",
+  "STN-HNB": {
+    "id": "STN-HNB",
     "name": "Helensburgh",
-    "lines": [
+    "interchanges": [
       "T4"
     ],
     "lat": -34.17705075,
     "lng": 150.99425973
   },
-  {
-    "id": "hills_showground",
-    "name": "Hills Showground",
-    "lines": [
-      "M1"
-    ],
-    "lat": -33.72791245,
-    "lng": 150.98702465
-  },
-  {
-    "id": "holsworthy",
+  "STN-HOL": {
+    "id": "STN-HOL",
     "name": "Holsworthy",
-    "lines": [
+    "interchanges": [
       "T8"
     ],
     "lat": -33.96319517,
     "lng": 150.95658976
   },
-  {
-    "id": "homebush",
+  "STN-HSH": {
+    "id": "STN-HSH",
     "name": "Homebush",
-    "lines": [
-      "T1",
+    "interchanges": [
       "T2",
       "T3"
     ],
     "lat": -33.86668795,
     "lng": 151.08619478
   },
-  {
-    "id": "hornsby",
+  "STN-HBY": {
+    "id": "STN-HBY",
     "name": "Hornsby",
-    "lines": [
+    "interchanges": [
       "T1",
       "T9"
     ],
     "lat": -33.70347479,
     "lng": 151.09835973
   },
-  {
-    "id": "hurstville",
+  "STN-HVL": {
+    "id": "STN-HVL",
     "name": "Hurstville",
-    "lines": [
+    "interchanges": [
       "T4"
     ],
     "lat": -33.96744133,
     "lng": 151.10269428
   },
-  {
-    "id": "ingleburn",
+  "STN-IGB": {
+    "id": "STN-IGB",
     "name": "Ingleburn",
-    "lines": [
-      "T3",
+    "interchanges": [
       "T8"
     ],
     "lat": -33.99748219,
     "lng": 150.86457694
   },
-  {
-    "id": "international_airport",
+  "STN-INT": {
+    "id": "STN-INT",
     "name": "International Airport",
-    "lines": [
+    "interchanges": [
       "T8"
     ],
     "lat": -33.93497091,
     "lng": 151.16584068
   },
-  {
-    "id": "jannali",
+  "STN-JNL": {
+    "id": "STN-JNL",
     "name": "Jannali",
-    "lines": [
+    "interchanges": [
       "T4"
     ],
     "lat": -34.01610952,
     "lng": 151.06464581
   },
-  {
-    "id": "kellyville",
-    "name": "Kellyville",
-    "lines": [
-      "M1"
-    ],
-    "lat": -33.71337441,
-    "lng": 150.93523145
-  },
-  {
-    "id": "killara",
+  "STN-KLA": {
+    "id": "STN-KLA",
     "name": "Killara",
-    "lines": [
+    "interchanges": [
       "T1",
       "T9"
     ],
     "lat": -33.76569908,
     "lng": 151.16184659
   },
-  {
-    "id": "kings_cross",
+  "STN-KSX": {
+    "id": "STN-KSX",
     "name": "Kings Cross",
-    "lines": [
+    "interchanges": [
       "T4"
     ],
     "lat": -33.87448343,
     "lng": 151.2222282
   },
-  {
-    "id": "kingsgrove",
+  "STN-KGV": {
+    "id": "STN-KGV",
     "name": "Kingsgrove",
-    "lines": [
+    "interchanges": [
       "T8"
     ],
     "lat": -33.94048235,
     "lng": 151.10081465
   },
-  {
-    "id": "kingswood",
+  "STN-KWD": {
+    "id": "STN-KWD",
     "name": "Kingswood",
-    "lines": [
-      "T1",
-      "T5"
+    "interchanges": [
+      "T1"
     ],
     "lat": -33.75842011,
     "lng": 150.72053259
   },
-  {
-    "id": "kirrawee",
+  "STN-KEE": {
+    "id": "STN-KEE",
     "name": "Kirrawee",
-    "lines": [
+    "interchanges": [
       "T4"
     ],
     "lat": -34.03497564,
     "lng": 151.07121805
   },
-  {
-    "id": "kogarah",
+  "STN-KGH": {
+    "id": "STN-KGH",
     "name": "Kogarah",
-    "lines": [
+    "interchanges": [
       "T4"
     ],
     "lat": -33.96254149,
     "lng": 151.13248719
   },
-  {
-    "id": "leightonfield",
+  "STN-LTN": {
+    "id": "STN-LTN",
     "name": "Leightonfield",
-    "lines": [
-      "T2",
+    "interchanges": [
       "T3"
     ],
     "lat": -33.88148108,
     "lng": 150.98489517
   },
-  {
-    "id": "leppington",
+  "STN-LEP": {
+    "id": "STN-LEP",
     "name": "Leppington",
-    "lines": [
+    "interchanges": [
       "T2",
-      "T5",
-      "T8"
+      "T5"
     ],
     "lat": -33.95445703,
     "lng": 150.80817012
   },
-  {
-    "id": "leumeah",
+  "STN-LUM": {
+    "id": "STN-LUM",
     "name": "Leumeah",
-    "lines": [
-      "T3",
+    "interchanges": [
       "T8"
     ],
     "lat": -34.05067661,
     "lng": 150.83060671
   },
-  {
-    "id": "lewisham",
+  "STN-LWI": {
+    "id": "STN-LWI",
     "name": "Lewisham",
-    "lines": [
+    "interchanges": [
       "T2",
-      "T3",
-      "T9"
+      "T3"
     ],
     "lat": -33.89341703,
     "lng": 151.14770641
   },
-  {
-    "id": "lidcombe",
+  "STN-LDC": {
+    "id": "STN-LDC",
     "name": "Lidcombe",
-    "lines": [
+    "interchanges": [
       "T1",
       "T2",
       "T3",
@@ -840,20 +739,20 @@
     "lat": -33.86375583,
     "lng": 151.04512981
   },
-  {
-    "id": "lindfield",
+  "STN-LDD": {
+    "id": "STN-LDD",
     "name": "Lindfield",
-    "lines": [
+    "interchanges": [
       "T1",
       "T9"
     ],
     "lat": -33.77552136,
     "lng": 151.16927068
   },
-  {
-    "id": "liverpool",
+  "STN-LPO": {
+    "id": "STN-LPO",
     "name": "Liverpool",
-    "lines": [
+    "interchanges": [
       "T2",
       "T3",
       "T5"
@@ -861,586 +760,520 @@
     "lat": -33.92492704,
     "lng": 150.92732848
   },
-  {
-    "id": "loftus",
+  "STN-LOF": {
+    "id": "STN-LOF",
     "name": "Loftus",
-    "lines": [
+    "interchanges": [
       "T4"
     ],
     "lat": -34.04522117,
     "lng": 151.05131573
   },
-  {
-    "id": "macarthur",
+  "STN-MCA": {
+    "id": "STN-MCA",
     "name": "Macarthur",
-    "lines": [
-      "T3",
-      "T5",
+    "interchanges": [
       "T8"
     ],
     "lat": -34.07199134,
     "lng": 150.79716422
   },
-  {
-    "id": "macdonaldtown",
+  "STN-MAC": {
+    "id": "STN-MAC",
     "name": "Macdonaldtown",
-    "lines": [
+    "interchanges": [
       "T2",
-      "T3",
-      "T9"
+      "T3"
     ],
     "lat": -33.89695934,
     "lng": 151.18569469
   },
-  {
-    "id": "macquarie_fields",
+  "STN-MQF": {
+    "id": "STN-MQF",
     "name": "Macquarie Fields",
-    "lines": [
-      "T3",
+    "interchanges": [
       "T8"
     ],
     "lat": -33.98483038,
     "lng": 150.87887723
   },
-  {
-    "id": "macquarie_park",
-    "name": "Macquarie Park",
-    "lines": [
-      "M1"
-    ],
-    "lat": -33.78507995,
-    "lng": 151.12837418
-  },
-  {
-    "id": "macquarie_university",
-    "name": "Macquarie University",
-    "lines": [
-      "M1"
-    ],
-    "lat": -33.77728198,
-    "lng": 151.11826703
-  },
-  {
-    "id": "marayong",
+  "STN-MYG": {
+    "id": "STN-MYG",
     "name": "Marayong",
-    "lines": [
+    "interchanges": [
       "T1",
       "T5"
     ],
     "lat": -33.74609965,
     "lng": 150.90017109
   },
-  {
-    "id": "martin_place",
+  "STN-MPC": {
+    "id": "STN-MPC",
     "name": "Martin Place",
-    "lines": [
+    "interchanges": [
       "M1",
       "T4"
     ],
     "lat": -33.86764769,
     "lng": 151.21058267
   },
-  {
-    "id": "mascot",
+  "STN-MCO": {
+    "id": "STN-MCO",
     "name": "Mascot",
-    "lines": [
+    "interchanges": [
       "T8"
     ],
     "lat": -33.92317637,
     "lng": 151.1873354
   },
-  {
-    "id": "meadowbank",
+  "STN-MEB": {
+    "id": "STN-MEB",
     "name": "Meadowbank",
-    "lines": [
+    "interchanges": [
       "T9"
     ],
     "lat": -33.81579356,
     "lng": 151.09010555
   },
-  {
-    "id": "merrylands",
+  "STN-MLN": {
+    "id": "STN-MLN",
     "name": "Merrylands",
-    "lines": [
+    "interchanges": [
       "T2",
       "T5"
     ],
     "lat": -33.83668568,
     "lng": 150.99248668
   },
-  {
-    "id": "milsons_point",
+  "STN-MPT": {
+    "id": "STN-MPT",
     "name": "Milsons Point",
-    "lines": [
+    "interchanges": [
       "T1",
       "T9"
     ],
     "lat": -33.8459361,
     "lng": 151.21183697
   },
-  {
-    "id": "minto",
+  "STN-MIO": {
+    "id": "STN-MIO",
     "name": "Minto",
-    "lines": [
-      "T3",
+    "interchanges": [
       "T8"
     ],
     "lat": -34.02744354,
     "lng": 150.84249432
   },
-  {
-    "id": "miranda",
+  "STN-MIJ": {
+    "id": "STN-MIJ",
     "name": "Miranda",
-    "lines": [
+    "interchanges": [
       "T4"
     ],
     "lat": -34.03625439,
     "lng": 151.10209197
   },
-  {
-    "id": "mortdale",
+  "STN-MDE": {
+    "id": "STN-MDE",
     "name": "Mortdale",
-    "lines": [
+    "interchanges": [
       "T4"
     ],
     "lat": -33.9710471,
     "lng": 151.08100076
   },
-  {
-    "id": "mount_colah",
+  "STN-MOC": {
+    "id": "STN-MOC",
     "name": "Mount Colah",
-    "lines": [
-      "T1",
-      "T9"
+    "interchanges": [
+      "T1"
     ],
     "lat": -33.67174586,
     "lng": 151.11469754
   },
-  {
-    "id": "mount_druitt",
+  "STN-MTT": {
+    "id": "STN-MTT",
     "name": "Mount Druitt",
-    "lines": [
-      "T1",
-      "T5"
+    "interchanges": [
+      "T1"
     ],
     "lat": -33.76955803,
     "lng": 150.82012586
   },
-  {
-    "id": "mount_kuring_gai",
+  "STN-MKI": {
+    "id": "STN-MKI",
     "name": "Mount Kuring-gai",
-    "lines": [
-      "T1",
-      "T9"
+    "interchanges": [
+      "T1"
     ],
     "lat": -33.65358907,
     "lng": 151.13682391
   },
-  {
-    "id": "mulgrave",
+  "STN-MUV": {
+    "id": "STN-MUV",
     "name": "Mulgrave",
-    "lines": [
+    "interchanges": [
       "T1",
       "T5"
     ],
     "lat": -33.6265162,
     "lng": 150.83003584
   },
-  {
-    "id": "museum",
+  "STN-MSM": {
+    "id": "STN-MSM",
     "name": "Museum",
-    "lines": [
+    "interchanges": [
       "T2",
       "T3",
-      "T4",
       "T8"
     ],
     "lat": -33.8755711,
     "lng": 151.20994628
   },
-  {
-    "id": "narwee",
+  "STN-NWE": {
+    "id": "STN-NWE",
     "name": "Narwee",
-    "lines": [
+    "interchanges": [
       "T8"
     ],
     "lat": -33.94767733,
     "lng": 151.07058514
   },
-  {
-    "id": "newtown",
+  "STN-NTN": {
+    "id": "STN-NTN",
     "name": "Newtown",
-    "lines": [
+    "interchanges": [
       "T2",
-      "T3",
-      "T9"
+      "T3"
     ],
     "lat": -33.89791301,
     "lng": 151.17937737
   },
-  {
-    "id": "normanhurst",
+  "STN-NOR": {
+    "id": "STN-NOR",
     "name": "Normanhurst",
-    "lines": [
+    "interchanges": [
       "T9"
     ],
     "lat": -33.72082663,
     "lng": 151.0970721
   },
-  {
-    "id": "north_ryde",
-    "name": "North Ryde",
-    "lines": [
-      "M1"
-    ],
-    "lat": -33.79421813,
-    "lng": 151.13798663
-  },
-  {
-    "id": "north_strathfield",
+  "STN-NST": {
+    "id": "STN-NST",
     "name": "North Strathfield",
-    "lines": [
+    "interchanges": [
+      "M1",
       "T9"
     ],
     "lat": -33.85918843,
     "lng": 151.08818062
   },
-  {
-    "id": "north_sydney",
+  "STN-NSY": {
+    "id": "STN-NSY",
     "name": "North Sydney",
-    "lines": [
+    "interchanges": [
       "T1",
       "T9"
     ],
     "lat": -33.84115005,
     "lng": 151.20741233
   },
-  {
-    "id": "norwest",
-    "name": "Norwest",
-    "lines": [
-      "M1"
-    ],
-    "lat": -33.73461748,
-    "lng": 150.96352165
-  },
-  {
-    "id": "oatley",
+  "STN-OAL": {
+    "id": "STN-OAL",
     "name": "Oatley",
-    "lines": [
+    "interchanges": [
       "T4"
     ],
     "lat": -33.9803847,
     "lng": 151.07901413
   },
-  {
-    "id": "olympic_park",
+  "STN-OLP": {
+    "id": "STN-OLP",
     "name": "Olympic Park",
-    "lines": [
-      "T1",
-      "T2",
+    "interchanges": [
       "T7"
     ],
     "lat": -33.84659492,
     "lng": 151.06932974
   },
-  {
-    "id": "padstow",
+  "STN-PDW": {
+    "id": "STN-PDW",
     "name": "Padstow",
-    "lines": [
+    "interchanges": [
       "T8"
     ],
     "lat": -33.95191691,
     "lng": 151.03217663
   },
-  {
-    "id": "panania",
+  "STN-PAN": {
+    "id": "STN-PAN",
     "name": "Panania",
-    "lines": [
+    "interchanges": [
       "T8"
     ],
     "lat": -33.95427746,
     "lng": 150.99826036
   },
-  {
-    "id": "parramatta",
+  "STN-PAR": {
+    "id": "STN-PAR",
     "name": "Parramatta",
-    "lines": [
+    "interchanges": [
+      "M1",
       "T1",
       "T2",
-      "T5",
-      "T7"
+      "T5"
     ],
     "lat": -33.81749025,
     "lng": 151.005325
   },
-  {
-    "id": "pendle_hill",
+  "STN-PDH": {
+    "id": "STN-PDH",
     "name": "Pendle Hill",
-    "lines": [
+    "interchanges": [
       "T1",
       "T5"
     ],
     "lat": -33.80120445,
     "lng": 150.9560804
   },
-  {
-    "id": "pennant_hills",
+  "STN-PNT": {
+    "id": "STN-PNT",
     "name": "Pennant Hills",
-    "lines": [
+    "interchanges": [
       "T9"
     ],
     "lat": -33.73791201,
     "lng": 151.07255151
   },
-  {
-    "id": "penrith",
+  "STN-PNR": {
+    "id": "STN-PNR",
     "name": "Penrith",
-    "lines": [
-      "T1",
-      "T5"
+    "interchanges": [
+      "T1"
     ],
     "lat": -33.75014862,
     "lng": 150.69651584
   },
-  {
-    "id": "penshurst",
+  "STN-PHS": {
+    "id": "STN-PHS",
     "name": "Penshurst",
-    "lines": [
+    "interchanges": [
       "T4"
     ],
     "lat": -33.96620899,
     "lng": 151.0888473
   },
-  {
-    "id": "petersham",
+  "STN-PSM": {
+    "id": "STN-PSM",
     "name": "Petersham",
-    "lines": [
+    "interchanges": [
       "T2",
-      "T3",
-      "T9"
+      "T3"
     ],
     "lat": -33.89386331,
     "lng": 151.15557204
   },
-  {
-    "id": "pymble",
+  "STN-PYB": {
+    "id": "STN-PYB",
     "name": "Pymble",
-    "lines": [
-      "T1",
-      "T9"
+    "interchanges": [
+      "T1"
     ],
     "lat": -33.74477962,
     "lng": 151.14226141
   },
-  {
-    "id": "quakers_hill",
+  "STN-QKH": {
+    "id": "STN-QKH",
     "name": "Quakers Hill",
-    "lines": [
+    "interchanges": [
       "T1",
       "T5"
     ],
     "lat": -33.72746287,
     "lng": 150.88623397
   },
-  {
-    "id": "redfern",
+  "STN-REF": {
+    "id": "STN-REF",
     "name": "Redfern",
-    "lines": [
+    "interchanges": [
       "T1",
       "T2",
       "T3",
       "T4",
-      "T7",
       "T8",
       "T9"
     ],
     "lat": -33.89204769,
     "lng": 151.19841906
   },
-  {
-    "id": "regents_park",
+  "STN-RGP": {
+    "id": "STN-RGP",
     "name": "Regents Park",
-    "lines": [
+    "interchanges": [
       "T3",
       "T6"
     ],
     "lat": -33.8831901,
     "lng": 151.02401965
   },
-  {
-    "id": "revesby",
+  "STN-RSY": {
+    "id": "STN-RSY",
     "name": "Revesby",
-    "lines": [
+    "interchanges": [
       "T8"
     ],
     "lat": -33.95251787,
     "lng": 151.01519695
   },
-  {
-    "id": "rhodes",
+  "STN-RDS": {
+    "id": "STN-RDS",
     "name": "Rhodes",
-    "lines": [
+    "interchanges": [
       "T9"
     ],
     "lat": -33.83049189,
     "lng": 151.08704933
   },
-  {
-    "id": "richmond",
+  "STN-RCD": {
+    "id": "STN-RCD",
     "name": "Richmond",
-    "lines": [
+    "interchanges": [
       "T1",
       "T5"
     ],
     "lat": -33.59884642,
     "lng": 150.75264112
   },
-  {
-    "id": "riverstone",
+  "STN-RVS": {
+    "id": "STN-RVS",
     "name": "Riverstone",
-    "lines": [
+    "interchanges": [
       "T1",
       "T5"
     ],
     "lat": -33.67926177,
     "lng": 150.86037985
   },
-  {
-    "id": "riverwood",
+  "STN-RVD": {
+    "id": "STN-RVD",
     "name": "Riverwood",
-    "lines": [
+    "interchanges": [
       "T8"
     ],
     "lat": -33.95139401,
     "lng": 151.05245738
   },
-  {
-    "id": "rockdale",
+  "STN-RKL": {
+    "id": "STN-RKL",
     "name": "Rockdale",
-    "lines": [
+    "interchanges": [
       "T4"
     ],
     "lat": -33.95224818,
     "lng": 151.13661619
   },
-  {
-    "id": "rooty_hill",
+  "STN-RYH": {
+    "id": "STN-RYH",
     "name": "Rooty Hill",
-    "lines": [
-      "T1",
-      "T5"
+    "interchanges": [
+      "T1"
     ],
     "lat": -33.77162507,
     "lng": 150.84464747
   },
-  {
-    "id": "roseville",
+  "STN-RVL": {
+    "id": "STN-RVL",
     "name": "Roseville",
-    "lines": [
+    "interchanges": [
       "T1",
       "T9"
     ],
     "lat": -33.78443617,
     "lng": 151.17766673
   },
-  {
-    "id": "rouse_hill",
-    "name": "Rouse Hill",
-    "lines": [
-      "M1"
-    ],
-    "lat": -33.69181177,
-    "lng": 150.92416751
-  },
-  {
-    "id": "schofields",
+  "STN-SFS": {
+    "id": "STN-SFS",
     "name": "Schofields",
-    "lines": [
+    "interchanges": [
       "T1",
       "T5"
     ],
     "lat": -33.70438029,
     "lng": 150.87377461
   },
-  {
-    "id": "sefton",
+  "STN-SFT": {
+    "id": "STN-SFT",
     "name": "Sefton",
-    "lines": [
-      "T2",
+    "interchanges": [
       "T3"
     ],
     "lat": -33.88527733,
     "lng": 151.01170402
   },
-  {
-    "id": "seven_hills",
+  "STN-SEV": {
+    "id": "STN-SEV",
     "name": "Seven Hills",
-    "lines": [
+    "interchanges": [
       "T1",
-      "T5",
-      "T7"
+      "T5"
     ],
     "lat": -33.7743511,
     "lng": 150.93612251
   },
-  {
-    "id": "st_james",
+  "STN-STJ": {
+    "id": "STN-STJ",
     "name": "St James",
-    "lines": [
+    "interchanges": [
       "T2",
       "T3",
-      "T4",
       "T8"
     ],
     "lat": -33.87062216,
     "lng": 151.21186309
   },
-  {
-    "id": "st_leonards",
+  "STN-SNL": {
+    "id": "STN-SNL",
     "name": "St Leonards",
-    "lines": [
+    "interchanges": [
       "T1",
       "T9"
     ],
     "lat": -33.8222319,
     "lng": 151.19413439
   },
-  {
-    "id": "st_marys",
+  "STN-STM": {
+    "id": "STN-STM",
     "name": "St Marys",
-    "lines": [
-      "T1",
-      "T5"
+    "interchanges": [
+      "M1",
+      "T1"
     ],
     "lat": -33.76210254,
     "lng": 150.77518003
   },
-  {
-    "id": "st_peters",
+  "STN-SAP": {
+    "id": "STN-SAP",
     "name": "St Peters",
-    "lines": [
-      "T4",
+    "interchanges": [
       "T8"
     ],
     "lat": -33.90727298,
     "lng": 151.18074263
   },
-  {
-    "id": "stanmore",
+  "STN-SMN": {
+    "id": "STN-SMN",
     "name": "Stanmore",
-    "lines": [
+    "interchanges": [
       "T2",
-      "T3",
-      "T9"
+      "T3"
     ],
     "lat": -33.89447424,
     "lng": 151.16414803
   },
-  {
-    "id": "strathfield",
+  "STN-STR": {
+    "id": "STN-STR",
     "name": "Strathfield",
-    "lines": [
+    "interchanges": [
       "T1",
       "T2",
       "T3",
@@ -1450,30 +1283,29 @@
     "lat": -33.87167201,
     "lng": 151.09428565
   },
-  {
-    "id": "summer_hill",
+  "STN-SMH": {
+    "id": "STN-SMH",
     "name": "Summer Hill",
-    "lines": [
+    "interchanges": [
       "T2",
-      "T3",
-      "T9"
+      "T3"
     ],
     "lat": -33.89044065,
     "lng": 151.1387028
   },
-  {
-    "id": "sutherland",
+  "STN-SLD": {
+    "id": "STN-SLD",
     "name": "Sutherland",
-    "lines": [
+    "interchanges": [
       "T4"
     ],
     "lat": -34.03175379,
     "lng": 151.05722202
   },
-  {
-    "id": "sydenham",
+  "STN-SDN": {
+    "id": "STN-SDN",
     "name": "Sydenham",
-    "lines": [
+    "interchanges": [
       "M1",
       "T4",
       "T8"
@@ -1481,47 +1313,38 @@
     "lat": -33.91445896,
     "lng": 151.16652644
   },
-  {
-    "id": "tallawong",
-    "name": "Tallawong",
-    "lines": [
-      "M1"
-    ],
-    "lat": -33.69163119,
-    "lng": 150.90600569
-  },
-  {
-    "id": "tempe",
+  "STN-TME": {
+    "id": "STN-TME",
     "name": "Tempe",
-    "lines": [
+    "interchanges": [
       "T4"
     ],
     "lat": -33.92390407,
     "lng": 151.15660038
   },
-  {
-    "id": "thornleigh",
+  "STN-THO": {
+    "id": "STN-THO",
     "name": "Thornleigh",
-    "lines": [
+    "interchanges": [
       "T9"
     ],
     "lat": -33.73189695,
     "lng": 151.07815508
   },
-  {
-    "id": "toongabbie",
+  "STN-TGB": {
+    "id": "STN-TGB",
     "name": "Toongabbie",
-    "lines": [
+    "interchanges": [
       "T1",
       "T5"
     ],
     "lat": -33.78738636,
     "lng": 150.95144002
   },
-  {
-    "id": "town_hall",
+  "STN-THL": {
+    "id": "STN-THL",
     "name": "Town Hall",
-    "lines": [
+    "interchanges": [
       "T1",
       "T2",
       "T3",
@@ -1532,88 +1355,74 @@
     "lat": -33.87353896,
     "lng": 151.20692991
   },
-  {
-    "id": "turramurra",
+  "STN-TMU": {
+    "id": "STN-TMU",
     "name": "Turramurra",
-    "lines": [
-      "T1",
-      "T9"
+    "interchanges": [
+      "T1"
     ],
     "lat": -33.73258635,
     "lng": 151.12863644
   },
-  {
-    "id": "turrella",
+  "STN-TLL": {
+    "id": "STN-TLL",
     "name": "Turrella",
-    "lines": [
+    "interchanges": [
       "T8"
     ],
     "lat": -33.92979582,
     "lng": 151.14033853
   },
-  {
-    "id": "victoria_cross",
-    "name": "Victoria Cross",
-    "lines": [
-      "M1"
-    ],
-    "lat": -33.83772725,
-    "lng": 151.20738465
-  },
-  {
-    "id": "villawood",
+  "STN-VWD": {
+    "id": "STN-VWD",
     "name": "Villawood",
-    "lines": [
-      "T2",
+    "interchanges": [
       "T3"
     ],
     "lat": -33.88083101,
     "lng": 150.97685942
   },
-  {
-    "id": "vineyard",
+  "STN-VYR": {
+    "id": "STN-VYR",
     "name": "Vineyard",
-    "lines": [
+    "interchanges": [
       "T1",
       "T5"
     ],
     "lat": -33.6503077,
     "lng": 150.85115431
   },
-  {
-    "id": "wahroonga",
+  "STN-WRO": {
+    "id": "STN-WRO",
     "name": "Wahroonga",
-    "lines": [
-      "T1",
-      "T9"
+    "interchanges": [
+      "T1"
     ],
     "lat": -33.71804522,
     "lng": 151.1175449
   },
-  {
-    "id": "waitara",
+  "STN-WTA": {
+    "id": "STN-WTA",
     "name": "Waitara",
-    "lines": [
-      "T1",
-      "T9"
+    "interchanges": [
+      "T1"
     ],
     "lat": -33.71036513,
     "lng": 151.10494081
   },
-  {
-    "id": "warrawee",
+  "STN-WWE": {
+    "id": "STN-WWE",
     "name": "Warrawee",
-    "lines": [
-      "T1",
-      "T9"
+    "interchanges": [
+      "T1"
     ],
     "lat": -33.72439856,
     "lng": 151.12182775
   },
-  {
-    "id": "warwick_farm",
+  "STN-WWF": {
+    "id": "STN-WWF",
     "name": "Warwick Farm",
-    "lines": [
+    "interchanges": [
       "T2",
       "T3",
       "T5"
@@ -1621,145 +1430,457 @@
     "lat": -33.91331588,
     "lng": 150.93509547
   },
-  {
-    "id": "waterfall",
+  "STN-WFL": {
+    "id": "STN-WFL",
     "name": "Waterfall",
-    "lines": [
+    "interchanges": [
       "T4"
     ],
     "lat": -34.13490804,
     "lng": 150.99454839
   },
-  {
-    "id": "waterloo",
-    "name": "Waterloo",
-    "lines": [
-      "M1"
-    ],
-    "lat": -33.89744549,
-    "lng": 151.20023991
-  },
-  {
-    "id": "waverton",
+  "STN-WVT": {
+    "id": "STN-WVT",
     "name": "Waverton",
-    "lines": [
+    "interchanges": [
       "T1",
       "T9"
     ],
     "lat": -33.8376183,
     "lng": 151.19738129
   },
-  {
-    "id": "wentworthville",
+  "STN-WVL": {
+    "id": "STN-WVL",
     "name": "Wentworthville",
-    "lines": [
+    "interchanges": [
       "T1",
       "T5"
     ],
     "lat": -33.80706891,
     "lng": 150.97236952
   },
-  {
-    "id": "werrington",
+  "STN-WRT": {
+    "id": "STN-WRT",
     "name": "Werrington",
-    "lines": [
-      "T1",
-      "T5"
+    "interchanges": [
+      "T1"
     ],
     "lat": -33.75916137,
     "lng": 150.75759387
   },
-  {
-    "id": "west_ryde",
+  "STN-WRD": {
+    "id": "STN-WRD",
     "name": "West Ryde",
-    "lines": [
+    "interchanges": [
       "T9"
     ],
     "lat": -33.80719476,
     "lng": 151.09019218
   },
-  {
-    "id": "westmead",
+  "STN-WMD": {
+    "id": "STN-WMD",
     "name": "Westmead",
-    "lines": [
+    "interchanges": [
+      "M1",
       "T1",
-      "T5",
-      "T7"
+      "T5"
     ],
     "lat": -33.80847754,
     "lng": 150.98789237
   },
-  {
-    "id": "windsor",
+  "STN-WSR": {
+    "id": "STN-WSR",
     "name": "Windsor",
-    "lines": [
+    "interchanges": [
       "T1",
       "T5"
     ],
     "lat": -33.61375217,
     "lng": 150.81121394
   },
-  {
-    "id": "wolli_creek",
+  "STN-WCI": {
+    "id": "STN-WCI",
     "name": "Wolli Creek",
-    "lines": [
+    "interchanges": [
       "T4",
       "T8"
     ],
     "lat": -33.92853822,
     "lng": 151.15411287
   },
-  {
-    "id": "wollstonecraft",
+  "STN-WSC": {
+    "id": "STN-WSC",
     "name": "Wollstonecraft",
-    "lines": [
+    "interchanges": [
       "T1",
       "T9"
     ],
     "lat": -33.83194479,
     "lng": 151.19174851
   },
-  {
-    "id": "woolooware",
+  "STN-WOE": {
+    "id": "STN-WOE",
     "name": "Woolooware",
-    "lines": [
+    "interchanges": [
       "T4"
     ],
     "lat": -34.04754097,
     "lng": 151.14375723
   },
-  {
-    "id": "wynyard",
+  "STN-WYN": {
+    "id": "STN-WYN",
     "name": "Wynyard",
-    "lines": [
+    "interchanges": [
       "T1",
       "T2",
       "T3",
-      "T4",
       "T8",
       "T9"
     ],
     "lat": -33.86594489,
     "lng": 151.2061031
   },
-  {
-    "id": "yagoona",
+  "STN-YOA": {
+    "id": "STN-YOA",
     "name": "Yagoona",
-    "lines": [
-      "T2",
+    "interchanges": [
       "T6"
     ],
     "lat": -33.90721147,
     "lng": 151.02459877
   },
-  {
-    "id": "yennora",
+  "STN-YNR": {
+    "id": "STN-YNR",
     "name": "Yennora",
-    "lines": [
+    "interchanges": [
       "T2",
       "T5"
     ],
     "lat": -33.86466386,
     "lng": 150.97105333
+  },
+  "STN-BGO": {
+    "id": "STN-BGO",
+    "name": "Barangaroo",
+    "interchanges": [
+      "M1"
+    ],
+    "lat": -33.85957698,
+    "lng": 151.20261517
+  },
+  "STN-BVS": {
+    "id": "STN-BVS",
+    "name": "Bella Vista",
+    "interchanges": [
+      "M1"
+    ],
+    "lat": -33.73056616,
+    "lng": 150.94401959
+  },
+  "STN-CSH": {
+    "id": "STN-CSH",
+    "name": "Castle Hill",
+    "interchanges": [
+      "M1"
+    ],
+    "lat": -33.73162575,
+    "lng": 151.00728849
+  },
+  "STN-CBK": {
+    "id": "STN-CBK",
+    "name": "Cherrybrook",
+    "interchanges": [
+      "M1"
+    ],
+    "lat": -33.73665917,
+    "lng": 151.03199446
+  },
+  "STN-CRN": {
+    "id": "STN-CRN",
+    "name": "Crows Nest",
+    "interchanges": [
+      "M1"
+    ],
+    "lat": -33.8256203,
+    "lng": 151.19913651
+  },
+  "STN-GDG": {
+    "id": "STN-GDG",
+    "name": "Gadigal",
+    "interchanges": [
+      "M1"
+    ],
+    "lat": -33.87308122,
+    "lng": 151.20872206
+  },
+  "STN-HSG": {
+    "id": "STN-HSG",
+    "name": "Hills Showground",
+    "interchanges": [
+      "M1"
+    ],
+    "lat": -33.72791245,
+    "lng": 150.98702465
+  },
+  "STN-KVL": {
+    "id": "STN-KVL",
+    "name": "Kellyville",
+    "interchanges": [
+      "M1"
+    ],
+    "lat": -33.71337441,
+    "lng": 150.93523145
+  },
+  "STN-MQP": {
+    "id": "STN-MQP",
+    "name": "Macquarie Park",
+    "interchanges": [
+      "M1"
+    ],
+    "lat": -33.78507995,
+    "lng": 151.12837418
+  },
+  "STN-MCU": {
+    "id": "STN-MCU",
+    "name": "Macquarie University",
+    "interchanges": [
+      "M1"
+    ],
+    "lat": -33.77728198,
+    "lng": 151.11826703
+  },
+  "STN-NRD": {
+    "id": "STN-NRD",
+    "name": "North Ryde",
+    "interchanges": [
+      "M1"
+    ],
+    "lat": -33.79421813,
+    "lng": 151.13798663
+  },
+  "STN-NWT": {
+    "id": "STN-NWT",
+    "name": "Norwest",
+    "interchanges": [
+      "M1"
+    ],
+    "lat": -33.73461748,
+    "lng": 150.96352165
+  },
+  "STN-RSH": {
+    "id": "STN-RSH",
+    "name": "Rouse Hill",
+    "interchanges": [
+      "M1"
+    ],
+    "lat": -33.69181177,
+    "lng": 150.92416751
+  },
+  "STN-TAW": {
+    "id": "STN-TAW",
+    "name": "Tallawong",
+    "interchanges": [
+      "M1"
+    ],
+    "lat": -33.69163119,
+    "lng": 150.90600569
+  },
+  "STN-VCS": {
+    "id": "STN-VCS",
+    "name": "Victoria Cross",
+    "interchanges": [
+      "M1"
+    ],
+    "lat": -33.83772725,
+    "lng": 151.20738465
+  },
+  "STN-WLO": {
+    "id": "STN-WLO",
+    "name": "Waterloo",
+    "interchanges": [
+      "M1"
+    ],
+    "lat": -33.89744549,
+    "lng": 151.20023991
+  },
+  "STN-ABP": {
+    "id": "STN-ABP",
+    "name": "Airport Business Park",
+    "interchanges": [
+      "M1"
+    ],
+    "lat": 0.0,
+    "lng": 0.0
+  },
+  "STN-APT": {
+    "id": "STN-APT",
+    "name": "Airport Terminal",
+    "interchanges": [
+      "M1"
+    ],
+    "lat": 0.0,
+    "lng": 0.0
+  },
+  "STN-BEL": {
+    "id": "STN-BEL",
+    "name": "Belmore",
+    "interchanges": [
+      "M1"
+    ],
+    "lat": 0.0,
+    "lng": 0.0
+  },
+  "STN-BDF": {
+    "id": "STN-BDF",
+    "name": "Bradfield",
+    "interchanges": [
+      "M1"
+    ],
+    "lat": 0.0,
+    "lng": 0.0
+  },
+  "STN-BWN": {
+    "id": "STN-BWN",
+    "name": "Burwood North",
+    "interchanges": [
+      "M1"
+    ],
+    "lat": 0.0,
+    "lng": 0.0
+  },
+  "STN-CAM": {
+    "id": "STN-CAM",
+    "name": "Campsie",
+    "interchanges": [
+      "M1"
+    ],
+    "lat": 0.0,
+    "lng": 0.0
+  },
+  "STN-CAN": {
+    "id": "STN-CAN",
+    "name": "Canterbury",
+    "interchanges": [
+      "M1"
+    ],
+    "lat": 0.0,
+    "lng": 0.0
+  },
+  "STN-DUL": {
+    "id": "STN-DUL",
+    "name": "Dulwich Hill",
+    "interchanges": [
+      "M1"
+    ],
+    "lat": 0.0,
+    "lng": 0.0
+  },
+  "STN-FDK": {
+    "id": "STN-FDK",
+    "name": "Five Dock",
+    "interchanges": [
+      "M1"
+    ],
+    "lat": 0.0,
+    "lng": 0.0
+  },
+  "STN-HST": {
+    "id": "STN-HST",
+    "name": "Hunter Street",
+    "interchanges": [
+      "M1"
+    ],
+    "lat": 0.0,
+    "lng": 0.0
+  },
+  "STN-HUR": {
+    "id": "STN-HUR",
+    "name": "Hurlstone Park",
+    "interchanges": [
+      "M1"
+    ],
+    "lat": 0.0,
+    "lng": 0.0
+  },
+  "STN-LAK": {
+    "id": "STN-LAK",
+    "name": "Lakemba",
+    "interchanges": [
+      "M1"
+    ],
+    "lat": 0.0,
+    "lng": 0.0
+  },
+  "STN-LDH": {
+    "id": "STN-LDH",
+    "name": "Luddenham",
+    "interchanges": [
+      "M1"
+    ],
+    "lat": 0.0,
+    "lng": 0.0
+  },
+  "STN-MAR": {
+    "id": "STN-MAR",
+    "name": "Marrickville",
+    "interchanges": [
+      "M1"
+    ],
+    "lat": 0.0,
+    "lng": 0.0
+  },
+  "STN-OHL": {
+    "id": "STN-OHL",
+    "name": "Orchard Hills",
+    "interchanges": [
+      "M1"
+    ],
+    "lat": 0.0,
+    "lng": 0.0
+  },
+  "STN-PUN": {
+    "id": "STN-PUN",
+    "name": "Punchbowl",
+    "interchanges": [
+      "M1"
+    ],
+    "lat": 0.0,
+    "lng": 0.0
+  },
+  "STN-PYR": {
+    "id": "STN-PYR",
+    "name": "Pyrmont",
+    "interchanges": [
+      "M1"
+    ],
+    "lat": 0.0,
+    "lng": 0.0
+  },
+  "STN-SYD": {
+    "id": "STN-SYD",
+    "name": "Sydney Olympic Park",
+    "interchanges": [
+      "M1"
+    ],
+    "lat": 0.0,
+    "lng": 0.0
+  },
+  "STN-TBY": {
+    "id": "STN-TBY",
+    "name": "The Bays",
+    "interchanges": [
+      "M1"
+    ],
+    "lat": 0.0,
+    "lng": 0.0
+  },
+  "STN-WIL": {
+    "id": "STN-WIL",
+    "name": "Wiley Park",
+    "interchanges": [
+      "M1"
+    ],
+    "lat": 0.0,
+    "lng": 0.0
   }
-]
+}

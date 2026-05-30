@@ -7,10 +7,11 @@ import GuessHistory from '@/components/GuessHistory';
 import ResultsModal from '@/components/ResultsModal';
 import HowToPlayModal from '@/components/HowToPlayModal';
 import SettingsModal from '@/components/SettingsModal';
-import { STATION_MAP, LINE_MAP } from '@/lib/networkData';
+import { STATION_MAP, LINE_MAP, resolveStationId } from '@/lib/networkData';
 import { findLinePath, getSharedLine, bfsShortestPathWithLines } from '@/lib/pathfinding';
 import { getRandomChallenge, getDailyChallenge, getTodayString } from '@/lib/dailyChallenge';
 import type { Station, GameState, LineId, DailyHistoryItem } from '@/types';
+import linesData from '../../public/lines.json';
 
 // Dynamically import map (SVG heavy, no SSR needed)
 const GameMap = dynamic(() => import('@/components/GameMap'), {
@@ -64,6 +65,11 @@ export default function Home() {
   const [dailyHistory, setDailyHistory] = useState<DailyHistoryItem[]>([]);
   const [hardMode, setHardMode] = useState<boolean>(false);
   const [showMobileTimeline, setShowMobileTimeline] = useState<boolean>(false);
+  const [devMode, setDevMode] = useState<boolean>(false);
+  const [explorerDate, setExplorerDate] = useState<string>(() => getTodayString());
+  const [isLocalhost, setIsLocalhost] = useState<boolean>(false);
+  const [devRoute, setDevRoute] = useState<{ lineId: string; variantName: string; stationIds: string[] } | null>(null);
+  const [hoveredStationId, setHoveredStationId] = useState<string | null>(null);
 
   // Load daily game history on mount
   useEffect(() => {
@@ -83,9 +89,9 @@ export default function Home() {
     }
   }, []);
 
-  const saveDailyProgress = useCallback((guessedIds: string[], wrongGuesses: string[], isComplete: boolean) => {
+  const saveDailyProgress = useCallback((guessedIds: string[], wrongGuesses: string[], isComplete: boolean, targetDate?: string) => {
     const progress = {
-      date: getTodayString(),
+      date: targetDate || getTodayString(),
       guessedIds,
       wrongGuesses,
       isComplete,
@@ -105,20 +111,22 @@ export default function Home() {
       ? Math.round((correctCount / totalStationsToGuess) * 100)
       : 100;
 
-    // Send statistics atomically to the database
-    fetch('/api/stats', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        date: state.date,
-        guesses: correctCount,
-        score
-      })
-    }).catch(err => {
-      console.error('Error submitting stats:', err);
-    });
+    // Send statistics atomically to the database only for today's challenge
+    if (state.date === getTodayString()) {
+      fetch('/api/stats', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          date: state.date,
+          guesses: correctCount,
+          score
+        })
+      }).catch(err => {
+        console.error('Error submitting stats:', err);
+      });
+    }
 
     setDailyHistory(prevHistory => {
       const alreadyExists = prevHistory.some(item => item.date === state.date);
@@ -146,10 +154,18 @@ export default function Home() {
     const initialTheme = savedTheme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
     const savedHardMode = localStorage.getItem('trackle_hard_mode') === 'true';
     const savedDarkMap = localStorage.getItem('trackle_dark_map') === 'true';
+    const savedDevMode = localStorage.getItem('trackle_dev_mode') === 'true';
+    const isLocal = window.location.hostname === 'localhost' ||
+      window.location.hostname === '127.0.0.1' ||
+      window.location.hostname.startsWith('192.168.') ||
+      window.location.hostname.startsWith('10.');
+
     const timer = setTimeout(() => {
       setTheme(initialTheme);
       setHardMode(savedHardMode);
       setDarkMap(savedDarkMap);
+      setDevMode(savedDevMode);
+      setIsLocalhost(isLocal);
       if (initialTheme === 'dark') {
         document.documentElement.classList.add('dark');
       } else {
@@ -176,6 +192,15 @@ export default function Home() {
     setToasts(t => [...t, { id, text, type }]);
     setTimeout(() => setToasts(t => t.filter(m => m.id !== id)), 3000);
   }, []);
+
+  const toggleDevMode = useCallback(() => {
+    setDevMode(prev => {
+      const next = !prev;
+      localStorage.setItem('trackle_dev_mode', String(next));
+      return next;
+    });
+    addToast(!devMode ? "Developer mode enabled!" : "Developer mode disabled!", "info");
+  }, [devMode, addToast]);
 
   const toggleTheme = useCallback(() => {
     const nextTheme = theme === 'dark' ? 'light' : 'dark';
@@ -212,43 +237,48 @@ export default function Home() {
   }, []);
 
   // Start a new game
-  const startGame = useCallback(async (m: 'daily' | 'practice', customStartId?: string, customTargetId?: string) => {
+  const startGame = useCallback(async (m: 'daily' | 'practice', customStartId?: string, customTargetId?: string, targetDate?: string) => {
     let startId: string, targetId: string;
     let challengeDate: string | undefined;
 
     if (m === 'daily') {
       let challenge: { start: string; target: string; date: string } | null = null;
-      const cached = localStorage.getItem('trackle_daily_challenge_cached');
-      const lastCheck = localStorage.getItem('trackle_last_challenge_check');
-      const now = Date.now();
-      const ONE_HOUR = 60 * 60 * 1000;
-      let needsFetch = !cached || !lastCheck || (now - Number(lastCheck)) > ONE_HOUR;
+      
+      if (targetDate) {
+        challenge = getDailyChallenge(targetDate);
+      } else {
+        const cached = localStorage.getItem('trackle_daily_challenge_cached');
+        const lastCheck = localStorage.getItem('trackle_last_challenge_check');
+        const now = Date.now();
+        const ONE_HOUR = 60 * 60 * 1000;
+        let needsFetch = !cached || !lastCheck || (now - Number(lastCheck)) > ONE_HOUR;
 
-      if (!needsFetch && cached) {
-        try {
-          challenge = JSON.parse(cached);
-        } catch (e) {
-          needsFetch = true;
-        }
-      }
-
-      if (needsFetch) {
-        try {
-          const res = await fetch('/api/daily');
-          if (res.ok) {
-            challenge = await res.json();
-            if (challenge) {
-              localStorage.setItem('trackle_daily_challenge_cached', JSON.stringify(challenge));
-              localStorage.setItem('trackle_last_challenge_check', String(now));
-            }
+        if (!needsFetch && cached) {
+          try {
+            challenge = JSON.parse(cached);
+          } catch (e) {
+            needsFetch = true;
           }
-        } catch (e) {
-          console.error("Failed to fetch daily challenge", e);
         }
-      }
 
-      if (!challenge) {
-        challenge = getDailyChallenge(getTodayString());
+        if (needsFetch) {
+          try {
+            const res = await fetch('/api/daily');
+            if (res.ok) {
+              challenge = await res.json();
+              if (challenge) {
+                localStorage.setItem('trackle_daily_challenge_cached', JSON.stringify(challenge));
+                localStorage.setItem('trackle_last_challenge_check', String(now));
+              }
+            }
+          } catch (e) {
+            console.error("Failed to fetch daily challenge", e);
+          }
+        }
+
+        if (!challenge) {
+          challenge = getDailyChallenge(getTodayString());
+        }
       }
 
       startId = challenge.start;
@@ -268,8 +298,22 @@ export default function Home() {
         startId = c.start;
         targetId = c.target;
       }
+    }
 
-      // Update/Set URL params
+    startId = resolveStationId(startId);
+    targetId = resolveStationId(targetId);
+
+    if (m === 'daily') {
+      const sStation = STATION_MAP.get(startId);
+      const tStation = STATION_MAP.get(targetId);
+      if (sStation && tStation && tStation.lng < sStation.lng) {
+        const temp = startId;
+        startId = targetId;
+        targetId = temp;
+      }
+    }
+
+    if (m === 'practice') {
       if (typeof window !== 'undefined') {
         const searchParams = new URLSearchParams();
         searchParams.set('mode', 'practice');
@@ -284,19 +328,21 @@ export default function Home() {
       return;
     }
 
-    const line = getSharedLine(startId, targetId);
+    const pathWithLines = bfsShortestPathWithLines(startId, targetId);
     let tripPath: string[] = [];
     let tripLines: LineId[] = [];
 
-    if (line) {
-      tripPath = findLinePath(startId, targetId, line) ?? [];
+    const line = getSharedLine(startId, targetId);
+    const singleLinePath = line ? (findLinePath(startId, targetId, line) ?? []) : [];
+
+    // If there is a single-line route AND it is not excessively longer than the optimal transfer route, use it.
+    if (line && singleLinePath.length > 0 && 
+        (!pathWithLines || singleLinePath.length <= pathWithLines.path.length + 6)) {
+      tripPath = singleLinePath;
       tripLines = [line];
-    } else {
-      const pathWithLines = bfsShortestPathWithLines(startId, targetId);
-      if (pathWithLines) {
-        tripPath = pathWithLines.path;
-        tripLines = pathWithLines.lines;
-      }
+    } else if (pathWithLines) {
+      tripPath = pathWithLines.path;
+      tripLines = pathWithLines.lines;
     }
 
     if (tripPath.length === 0) {
@@ -318,8 +364,8 @@ export default function Home() {
         try {
           const parsed = JSON.parse(saved);
           if (parsed && parsed.date === targetDate) {
-            state.guessedIds = parsed.guessedIds || [];
-            state.wrongGuesses = parsed.wrongGuesses || [];
+            state.guessedIds = (parsed.guessedIds || []).map(resolveStationId);
+            state.wrongGuesses = (parsed.wrongGuesses || []).map(resolveStationId);
             state.isComplete = parsed.isComplete || false;
             if (state.isComplete) {
               state.userPath = tripPath;
@@ -434,7 +480,7 @@ export default function Home() {
       setGameState(newState);
 
       if (gameState.mode === 'daily') {
-        saveDailyProgress(newGuessedIds, wrongGuesses, allGuessed);
+        saveDailyProgress(newGuessedIds, wrongGuesses, allGuessed, gameState.date);
         if (allGuessed) {
           saveToDailyHistory(newState);
         }
@@ -461,7 +507,7 @@ export default function Home() {
       setGameState(newState);
 
       if (gameState.mode === 'daily') {
-        saveDailyProgress(guessedIds, newWrongGuesses, isFailed);
+        saveDailyProgress(guessedIds, newWrongGuesses, isFailed, gameState.date);
         if (isFailed) {
           saveToDailyHistory(newState);
         }
@@ -488,7 +534,7 @@ export default function Home() {
     setGameState(newState);
 
     if (gameState.mode === 'daily') {
-      saveDailyProgress(gameState.guessedIds, gameState.wrongGuesses, true);
+      saveDailyProgress(gameState.guessedIds, gameState.wrongGuesses, true, gameState.date);
       saveToDailyHistory(newState);
     }
 
@@ -499,6 +545,19 @@ export default function Home() {
     startGame('practice');
   }, [startGame]);
 
+  const handleExplorerDateChange = useCallback((offsetDays: number) => {
+    setExplorerDate(prevDate => {
+      const d = new Date(prevDate + 'T12:00:00');
+      d.setDate(d.getDate() + offsetDays);
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      const newDate = `${year}-${month}-${day}`;
+      startGame('daily', undefined, undefined, newDate);
+      return newDate;
+    });
+  }, [startGame]);
+
   if (!gameState) {
     return (
       <div className="w-full h-dvh flex items-center justify-center bg-game-bg">
@@ -507,11 +566,120 @@ export default function Home() {
     );
   }
 
-  const startStation = STATION_MAP.get(gameState.startId);
-  const targetStation = STATION_MAP.get(gameState.targetId);
+  // Dev Route Viewer overrides
+  const isDevRouteViewerActive = devMode && devRoute !== null;
+  const startId = isDevRouteViewerActive ? devRoute.stationIds[0] : gameState.startId;
+  const targetId = isDevRouteViewerActive ? devRoute.stationIds[devRoute.stationIds.length - 1] : gameState.targetId;
+  const guessedIds = isDevRouteViewerActive ? devRoute.stationIds : gameState.guessedIds;
+  const optimalPath = isDevRouteViewerActive ? devRoute.stationIds : gameState.optimalPath;
+  const isComplete = isDevRouteViewerActive ? true : gameState.isComplete;
+  const wrongGuesses = isDevRouteViewerActive ? [] : gameState.wrongGuesses;
+  const tripLines = isDevRouteViewerActive ? [devRoute.lineId as LineId] : gameState.tripLines;
+  const tripPath = isDevRouteViewerActive ? devRoute.stationIds : gameState.tripPath;
+
+  const startStation = STATION_MAP.get(startId);
+  const targetStation = STATION_MAP.get(targetId);
 
   return (
     <main className="w-full h-dvh flex flex-col overflow-hidden" id="main-game">
+      {/* ── DEVELOPER TOOLBAR ─────────────────────────────────────── */}
+      {isLocalhost && devMode && (
+        <div className="bg-amber-500/10 border-b border-amber-500/20 px-4 py-1.5 flex flex-wrap items-center justify-between gap-4 shrink-0 text-xs text-amber-700 dark:text-amber-400 font-semibold z-[1900] shadow-sm">
+          {/* Daily Challenge Date Explorer */}
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="bg-amber-500 text-white text-[9px] px-1.5 py-0.5 rounded font-extrabold uppercase tracking-wider shrink-0">
+              Dev Explorer
+            </span>
+            <span className="text-gray-600 dark:text-gray-300">Daily Challenge:</span>
+            <div className="flex items-center gap-1.5">
+              <button
+                onClick={() => handleExplorerDateChange(-1)}
+                className="px-2 py-0.5 hover:bg-amber-500/20 active:scale-95 rounded text-amber-700 dark:text-amber-300 font-bold transition-all border border-amber-500/20"
+                title="Previous Day"
+              >
+                ◀ Day
+              </button>
+              <input
+                type="date"
+                value={explorerDate}
+                onChange={(e) => {
+                  setExplorerDate(e.target.value);
+                  startGame('daily', undefined, undefined, e.target.value);
+                }}
+                className="bg-game-surface border border-game-border rounded px-2 py-0.5 text-xs text-game-text focus:outline-none focus:border-amber-500 cursor-pointer font-medium"
+              />
+              <button
+                onClick={() => handleExplorerDateChange(1)}
+                className="px-2 py-0.5 hover:bg-amber-500/20 active:scale-95 rounded text-amber-700 dark:text-amber-300 font-bold transition-all border border-amber-500/20"
+                title="Next Day"
+              >
+                Day ▶
+              </button>
+            </div>
+          </div>
+
+          {/* Route Viewer */}
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-gray-600 dark:text-gray-300">Route Viewer:</span>
+            <select
+              value={devRoute?.lineId || ''}
+              onChange={(e) => {
+                const lineId = e.target.value;
+                if (!lineId) {
+                  setDevRoute(null);
+                  return;
+                }
+                const lineInfo = (linesData as any)[lineId];
+                const firstVariant = Object.keys(lineInfo.variants)[0];
+                setDevRoute({
+                  lineId,
+                  variantName: firstVariant,
+                  stationIds: lineInfo.variants[firstVariant],
+                });
+              }}
+              className="bg-game-surface border border-game-border rounded px-2 py-0.5 text-xs text-game-text focus:outline-none focus:border-amber-500 cursor-pointer font-medium"
+            >
+              <option value="">-- Select Line --</option>
+              {Object.entries(linesData).map(([id, info]: [string, any]) => (
+                <option key={id} value={id}>
+                  {id} - {info.displayName}
+                </option>
+              ))}
+            </select>
+
+            {devRoute && (
+              <>
+                <select
+                  value={devRoute.variantName}
+                  onChange={(e) => {
+                    const variantName = e.target.value;
+                    const lineInfo = (linesData as any)[devRoute.lineId];
+                    setDevRoute({
+                      ...devRoute,
+                      variantName,
+                      stationIds: lineInfo.variants[variantName],
+                    });
+                  }}
+                  className="bg-game-surface border border-game-border rounded px-2 py-0.5 text-xs text-game-text focus:outline-none focus:border-amber-500 cursor-pointer font-medium max-w-[120px] sm:max-w-none"
+                >
+                  {Object.keys((linesData as any)[devRoute.lineId].variants).map(vName => (
+                    <option key={vName} value={vName}>
+                      {vName}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  onClick={() => setDevRoute(null)}
+                  className="px-2 py-0.5 bg-red-600 hover:bg-red-500 text-white rounded text-[10px] font-bold transition-all border border-red-700"
+                >
+                  Exit Viewer
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* ── TOP NAV ───────────────────────────────────────────────── */}
       <nav className="relative glass-panel border-b border-game-border z-[2000] flex items-center justify-between px-4 py-2 shrink-0" id="nav-bar">
         <div className="flex items-center gap-3">
@@ -653,10 +821,10 @@ export default function Home() {
           </button>
 
           <span className="text-game-text-muted text-xs font-mono hidden sm:inline-block">
-            {gameState.guessedIds.length} correct / {gameState.tripPath.length > 2 ? gameState.tripPath.length - 2 : 0} stations
+            {guessedIds.length} correct / {tripPath.length > 2 ? tripPath.length - 2 : 0} stations
           </span>
 
-          {gameState.isComplete && (
+          {isComplete && !isDevRouteViewerActive && (
             <button
               id="btn-show-results"
               onClick={() => setShowResults(true)}
@@ -673,16 +841,17 @@ export default function Home() {
         {/* MAP AREA */}
         <div className="flex-1 relative min-w-0">
           <GameMap
-            startId={gameState.startId}
-            targetId={gameState.targetId}
-            guessedIds={gameState.guessedIds}
-            optimalPath={gameState.isComplete ? gameState.optimalPath : undefined}
-            isComplete={gameState.isComplete}
-            wrongGuesses={gameState.wrongGuesses}
-            tripLines={gameState.tripLines}
-            tripPath={gameState.tripPath}
+            startId={startId}
+            targetId={targetId}
+            guessedIds={guessedIds}
+            optimalPath={isComplete ? optimalPath : undefined}
+            isComplete={isComplete}
+            wrongGuesses={wrongGuesses}
+            tripLines={tripLines}
+            tripPath={tripPath}
             hardMode={hardMode}
             darkMap={darkMap}
+            hoveredStationId={hoveredStationId}
           />
 
           {/* MOBILE FLOATING OBJECTIVE (only visible on mobile, md:hidden) */}
@@ -691,7 +860,7 @@ export default function Home() {
               <div className="flex items-center justify-between gap-2 text-xs">
                 <div className="flex items-center gap-1.5 flex-1 min-w-0">
                   <span className="text-gray-500 dark:text-white font-medium">Goal:</span>
-                  {mode === 'practice' ? (
+                  {mode === 'practice' && !isDevRouteViewerActive ? (
                     <div className="flex items-center gap-1.5 overflow-hidden flex-1">
                       <select
                         value={gameState.startId}
@@ -739,11 +908,11 @@ export default function Home() {
                 </button>
               </div>
 
-              {gameState.tripLines && (
+              {tripLines && (
                 <div className="flex items-center gap-1.5 mt-0.5 border-t border-game-border/30 pt-1">
                   <span className="text-gray-500 dark:text-white text-[10px]">Lines:</span>
                   <div className="flex flex-wrap gap-1">
-                    {gameState.tripLines.map(lineId => {
+                    {tripLines.map(lineId => {
                       const line = LINE_MAP[lineId];
                       return (
                         <span
@@ -767,7 +936,7 @@ export default function Home() {
           </div>
 
           {/* MOBILE FLOATING ACTIONS (only visible on mobile, md:hidden) */}
-          {!gameState.isComplete && (
+          {!isComplete && (
             <div className="absolute bottom-6 left-6 right-6 md:hidden z-[1000] flex flex-col gap-2 pointer-events-auto">
               <div className="glass-panel p-3 rounded-2xl shadow-xl flex flex-col gap-2.5">
                 <StationInput
@@ -801,7 +970,7 @@ export default function Home() {
                     )}
                   </button>
 
-                  {gameState.mode !== 'daily' && (
+                  {(gameState.mode !== 'daily' || (isLocalhost && devMode)) && (
                     <button
                       onClick={handleGiveUp}
                       className="py-2 px-3 bg-red-50 hover:bg-red-100 dark:bg-red-950/40 dark:hover:bg-red-900/40 border border-red-200 dark:border-red-900/30 rounded-xl text-xs font-semibold text-red-600 dark:text-red-400 transition-colors"
@@ -814,7 +983,7 @@ export default function Home() {
             </div>
           )}
 
-          {gameState.isComplete && (
+          {isComplete && !isDevRouteViewerActive && (
             <div className="absolute bottom-6 left-6 right-6 md:hidden z-[1000]">
               <button
                 onClick={() => setShowResults(true)}
@@ -828,98 +997,200 @@ export default function Home() {
 
         {/* SIDE PANEL */}
         <aside className="hidden md:flex w-72 shrink-0 glass-panel border-l border-game-border flex flex-col overflow-hidden z-10" id="side-panel">
-          {/* Challenge info */}
-          <div className="px-4 pt-4 pb-3 border-b border-game-border">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs text-gray-500 font-medium uppercase tracking-wider truncate mr-1">
-                {mode === 'daily' ? `Daily Challenge · ${getTodayString()}` : 'Practice Mode'}
-              </span>
-              <button
-                onClick={handleHeaderShare}
-                className="px-2 py-1 bg-blue-600 hover:bg-blue-500 rounded-md text-[10px] font-bold text-white shadow transition-all duration-200 flex items-center gap-1 shrink-0"
-                title="Share this challenge link"
-              >
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
-                  <polyline points="16 6 12 2 8 6" />
-                  <line x1="12" y1="2" x2="12" y2="15" />
-                </svg>
-                Share
-              </button>
-            </div>
-            <div className="flex flex-col gap-2">
-              <div className="flex items-center gap-2">
-                <span className="text-xs text-gray-500 w-16">Endpoint</span>
-                <span className="text-game-text font-semibold text-sm">{startStation?.name}</span>
+          {isDevRouteViewerActive ? (
+            <div className="flex-1 flex flex-col min-h-0 overflow-hidden animate-fade-in">
+              {/* Header */}
+              <div className="px-4 py-4 border-b border-game-border flex flex-col gap-2 shrink-0">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-amber-500 font-bold uppercase tracking-wider">
+                    Dev Route Viewer
+                  </span>
+                  <button
+                    onClick={() => setDevRoute(null)}
+                    className="px-2 py-0.5 bg-red-600/20 hover:bg-red-600/30 text-red-500 border border-red-500/20 rounded text-[10px] font-bold transition-all"
+                  >
+                    Exit Viewer
+                  </button>
+                </div>
+                <div className="flex items-center gap-2 mt-1">
+                  <span
+                    className="line-badge text-xs font-bold shrink-0 animate-fade-in animate-pulse-slow"
+                    style={{
+                      backgroundColor: (linesData as any)[devRoute.lineId]?.color || '#888',
+                      color: '#fff',
+                      minWidth: '1.4rem',
+                      height: '1.4rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      borderRadius: '9999px',
+                    }}
+                  >
+                    {devRoute.lineId}
+                  </span>
+                  <span className="text-sm font-semibold text-game-text truncate">
+                    {(linesData as any)[devRoute.lineId]?.displayName}
+                  </span>
+                </div>
+                <div className="text-[10px] text-game-text-muted mt-0.5">
+                  Variant: <span className="font-mono text-amber-400">{devRoute.variantName}</span> ({devRoute.stationIds.length} stations)
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <span className="text-xs text-gray-500 w-16">Endpoint</span>
-                <span className="text-game-text font-semibold text-sm">{targetStation?.name}</span>
-              </div>
-              {gameState.tripLines && (
-                <div className="flex items-center gap-1.5 mt-1">
-                  <span className="text-xs text-gray-500 w-16">Lines</span>
-                  <div className="flex flex-wrap gap-1">
-                    {gameState.tripLines.map(lineId => {
-                      const line = LINE_MAP[lineId];
-                      return (
-                        <span
-                          key={lineId}
-                          className="line-badge text-xs font-semibold"
-                          style={{ backgroundColor: line?.color, color: line?.textColor }}
-                        >
-                          {lineId}
+
+              {/* Station List */}
+              <div className="flex-1 overflow-y-auto custom-scroll px-3 py-3 flex flex-col gap-1.5 min-h-0">
+                {devRoute.stationIds.map((id, index) => {
+                  const station = STATION_MAP.get(id);
+                  if (!station) return null;
+                  const isHovered = id === hoveredStationId;
+
+                  return (
+                    <React.Fragment key={id}>
+                      <div
+                        onMouseEnter={() => setHoveredStationId(id)}
+                        onMouseLeave={() => setHoveredStationId(null)}
+                        className={`
+                          flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all duration-200 cursor-pointer
+                          ${isHovered 
+                            ? 'bg-amber-500/25 border border-amber-500/50 text-game-text shadow-glow-orange/10 scale-[1.02]' 
+                            : 'bg-game-surface/40 hover:bg-game-surface/75 border border-game-border/30 text-game-text-muted'}
+                        `}
+                      >
+                        <div className="shrink-0 w-5 text-center text-xs font-mono font-bold text-gray-500">
+                          {index + 1}
+                        </div>
+                        
+                        {/* Station Name */}
+                        <span className="flex-1 truncate font-semibold">
+                          {station.name}
                         </span>
-                      );
-                    })}
+                        
+                        {/* Station Code */}
+                        <span className="text-[9px] font-mono bg-black/30 border border-white/5 px-1 py-0.2 rounded text-gray-400">
+                          {id.replace('STN-', '')}
+                        </span>
+                      </div>
+
+                      {index < devRoute.stationIds.length - 1 && (
+                        <div className="flex justify-center my-0.5">
+                          <div 
+                            className="w-0.5 h-3 transition-colors duration-200"
+                            style={{
+                              backgroundColor: isHovered 
+                                ? (linesData as any)[devRoute.lineId]?.color || '#888' 
+                                : 'var(--game-border)'
+                            }}
+                          />
+                        </div>
+                      )}
+                    </React.Fragment>
+                  );
+                })}
+              </div>
+              
+              {/* Footer */}
+              <div className="px-4 py-3 border-t border-game-border bg-game-surface/20 shrink-0 text-center">
+                <span className="text-[10px] text-game-text-muted italic">
+                  Hover over stations to highlight them on the map
+                </span>
+              </div>
+            </div>
+          ) : (
+            <>
+              {/* Challenge info */}
+              <div className="px-4 pt-4 pb-3 border-b border-game-border">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-xs text-gray-500 font-medium uppercase tracking-wider truncate mr-1">
+                    {mode === 'daily' ? `Daily Challenge · ${getTodayString()}` : 'Practice Mode'}
+                  </span>
+                  <button
+                    onClick={handleHeaderShare}
+                    className="px-2 py-1 bg-blue-600 hover:bg-blue-500 rounded-md text-[10px] font-bold text-white shadow transition-all duration-200 flex items-center gap-1 shrink-0"
+                    title="Share this challenge link"
+                  >
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+                      <polyline points="16 6 12 2 8 6" />
+                      <line x1="12" y1="2" x2="12" y2="15" />
+                    </svg>
+                    Share
+                  </button>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-gray-500 w-16">Endpoint</span>
+                    <span className="text-game-text font-semibold text-sm">{startStation?.name}</span>
                   </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-gray-500 w-16">Endpoint</span>
+                    <span className="text-game-text font-semibold text-sm">{targetStation?.name}</span>
+                  </div>
+                  {gameState.tripLines && (
+                    <div className="flex items-center gap-1.5 mt-1">
+                      <span className="text-xs text-gray-500 w-16">Lines</span>
+                      <div className="flex flex-wrap gap-1">
+                        {gameState.tripLines.map(lineId => {
+                          const line = LINE_MAP[lineId];
+                          return (
+                            <span
+                              key={lineId}
+                              className="line-badge text-xs font-semibold"
+                              style={{ backgroundColor: line?.color, color: line?.textColor }}
+                            >
+                              {lineId}
+                            </span>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Input */}
+              {!gameState.isComplete && (
+                <div className="px-3 py-3 border-b border-game-border flex flex-col gap-2">
+                  <StationInput
+                    onGuess={handleGuess}
+                    guessedIds={new Set([...gameState.guessedIds, ...gameState.wrongGuesses, gameState.startId, gameState.targetId])}
+                    startId={gameState.startId}
+                    targetId={gameState.targetId}
+                    disabled={gameState.isComplete}
+                  />
+                  {(gameState.mode !== 'daily' || (isLocalhost && devMode)) && (
+                    <button
+                      onClick={handleGiveUp}
+                      className="w-full py-1.5 bg-red-50 hover:bg-red-100 dark:bg-red-950/40 dark:hover:bg-red-900/40 border border-red-200 dark:border-red-900/30 rounded-lg text-xs font-semibold text-red-600 dark:text-red-400 transition-colors"
+                    >
+                      Give Up / Reveal Route
+                    </button>
+                  )}
                 </div>
               )}
-            </div>
-          </div>
 
-          {/* Input */}
-          {!gameState.isComplete && (
-            <div className="px-3 py-3 border-b border-game-border flex flex-col gap-2">
-              <StationInput
-                onGuess={handleGuess}
-                guessedIds={new Set([...gameState.guessedIds, ...gameState.wrongGuesses, gameState.startId, gameState.targetId])}
-                startId={gameState.startId}
-                targetId={gameState.targetId}
-                disabled={gameState.isComplete}
-              />
-              {gameState.mode !== 'daily' && (
-                <button
-                  onClick={handleGiveUp}
-                  className="w-full py-1.5 bg-red-50 hover:bg-red-100 dark:bg-red-950/40 dark:hover:bg-red-900/40 border border-red-200 dark:border-red-900/30 rounded-lg text-xs font-semibold text-red-600 dark:text-red-400 transition-colors"
-                >
-                  Give Up / Reveal Route
-                </button>
-              )}
-            </div>
+              {/* Guess history */}
+              <div className="flex-1 px-3 py-3 overflow-hidden min-h-0">
+                <GuessHistory
+                  guessedIds={gameState.guessedIds}
+                  startId={gameState.startId}
+                  targetId={gameState.targetId}
+                  userPath={gameState.userPath ?? null}
+                  isComplete={gameState.isComplete}
+                  wrongGuesses={gameState.wrongGuesses}
+                  tripPath={gameState.tripPath}
+                  tripLines={gameState.tripLines}
+                />
+              </div>
+
+              {/* How to play footer */}
+              <div className="px-3 pb-3 pt-2 border-t border-game-border">
+                <p className="text-xs text-gray-600 leading-relaxed">
+                  Guess all the intermediate stations along the trip between the two endpoints.
+                  Pre-stated lines show which routes are part of this journey.
+                </p>
+              </div>
+            </>
           )}
-
-          {/* Guess history */}
-          <div className="flex-1 px-3 py-3 overflow-hidden min-h-0">
-            <GuessHistory
-              guessedIds={gameState.guessedIds}
-              startId={gameState.startId}
-              targetId={gameState.targetId}
-              userPath={gameState.userPath ?? null}
-              isComplete={gameState.isComplete}
-              wrongGuesses={gameState.wrongGuesses}
-              tripPath={gameState.tripPath}
-              tripLines={gameState.tripLines}
-            />
-          </div>
-
-          {/* How to play footer */}
-          <div className="px-3 pb-3 pt-2 border-t border-game-border">
-            <p className="text-xs text-gray-600 leading-relaxed">
-              Guess all the intermediate stations along the trip between the two endpoints.
-              Pre-stated lines show which routes are part of this journey.
-            </p>
-          </div>
         </aside>
       </div>
 
@@ -960,21 +1231,21 @@ export default function Home() {
       </div>
 
       {/* ── RESULTS MODAL ─────────────────────────────────────────── */}
-      {gameState.isComplete && (
+      {isComplete && !isDevRouteViewerActive && (
         <ResultsModal
           isOpen={showResults}
-          startId={gameState.startId}
-          targetId={gameState.targetId}
-          optimalPath={gameState.optimalPath}
+          startId={startId}
+          targetId={targetId}
+          optimalPath={optimalPath}
           userPath={gameState.userPath ?? null}
-          guessedIds={gameState.guessedIds}
-          wrongGuesses={gameState.wrongGuesses}
-          tripLines={gameState.tripLines}
+          guessedIds={guessedIds}
+          wrongGuesses={wrongGuesses}
+          tripLines={tripLines}
           onPlayAgain={handlePlayAgain}
           onClose={() => setShowResults(false)}
           mode={mode}
           dailyHistory={dailyHistory}
-          date={gameState.date}
+          date={isDevRouteViewerActive ? undefined : gameState.date}
           addToast={addToast}
         />
       )}
@@ -996,6 +1267,8 @@ export default function Home() {
         darkMap={darkMap}
         toggleDarkMap={toggleDarkMap}
         addToast={addToast}
+        devMode={devMode}
+        toggleDevMode={toggleDevMode}
       />
       {/* ── MOBILE DRAWER ─────────────────────────────────────────── */}
       <div
@@ -1027,14 +1300,14 @@ export default function Home() {
           {/* Scrollable Guess History */}
           <div className="flex-1 overflow-y-auto p-4 min-h-0">
             <GuessHistory
-              guessedIds={gameState.guessedIds}
-              startId={gameState.startId}
-              targetId={gameState.targetId}
+              guessedIds={guessedIds}
+              startId={startId}
+              targetId={targetId}
               userPath={gameState.userPath ?? null}
-              isComplete={gameState.isComplete}
-              wrongGuesses={gameState.wrongGuesses}
-              tripPath={gameState.tripPath}
-              tripLines={gameState.tripLines}
+              isComplete={isComplete}
+              wrongGuesses={wrongGuesses}
+              tripPath={tripPath}
+              tripLines={tripLines}
             />
           </div>
         </div>

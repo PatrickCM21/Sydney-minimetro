@@ -16,7 +16,21 @@
 import type { DailyChallenge } from '@/types';
 
 import { CURATED_PAIRS } from './curatedPairs';
+import stationsData from '../../public/stations.json';
 
+// Build a mapping from old slug (e.g. "chester_hill") to the new STN- ID (e.g. "STN-CHH")
+const slugMap: Record<string, string> = {};
+for (const [stnId, stn] of Object.entries(stationsData as Record<string, { name: string }>)) {
+  const slug = stn.name.toLowerCase()
+    .replace(/ /g, '_')
+    .replace(/'/g, '')
+    .replace(/-/g, '_')
+    .replace(/&/g, 'and');
+  slugMap[slug] = stnId;
+}
+// Handle potential typos or differences in curatedPairs
+slugMap['mount_kuring-gai'] = 'STN-MKI';
+slugMap['mount_kuring_gai'] = 'STN-MKI';
 
 /**
  * Simple integer hash of a date string for deterministic seeding.
@@ -40,7 +54,9 @@ function dateHash(dateStr: string): number {
 export function getDailyChallenge(date: string): DailyChallenge {
   const hash = dateHash(date);
   const index = hash % CURATED_PAIRS.length;
-  const [start, target] = CURATED_PAIRS[index];
+  const [startSlug, targetSlug] = CURATED_PAIRS[index];
+  const start = slugMap[startSlug] || startSlug;
+  const target = slugMap[targetSlug] || targetSlug;
   return { start, target, date };
 }
 
@@ -49,7 +65,9 @@ export function getDailyChallenge(date: string): DailyChallenge {
  */
 export function getRandomChallenge(): Omit<DailyChallenge, 'date'> {
   const index = Math.floor(Math.random() * CURATED_PAIRS.length);
-  const [start, target] = CURATED_PAIRS[index];
+  const [startSlug, targetSlug] = CURATED_PAIRS[index];
+  const start = slugMap[startSlug] || startSlug;
+  const target = slugMap[targetSlug] || targetSlug;
   return { start, target };
 }
 

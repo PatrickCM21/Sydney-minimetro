@@ -12,6 +12,8 @@ interface SettingsModalProps {
   darkMap: boolean;
   toggleDarkMap: () => void;
   addToast?: (text: string, type?: 'info' | 'success' | 'error') => void;
+  devMode: boolean;
+  toggleDevMode: () => void;
 }
 
 export default function SettingsModal({
@@ -24,12 +26,26 @@ export default function SettingsModal({
   darkMap,
   toggleDarkMap,
   addToast,
+  devMode,
+  toggleDevMode,
 }: SettingsModalProps) {
   const overlayRef = useRef<HTMLDivElement>(null);
   const [feedback, setFeedback] = React.useState('');
   const [showFeedback, setShowFeedback] = React.useState(false);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [submitStatus, setSubmitStatus] = React.useState<'idle' | 'success' | 'error'>('idle');
+  const [isLocalhost, setIsLocalhost] = React.useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setIsLocalhost(
+        window.location.hostname === 'localhost' ||
+        window.location.hostname === '127.0.0.1' ||
+        window.location.hostname.startsWith('192.168.') ||
+        window.location.hostname.startsWith('10.')
+      );
+    }
+  }, []);
 
   const handleFeedbackSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -179,6 +195,39 @@ export default function SettingsModal({
               />
             </button>
           </div>
+
+          {isLocalhost && (
+            <>
+              <hr className="border-game-border" />
+
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex flex-col gap-0.5 flex-1">
+                  <span className="text-sm font-bold text-game-text text-amber-500 dark:text-amber-400 flex items-center gap-1.5">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="m18 16 4-4-4-4" />
+                      <path d="m6 8-4 4 4 4" />
+                      <path d="m14.5 4-5 16" />
+                    </svg>
+                    Developer Mode
+                  </span>
+                  <span className="text-[10px] text-game-text-muted leading-tight">
+                    Enable future daily challenges explorer on localhost
+                  </span>
+                </div>
+                <button
+                  onClick={toggleDevMode}
+                  className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${devMode ? 'bg-amber-500' : 'bg-gray-200 dark:bg-gray-800'
+                    }`}
+                  aria-label="Toggle Developer Mode"
+                >
+                  <span
+                    className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${devMode ? 'translate-x-5' : 'translate-x-0'
+                      }`}
+                  />
+                </button>
+              </div>
+            </>
+          )}
 
           <hr className="border-game-border" />
 

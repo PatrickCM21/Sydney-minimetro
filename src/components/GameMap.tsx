@@ -19,8 +19,8 @@ import L from 'leaflet';
 import 'leaflet-smoothwheelzoom';
 
 import { LINE_MAP, STATION_MAP } from '@/lib/networkData';
-import { getStationLinesOnPath } from '@/lib/pathfinding';
-import type { LineId } from '@/types';
+import { getStationLinesOnPath, getMinTransferLines } from '@/lib/pathfinding';
+import type { LineId, Station } from '@/types';
 
 interface GameMapProps {
   startId: string;
@@ -33,14 +33,10 @@ interface GameMapProps {
   tripPath?: string[];
   hardMode?: boolean;
   darkMap?: boolean;
+  hoveredStationId?: string | null;
 }
 
-function mercatorToLatLng(x: number, y: number): [number, number] {
-  const r = 6378137; // pseudo-mercator earth radius
-  const lng = (x / r) * (180 / Math.PI);
-  const lat = (2 * Math.atan(Math.exp(y / r)) - Math.PI / 2) * (180 / Math.PI);
-  return [lat, lng];
-}
+// Coordinates are now stored directly in standard [longitude, latitude] degrees.
 
 function getLineColor(lineId: LineId): string {
   return LINE_MAP[lineId]?.color ?? '#888';
@@ -94,9 +90,21 @@ export default function GameMap({
   tripPath,
   hardMode = false,
   darkMap = false,
+  hoveredStationId = null,
 }: GameMapProps) {
   const [mapInstance, setMapInstance] = useState<L.Map | null>(null);
   const [routeShapes, setRouteShapes] = useState<RouteShape[]>([]);
+
+  // Auto-center and zoom to fit the entire route/path when completed or loaded
+  useEffect(() => {
+    if (!mapInstance || !isComplete || !tripPath || tripPath.length === 0) return;
+    const points = tripPath.map(id => STATION_MAP.get(id)).filter(Boolean) as Station[];
+    if (points.length > 0) {
+      const bounds = L.latLngBounds(points.map(p => [p.lat, p.lng]));
+      mapInstance.flyToBounds(bounds, { padding: [50, 50], duration: 0.8 });
+    }
+  }, [mapInstance, isComplete, tripPath]);
+
 
   useEffect(() => {
     fetch('/sydneytrainsdata.json')
@@ -116,19 +124,19 @@ export default function GameMap({
     });
   }, []);
 
-  const getGuessedIcon = (id: string, name: string, color: string) => {
-    const cacheKey = `guessed-${id}-${color}`;
+  const getGuessedIcon = (id: string, name: string, color: string, isHovered = false) => {
+    const cacheKey = `guessed-${id}-${color}-${isHovered ? 'hovered' : 'normal'}`;
     if (!iconCache.has(cacheKey)) {
       iconCache.set(cacheKey, L.divIcon({
         className: 'custom-station-marker',
         html: `
-          <div class="relative flex items-center justify-center pointer-events-none marker-bounce">
+          <div class="relative flex items-center justify-center pointer-events-none ${isHovered ? 'scale-125 transition-transform' : 'marker-bounce'}">
             <!-- Halo -->
-            <div class="absolute w-[24px] h-[24px] rounded-full opacity-20" style="background-color: ${color};"></div>
+            <div class="absolute rounded-full ${isHovered ? 'w-[36px] h-[36px] opacity-40 animate-pulse' : 'w-[24px] h-[24px] opacity-20'}" style="background-color: ${color};"></div>
             <!-- Main dot -->
-            <div class="w-[14px] h-[14px] rounded-full" style="background-color: ${color}; border: 1.5px solid #f8fafc;"></div>
+            <div class="${isHovered ? 'w-[18px] h-[18px]' : 'w-[14px] h-[14px]'} rounded-full transition-all" style="background-color: ${color}; border: 1.5px solid #f8fafc;"></div>
             <!-- Label -->
-            <div class="absolute bottom-[18px] whitespace-nowrap text-center font-bold text-[10px] px-1.5 py-0.5 rounded shadow-lg" style="color: #0f172a; background-color: #ffffff; border: 1px solid #cbd5e1; font-family: 'Plus Jakarta Sans', sans-serif;">
+            <div class="absolute bottom-[20px] whitespace-nowrap text-center font-black ${isHovered ? 'text-[11px] px-2 py-1 shadow-2xl scale-110' : 'text-[10px] px-1.5 py-0.5 shadow-lg'} rounded border" style="color: #0f172a; background-color: #ffffff; border-color: ${isHovered ? color : '#cbd5e1'}; font-family: 'Plus Jakarta Sans', sans-serif;">
               ${name}
             </div>
           </div>
@@ -162,20 +170,20 @@ export default function GameMap({
     return iconCache.get(cacheKey)!;
   };
 
-  const getEndpointIcon = (id: string, name: string, color: string) => {
-    const cacheKey = `endpoint-${id}-${color}`;
+  const getEndpointIcon = (id: string, name: string, color: string, isHovered = false) => {
+    const cacheKey = `endpoint-${id}-${color}-${isHovered ? 'hovered' : 'normal'}`;
     if (!iconCache.has(cacheKey)) {
       iconCache.set(cacheKey, L.divIcon({
         className: 'custom-endpoint-marker',
         html: `
-          <div class="relative flex items-center justify-center pointer-events-none">
+          <div class="relative flex items-center justify-center pointer-events-none ${isHovered ? 'scale-125 transition-transform' : ''}">
             <!-- Glow halo -->
-            <div class="absolute w-[24px] h-[24px] rounded-full opacity-20" style="background-color: ${color};"></div>
+            <div class="absolute rounded-full ${isHovered ? 'w-[36px] h-[36px] opacity-40 animate-pulse' : 'w-[24px] h-[24px] opacity-20'}" style="background-color: ${color};"></div>
             <!-- Main dot -->
-            <div class="w-[16px] h-[16px] rounded-full" style="background-color: ${color}; border: 2px solid #f8fafc;"></div>
+            <div class="${isHovered ? 'w-[20px] h-[20px]' : 'w-[16px] h-[16px]'} rounded-full transition-all" style="background-color: ${color}; border: 2px solid #f8fafc;"></div>
             <!-- Station Name Container -->
-            <div class="absolute bottom-[20px] flex flex-col items-center whitespace-nowrap">
-              <div class="font-extrabold text-[10.5px] px-1.5 py-0.5 rounded shadow-lg" style="color: #0f172a; background-color: #ffffff; border: 1.5px solid #cbd5e1; font-family: 'Plus Jakarta Sans', sans-serif;">
+            <div class="absolute bottom-[22px] flex flex-col items-center whitespace-nowrap">
+              <div class="font-extrabold ${isHovered ? 'text-[11.5px] px-2 py-1 border-2' : 'text-[10.5px] px-1.5 py-0.5 border-1.5'} rounded shadow-lg" style="color: #0f172a; background-color: #ffffff; border-color: ${isHovered ? color : '#cbd5e1'}; font-family: 'Plus Jakarta Sans', sans-serif;">
                 ${name}
               </div>
             </div>
@@ -265,59 +273,149 @@ export default function GameMap({
       // Otherwise: line change in between, transfer station not guessed → don't show
     }
 
+    // Map each adjacent pair in pathSequence to its corresponding stepLine
+    const stepLines = getMinTransferLines(pathSequence, tripLines);
+    const pairToLine = new Map<string, LineId>();
+    for (let i = 0; i < pathSequence.length - 1; i++) {
+      const from = pathSequence[i];
+      const to = pathSequence[i + 1];
+      const line = stepLines[i];
+      if (line) {
+        pairToLine.set(`${from}|${to}`, line);
+        pairToLine.set(`${to}|${from}`, line);
+      }
+    }
+
     // Track which pair+line combos have already been drawn to avoid duplicates
     // (sydneytrainsdata.json has multiple shapes per line: both directions, variants)
     const drawnPairs = new Set<string>();
 
     for (const pair of pairsToShow) {
-      for (const lineId of tripLines) {
-        const pairKey = `${pair[0]}|${pair[1]}|${lineId}`;
-        if (drawnPairs.has(pairKey)) continue;
+      const lineId = pairToLine.get(`${pair[0]}|${pair[1]}`);
+      if (!lineId) continue;
 
-        let bestSliced: [number, number][] | null = null;
-        let bestScore = Infinity; // Lower is better (minDA + minDB)
+      const pairKey = `${pair[0]}|${pair[1]}|${lineId}`;
+      if (drawnPairs.has(pairKey)) continue;
 
-        for (const shape of routeShapes) {
-          if (shape.route_short_name !== lineId) continue;
+      let bestSliced: [number, number][] | null = null;
+      let bestScore = Infinity; // Lower is better (minDA + minDB)
 
-          // Filter out T1 shapes that actually go via Epping (T9 direction)
-          if (lineId === 'T1') {
-            const geom = shape.json_geometry;
-            const isT9Shape = (rawCoords: number[][]) => {
-              return rawCoords.some(c => {
-                const [lat, lng] = mercatorToLatLng(c[0], c[1]);
-                const dLat = lat - (-33.77284);
-                const dLng = lng - 151.08217;
-                return Math.sqrt(dLat * dLat + dLng * dLng) < 0.015;
-              });
-            };
-            let passesT9 = false;
-            if (geom.type === 'LineString') {
-              passesT9 = isT9Shape(geom.coordinates as number[][]);
-            } else if (geom.type === 'MultiLineString') {
-              passesT9 = (geom.coordinates as number[][][]).some(part => isT9Shape(part));
-            }
-            if (passesT9) continue;
+      const evaluateAndSlice = (rawCoords: number[][]) => {
+        const coords = rawCoords.map((c) => [c[1], c[0]] as [number, number]);
+        const stationA = STATION_MAP.get(pair[0]);
+        const stationB = STATION_MAP.get(pair[1]);
+        if (!stationA || !stationB) return null;
+
+        if (!stationA.lines.includes(lineId) || !stationB.lines.includes(lineId)) {
+          return null;
+        }
+
+        const candidatesA: number[] = [];
+        const candidatesB: number[] = [];
+        for (let i = 0; i < coords.length; i++) {
+          const dA = distance(stationA.lat, stationA.lng, coords[i][0], coords[i][1]);
+          if (dA < 0.005) {
+            candidatesA.push(i);
           }
+          const dB = distance(stationB.lat, stationB.lng, coords[i][0], coords[i][1]);
+          if (dB < 0.005) {
+            candidatesB.push(i);
+          }
+        }
 
-          // Filter out T8 shapes depending on whether it's an Airport trip or Sydenham trip
-          if (lineId === 'T8') {
-            const isAirportTrip = pathSequence.some(id =>
-              id === 'international_airport' ||
-              id === 'domestic_airport' ||
-              id === 'mascot' ||
-              id === 'green_square'
-            );
+        if (candidatesA.length === 0 || candidatesB.length === 0) {
+          return null;
+        }
+
+        let bestSlice: [number, number][] | null = null;
+        let bestPathLength = Infinity;
+        let bestScoreLocal = Infinity;
+
+        const directDist = distance(stationA.lat, stationA.lng, stationB.lat, stationB.lng);
+
+        for (const idxA of candidatesA) {
+          for (const idxB of candidatesB) {
+            const minIdx = Math.min(idxA, idxB);
+            const maxIdx = Math.max(idxA, idxB);
+            if (maxIdx - minIdx < 1) continue;
+
+            const sliced = coords.slice(minIdx, maxIdx + 1);
+
+            let pathLength = 0;
+            for (let k = 0; k < sliced.length - 1; k++) {
+              pathLength += distance(sliced[k][0], sliced[k][1], sliced[k + 1][0], sliced[k + 1][1]);
+            }
+
+            if (pathLength <= 2.0 * directDist + 0.005) {
+              const score = distance(stationA.lat, stationA.lng, coords[idxA][0], coords[idxA][1]) +
+                distance(stationB.lat, stationB.lng, coords[idxB][0], coords[idxB][1]);
+              if (pathLength < bestPathLength) {
+                bestPathLength = pathLength;
+                bestSlice = sliced;
+                bestScoreLocal = score;
+              }
+            }
+          }
+        }
+
+        if (bestSlice) {
+          return { sliced: bestSlice, score: bestScoreLocal };
+        }
+        return null;
+      };
+
+      // 1st pass: search shapes belonging to this specific line
+      for (const shape of routeShapes) {
+        if (shape.route_short_name !== lineId) continue;
+
+        // Filter out T1 shapes that actually go via Epping (T9 direction)
+        if (lineId === 'T1') {
+          const geom = shape.json_geometry;
+          const isT9Shape = (rawCoords: number[][]) => {
+            return rawCoords.some(c => {
+              const lat = c[1];
+              const lng = c[0];
+              const dLat = lat - (-33.77284);
+              const dLng = lng - 151.08217;
+              return Math.sqrt(dLat * dLat + dLng * dLng) < 0.015;
+            });
+          };
+          let passesT9 = false;
+          if (geom.type === 'LineString') {
+            passesT9 = isT9Shape(geom.coordinates as number[][]);
+          } else if (geom.type === 'MultiLineString') {
+            passesT9 = (geom.coordinates as number[][][]).some(part => isT9Shape(part));
+          }
+          if (passesT9) continue;
+        }
+
+        // Filter out T8 shapes depending on which branch the segment is on
+        if (lineId === 'T8') {
+          const isAirportSegment = pair.some(id =>
+            id === 'STN-INT' ||
+            id === 'STN-DOM' ||
+            id === 'STN-MCO' ||
+            id === 'STN-GQE'
+          );
+          const isSydenhamSegment = pair.some(id =>
+            id === 'STN-REF' ||
+            id === 'STN-EKV' ||
+            id === 'STN-SAP' ||
+            id === 'STN-SDN'
+          );
+
+          if (isAirportSegment || isSydenhamSegment) {
             const geom = shape.json_geometry;
             const checkCoords = geom.type === 'LineString'
               ? (geom.coordinates as number[][])
               : (geom.coordinates as number[][][])[0];
 
-            const airportStation = STATION_MAP.get('international_airport');
+            const airportStation = STATION_MAP.get('STN-INT');
             let passesAirport = false;
             if (airportStation) {
               for (const c of checkCoords) {
-                const [lat, lng] = mercatorToLatLng(c[0], c[1]);
+                const lat = c[1];
+                const lng = c[0];
                 const dLat = lat - airportStation.lat;
                 const dLng = lng - airportStation.lng;
                 if (Math.sqrt(dLat * dLat + dLng * dLng) < 0.005) {
@@ -326,76 +424,36 @@ export default function GameMap({
                 }
               }
             }
-            if (isAirportTrip && !passesAirport) continue;
-            if (!isAirportTrip && passesAirport) continue;
+            if (isAirportSegment && !passesAirport) continue;
+            if (isSydenhamSegment && passesAirport) continue;
           }
+        }
+
+        const geom = shape.json_geometry;
+
+        if (geom.type === 'LineString') {
+          const res = evaluateAndSlice(geom.coordinates as number[][]);
+          if (res && res.score < bestScore) {
+            bestScore = res.score;
+            bestSliced = res.sliced;
+          }
+        } else if (geom.type === 'MultiLineString') {
+          for (const part of (geom.coordinates as number[][][])) {
+            const res = evaluateAndSlice(part);
+            if (res && res.score < bestScore) {
+              bestScore = res.score;
+              bestSliced = res.sliced;
+            }
+          }
+        }
+      }
+
+      // 2nd pass: fallback if no shape found for the specific line
+      if (!bestSliced) {
+        for (const shape of routeShapes) {
+          if (shape.route_short_name === lineId) continue;
 
           const geom = shape.json_geometry;
-
-          const evaluateAndSlice = (rawCoords: number[][]) => {
-            const coords = rawCoords.map((c) => mercatorToLatLng(c[0], c[1]));
-            const stationA = STATION_MAP.get(pair[0]);
-            const stationB = STATION_MAP.get(pair[1]);
-            if (!stationA || !stationB) return null;
-
-            if (!stationA.lines.includes(lineId) || !stationB.lines.includes(lineId)) {
-              return null;
-            }
-
-            const candidatesA: number[] = [];
-            const candidatesB: number[] = [];
-            for (let i = 0; i < coords.length; i++) {
-              const dA = distance(stationA.lat, stationA.lng, coords[i][0], coords[i][1]);
-              if (dA < 0.005) {
-                candidatesA.push(i);
-              }
-              const dB = distance(stationB.lat, stationB.lng, coords[i][0], coords[i][1]);
-              if (dB < 0.005) {
-                candidatesB.push(i);
-              }
-            }
-
-            if (candidatesA.length === 0 || candidatesB.length === 0) {
-              return null;
-            }
-
-            let bestSlice: [number, number][] | null = null;
-            let bestPathLength = Infinity;
-            let bestScore = Infinity;
-
-            const directDist = distance(stationA.lat, stationA.lng, stationB.lat, stationB.lng);
-
-            for (const idxA of candidatesA) {
-              for (const idxB of candidatesB) {
-                const minIdx = Math.min(idxA, idxB);
-                const maxIdx = Math.max(idxA, idxB);
-                if (maxIdx - minIdx < 1) continue;
-
-                const sliced = coords.slice(minIdx, maxIdx + 1);
-
-                let pathLength = 0;
-                for (let k = 0; k < sliced.length - 1; k++) {
-                  pathLength += distance(sliced[k][0], sliced[k][1], sliced[k + 1][0], sliced[k + 1][1]);
-                }
-
-                if (pathLength <= 2.0 * directDist + 0.005) {
-                  const score = distance(stationA.lat, stationA.lng, coords[idxA][0], coords[idxA][1]) +
-                                distance(stationB.lat, stationB.lng, coords[idxB][0], coords[idxB][1]);
-                  if (pathLength < bestPathLength) {
-                    bestPathLength = pathLength;
-                    bestSlice = sliced;
-                    bestScore = score;
-                  }
-                }
-              }
-            }
-
-            if (bestSlice) {
-              return { sliced: bestSlice, score: bestScore };
-            }
-            return null;
-          };
-
           if (geom.type === 'LineString') {
             const res = evaluateAndSlice(geom.coordinates as number[][]);
             if (res && res.score < bestScore) {
@@ -412,26 +470,26 @@ export default function GameMap({
             }
           }
         }
+      }
 
-        if (bestSliced) {
-          const color = LINE_MAP[lineId]?.color ?? '#888';
-          const stationA = STATION_MAP.get(pair[0])!;
-          const stationB = STATION_MAP.get(pair[1])!;
+      if (bestSliced) {
+        const color = LINE_MAP[lineId]?.color ?? '#888';
+        const stationA = STATION_MAP.get(pair[0])!;
+        const stationB = STATION_MAP.get(pair[1])!;
 
-          const snapped = [...bestSliced];
-          const distToStartA = distance(stationA.lat, stationA.lng, snapped[0][0], snapped[0][1]);
-          const distToStartB = distance(stationB.lat, stationB.lng, snapped[0][0], snapped[0][1]);
-          if (distToStartA < distToStartB) {
-            snapped[0] = [stationA.lat, stationA.lng];
-            snapped[snapped.length - 1] = [stationB.lat, stationB.lng];
-          } else {
-            snapped[0] = [stationB.lat, stationB.lng];
-            snapped[snapped.length - 1] = [stationA.lat, stationA.lng];
-          }
-
-          result.push({ coords: snapped, color, lineId });
-          drawnPairs.add(pairKey);
+        const snapped = [...bestSliced];
+        const distToStartA = distance(stationA.lat, stationA.lng, snapped[0][0], snapped[0][1]);
+        const distToStartB = distance(stationB.lat, stationB.lng, snapped[0][0], snapped[0][1]);
+        if (distToStartA < distToStartB) {
+          snapped[0] = [stationA.lat, stationA.lng];
+          snapped[snapped.length - 1] = [stationB.lat, stationB.lng];
+        } else {
+          snapped[0] = [stationB.lat, stationB.lng];
+          snapped[snapped.length - 1] = [stationA.lat, stationA.lng];
         }
+
+        result.push({ coords: snapped, color, lineId });
+        drawnPairs.add(pairKey);
       }
     }
     return result;
@@ -518,7 +576,7 @@ export default function GameMap({
           const activeLine = stationLinesMap[id] || s.lines.find(l => tripLines?.includes(l)) || s.lines[0];
           const color = getLineColor(activeLine);
 
-          const icon = getGuessedIcon(id, s.name, color);
+          const icon = getGuessedIcon(id, s.name, color, id === hoveredStationId);
 
           return (
             <Marker
@@ -554,7 +612,7 @@ export default function GameMap({
           const activeLine = stationLinesMap[id] || s.lines.find(l => tripLines?.includes(l)) || s.lines[0];
           const color = getLineColor(activeLine);
 
-          const icon = getEndpointIcon(id, s.name, color);
+          const icon = getEndpointIcon(id, s.name, color, id === hoveredStationId);
 
           return (
             <Marker

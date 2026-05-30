@@ -14,11 +14,20 @@ export function findLinePath(a: string, b: string, line: LineId): string[] | nul
   const queue: Array<{ id: string; path: string[] }> = [{ id: a, path: [a] }];
   const visited = new Set<string>([a]);
 
+  const sydenhamList = ['sydenham', 'st_peters', 'erskineville'];
+  const useSydenham = line === 'T8' && (sydenhamList.includes(a) || sydenhamList.includes(b));
+
   while (queue.length > 0) {
     const current = queue.shift()!;
     const neighbors = ADJACENCY.get(current.id) ?? [];
     for (const { neighbor, line: edgeLine } of neighbors) {
       if (edgeLine !== line) continue;
+
+      // For T8: if neither endpoint is on the Sydenham branch, do not route through Sydenham-branch stations
+      if (line === 'T8' && !useSydenham && sydenhamList.includes(neighbor)) {
+        continue;
+      }
+
       if (neighbor === b) {
         return [...current.path, neighbor];
       }
@@ -266,12 +275,17 @@ export function getSharedLine(startId: string, targetId: string): LineId | null 
   if (!startStation || !targetStation) return null;
 
   const commonLines = startStation.lines.filter(l => targetStation.lines.includes(l));
+  let bestLine: LineId | null = null;
+  let minLength = Infinity;
+
   for (const line of commonLines) {
-    if (findLinePath(startId, targetId, line) !== null) {
-      return line;
+    const path = findLinePath(startId, targetId, line);
+    if (path && path.length < minLength) {
+      minLength = path.length;
+      bestLine = line;
     }
   }
-  return null;
+  return bestLine;
 }
 
 export function getLinesUsedByPath(path: string[]): LineId[] {
@@ -383,7 +397,8 @@ export function bfsShortestPathWithLines(
   const targetStation = STATION_MAP.get(targetId);
   if (!startStation || !targetStation) return null;
 
-  // We find a path that minimizes transfers first, then station hops.
+  const TRANSFER_PENALTY = 4; // A transfer is worth 4 station hops
+
   // Queue state: { stationId: string, lineId: LineId, path: string[], lines: LineId[], transfers: number, hops: number }
   const queue: Array<{
     stationId: string;
@@ -418,12 +433,14 @@ export function bfsShortestPathWithLines(
   } | null = null;
 
   while (queue.length > 0) {
-    // Sort to get the element with the minimum transfers, then minimum hops
+    // Sort to get the element with the minimum combined cost
     queue.sort((a, b) => {
-      if (a.transfers !== b.transfers) {
-        return a.transfers - b.transfers;
+      const costA = a.hops + a.transfers * TRANSFER_PENALTY;
+      const costB = b.hops + b.transfers * TRANSFER_PENALTY;
+      if (costA !== costB) {
+        return costA - costB;
       }
-      return a.hops - b.hops;
+      return a.transfers - b.transfers;
     });
 
     const curr = queue.shift()!;
@@ -431,16 +448,17 @@ export function bfsShortestPathWithLines(
 
     const recorded = dist.get(currKey);
     if (recorded) {
-      if (curr.transfers > recorded.transfers ||
-        (curr.transfers === recorded.transfers && curr.hops > recorded.hops)) {
+      const recCost = recorded.hops + recorded.transfers * TRANSFER_PENALTY;
+      const currCost = curr.hops + curr.transfers * TRANSFER_PENALTY;
+      if (currCost > recCost || (currCost === recCost && curr.transfers > recorded.transfers)) {
         continue;
       }
     }
 
     if (curr.stationId === targetId) {
-      if (!bestResult ||
-        curr.transfers < bestResult.transfers ||
-        (curr.transfers === bestResult.transfers && curr.hops < bestResult.hops)) {
+      const currCost = curr.hops + curr.transfers * TRANSFER_PENALTY;
+      const bestCost = bestResult ? (bestResult.hops + bestResult.transfers * TRANSFER_PENALTY) : Infinity;
+      if (!bestResult || currCost < bestCost || (currCost === bestCost && curr.transfers < bestResult.transfers)) {
         bestResult = curr;
       }
       continue;
@@ -454,12 +472,11 @@ export function bfsShortestPathWithLines(
       const nextTransfers = curr.transfers;
       const nextHops = curr.hops + 1;
       const nextKey = `${neighbor}|${curr.lineId}`;
+      const nextCost = nextHops + nextTransfers * TRANSFER_PENALTY;
 
       const prevDist = dist.get(nextKey);
-      if (!prevDist ||
-        nextTransfers < prevDist.transfers ||
-        (nextTransfers === prevDist.transfers && nextHops < prevDist.hops)) {
-
+      const prevCost = prevDist ? (prevDist.hops + prevDist.transfers * TRANSFER_PENALTY) : Infinity;
+      if (!prevDist || nextCost < prevCost || (nextCost === prevCost && nextTransfers < prevDist.transfers)) {
         dist.set(nextKey, { transfers: nextTransfers, hops: nextHops });
         queue.push({
           stationId: neighbor,
@@ -481,12 +498,11 @@ export function bfsShortestPathWithLines(
         const nextTransfers = curr.transfers + 1;
         const nextHops = curr.hops;
         const nextKey = `${curr.stationId}|${nextLineId}`;
+        const nextCost = nextHops + nextTransfers * TRANSFER_PENALTY;
 
         const prevDist = dist.get(nextKey);
-        if (!prevDist ||
-          nextTransfers < prevDist.transfers ||
-          (nextTransfers === prevDist.transfers && nextHops < prevDist.hops)) {
-
+        const prevCost = prevDist ? (prevDist.hops + prevDist.transfers * TRANSFER_PENALTY) : Infinity;
+        if (!prevDist || nextCost < prevCost || (nextCost === prevCost && nextTransfers < prevDist.transfers)) {
           dist.set(nextKey, { transfers: nextTransfers, hops: nextHops });
           queue.push({
             stationId: curr.stationId,

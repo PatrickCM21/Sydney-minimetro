@@ -1,3065 +1,490 @@
 {
-  "T9": [
-    {
-      "id": "hornsby",
-      "name": "Hornsby",
-      "connections": [
-        "T1",
-        "T9"
-      ]
-    },
-    {
-      "id": "normanhurst",
-      "name": "Normanhurst",
-      "connections": [
-        "T9"
-      ]
-    },
-    {
-      "id": "thornleigh",
-      "name": "Thornleigh",
-      "connections": [
-        "T9"
-      ]
-    },
-    {
-      "id": "pennant_hills",
-      "name": "Pennant Hills",
-      "connections": [
-        "T9"
-      ]
-    },
-    {
-      "id": "beecroft",
-      "name": "Beecroft",
-      "connections": [
-        "T9"
-      ]
-    },
-    {
-      "id": "cheltenham",
-      "name": "Cheltenham",
-      "connections": [
-        "T9"
-      ]
-    },
-    {
-      "id": "epping",
-      "name": "Epping",
-      "connections": [
-        "M1",
-        "T9"
-      ]
-    },
-    {
-      "id": "eastwood",
-      "name": "Eastwood",
-      "connections": [
-        "T9"
-      ]
-    },
-    {
-      "id": "denistone",
-      "name": "Denistone",
-      "connections": [
-        "T9"
-      ]
-    },
-    {
-      "id": "west_ryde",
-      "name": "West Ryde",
-      "connections": [
-        "T9"
-      ]
-    },
-    {
-      "id": "meadowbank",
-      "name": "Meadowbank",
-      "connections": [
-        "T9"
-      ]
-    },
-    {
-      "id": "rhodes",
-      "name": "Rhodes",
-      "connections": [
-        "T9"
-      ]
-    },
-    {
-      "id": "concord_west",
-      "name": "Concord West",
-      "connections": [
-        "T9"
-      ]
-    },
-    {
-      "id": "north_strathfield",
-      "name": "North Strathfield",
-      "connections": [
-        "T9"
-      ]
-    },
-    {
-      "id": "strathfield",
-      "name": "Strathfield",
-      "connections": [
-        "T1",
-        "T2",
-        "T3",
-        "T7",
-        "T9"
-      ]
-    },
-    {
-      "id": "burwood",
-      "name": "Burwood",
-      "connections": [
-        "T1",
-        "T2",
-        "T3",
-        "T9"
-      ]
-    },
-    {
-      "id": "ashfield",
-      "name": "Ashfield",
-      "connections": [
-        "T1",
-        "T2",
-        "T3",
-        "T9"
-      ]
-    },
-    {
-      "id": "summer_hill",
-      "name": "Summer Hill",
-      "connections": [
-        "T2",
-        "T3",
-        "T9"
-      ]
-    },
-    {
-      "id": "lewisham",
-      "name": "Lewisham",
-      "connections": [
-        "T2",
-        "T3",
-        "T9"
-      ]
-    },
-    {
-      "id": "petersham",
-      "name": "Petersham",
-      "connections": [
-        "T2",
-        "T3",
-        "T9"
-      ]
-    },
-    {
-      "id": "stanmore",
-      "name": "Stanmore",
-      "connections": [
-        "T2",
-        "T3",
-        "T9"
-      ]
-    },
-    {
-      "id": "newtown",
-      "name": "Newtown",
-      "connections": [
-        "T2",
-        "T3",
-        "T9"
-      ]
-    },
-    {
-      "id": "macdonaldtown",
-      "name": "Macdonaldtown",
-      "connections": [
-        "T2",
-        "T3",
-        "T9"
-      ]
-    },
-    {
-      "id": "redfern",
-      "name": "Redfern",
-      "connections": [
-        "T1",
-        "T2",
-        "T3",
-        "T4",
-        "T7",
-        "T8",
-        "T9"
-      ]
-    },
-    {
-      "id": "central",
-      "name": "Central",
-      "connections": [
-        "M1",
-        "T1",
-        "T2",
-        "T3",
-        "T4",
-        "T7",
-        "T8",
-        "T9"
-      ]
-    },
-    {
-      "id": "berowra",
-      "name": "Berowra",
-      "connections": [
-        "T1",
-        "T9"
-      ]
-    },
-    {
-      "id": "mount_kuring_gai",
-      "name": "Mount Kuring-gai",
-      "connections": [
-        "T1",
-        "T9"
-      ]
-    },
-    {
-      "id": "mount_colah",
-      "name": "Mount Colah",
-      "connections": [
-        "T1",
-        "T9"
-      ]
-    },
-    {
-      "id": "asquith",
-      "name": "Asquith",
-      "connections": [
-        "T1",
-        "T9"
-      ]
-    },
-    {
-      "id": "waitara",
-      "name": "Waitara",
-      "connections": [
-        "T1",
-        "T9"
-      ]
-    },
-    {
-      "id": "wahroonga",
-      "name": "Wahroonga",
-      "connections": [
-        "T1",
-        "T9"
-      ]
-    },
-    {
-      "id": "warrawee",
-      "name": "Warrawee",
-      "connections": [
-        "T1",
-        "T9"
-      ]
-    },
-    {
-      "id": "turramurra",
-      "name": "Turramurra",
-      "connections": [
-        "T1",
-        "T9"
-      ]
-    },
-    {
-      "id": "pymble",
-      "name": "Pymble",
-      "connections": [
-        "T1",
-        "T9"
-      ]
-    },
-    {
-      "id": "gordon",
-      "name": "Gordon",
-      "connections": [
-        "T1",
-        "T9"
-      ]
-    },
-    {
-      "id": "killara",
-      "name": "Killara",
-      "connections": [
-        "T1",
-        "T9"
-      ]
-    },
-    {
-      "id": "lindfield",
-      "name": "Lindfield",
-      "connections": [
-        "T1",
-        "T9"
-      ]
-    },
-    {
-      "id": "roseville",
-      "name": "Roseville",
-      "connections": [
-        "T1",
-        "T9"
-      ]
-    },
-    {
-      "id": "chatswood",
-      "name": "Chatswood",
-      "connections": [
-        "M1",
-        "T1",
-        "T9"
-      ]
-    },
-    {
-      "id": "artarmon",
-      "name": "Artarmon",
-      "connections": [
-        "T1",
-        "T9"
-      ]
-    },
-    {
-      "id": "st_leonards",
-      "name": "St Leonards",
-      "connections": [
-        "T1",
-        "T9"
-      ]
-    },
-    {
-      "id": "wollstonecraft",
-      "name": "Wollstonecraft",
-      "connections": [
-        "T1",
-        "T9"
-      ]
-    },
-    {
-      "id": "waverton",
-      "name": "Waverton",
-      "connections": [
-        "T1",
-        "T9"
-      ]
-    },
-    {
-      "id": "north_sydney",
-      "name": "North Sydney",
-      "connections": [
-        "T1",
-        "T9"
-      ]
-    },
-    {
-      "id": "milsons_point",
-      "name": "Milsons Point",
-      "connections": [
-        "T1",
-        "T9"
-      ]
-    },
-    {
-      "id": "wynyard",
-      "name": "Wynyard",
-      "connections": [
-        "T1",
-        "T2",
-        "T3",
-        "T4",
-        "T8",
-        "T9"
-      ]
-    },
-    {
-      "id": "town_hall",
-      "name": "Town Hall",
-      "connections": [
-        "T1",
-        "T2",
-        "T3",
-        "T4",
-        "T8",
-        "T9"
-      ]
-    },
-    {
-      "id": "croydon",
-      "name": "Croydon",
-      "connections": [
-        "T1",
-        "T2",
-        "T3",
-        "T9"
+  "T1": {
+    "lineId": "T1",
+    "displayName": "T1 North Shore & Western Line",
+    "color": "#F99D1C",
+    "variants": {
+      "richmond_to_berowra": [
+        "STN-RCD",
+        "STN-ERD",
+        "STN-CRD",
+        "STN-WSR",
+        "STN-MUV",
+        "STN-VYR",
+        "STN-RVS",
+        "STN-SFS",
+        "STN-QKH",
+        "STN-MYG",
+        "STN-BAK",
+        "STN-SEV",
+        "STN-TGB",
+        "STN-PDH",
+        "STN-WVL",
+        "STN-WMD",
+        "STN-PAR",
+        "STN-HPK",
+        "STN-GAV",
+        "STN-CYE",
+        "STN-AUB",
+        "STN-LDC",
+        "STN-STR",
+        "STN-REF",
+        "STN-CEN",
+        "STN-THL",
+        "STN-WYN",
+        "STN-MPT",
+        "STN-NSY",
+        "STN-WVT",
+        "STN-WSC",
+        "STN-SNL",
+        "STN-ATM",
+        "STN-CWD",
+        "STN-RVL",
+        "STN-LDD",
+        "STN-KLA",
+        "STN-GDN",
+        "STN-PYB",
+        "STN-TMU",
+        "STN-WWE",
+        "STN-WRO",
+        "STN-WTA",
+        "STN-HBY",
+        "STN-ASQ",
+        "STN-MOC",
+        "STN-MKI",
+        "STN-BEW"
+      ],
+      "emu_plains_to_berowra": [
+        "STN-EPS",
+        "STN-PNR",
+        "STN-KWD",
+        "STN-WRT",
+        "STN-STM",
+        "STN-MTT",
+        "STN-RYH",
+        "STN-DOD",
+        "STN-BAK",
+        "STN-SEV",
+        "STN-TGB",
+        "STN-PDH",
+        "STN-WVL",
+        "STN-WMD",
+        "STN-PAR",
+        "STN-HPK",
+        "STN-GAV",
+        "STN-CYE",
+        "STN-AUB",
+        "STN-LDC",
+        "STN-STR",
+        "STN-REF",
+        "STN-CEN",
+        "STN-THL",
+        "STN-WYN",
+        "STN-MPT",
+        "STN-NSY",
+        "STN-WVT",
+        "STN-WSC",
+        "STN-SNL",
+        "STN-ATM",
+        "STN-CWD",
+        "STN-RVL",
+        "STN-LDD",
+        "STN-KLA",
+        "STN-GDN",
+        "STN-PYB",
+        "STN-TMU",
+        "STN-WWE",
+        "STN-WRO",
+        "STN-WTA",
+        "STN-HBY",
+        "STN-ASQ",
+        "STN-MOC",
+        "STN-MKI",
+        "STN-BEW"
       ]
     }
-  ],
-  "T1": [
-    {
-      "id": "central",
-      "name": "Central",
-      "connections": [
-        "M1",
-        "T1",
-        "T2",
-        "T3",
-        "T4",
-        "T7",
-        "T8",
-        "T9"
-      ]
-    },
-    {
-      "id": "redfern",
-      "name": "Redfern",
-      "connections": [
-        "T1",
-        "T2",
-        "T3",
-        "T4",
-        "T7",
-        "T8",
-        "T9"
-      ]
-    },
-    {
-      "id": "ashfield",
-      "name": "Ashfield",
-      "connections": [
-        "T1",
-        "T2",
-        "T3",
-        "T9"
-      ]
-    },
-    {
-      "id": "croydon",
-      "name": "Croydon",
-      "connections": [
-        "T1",
-        "T2",
-        "T3",
-        "T9"
-      ]
-    },
-    {
-      "id": "burwood",
-      "name": "Burwood",
-      "connections": [
-        "T1",
-        "T2",
-        "T3",
-        "T9"
-      ]
-    },
-    {
-      "id": "strathfield",
-      "name": "Strathfield",
-      "connections": [
-        "T1",
-        "T2",
-        "T3",
-        "T7",
-        "T9"
-      ]
-    },
-    {
-      "id": "homebush",
-      "name": "Homebush",
-      "connections": [
-        "T1",
-        "T2",
-        "T3"
-      ]
-    },
-    {
-      "id": "flemington",
-      "name": "Flemington",
-      "connections": [
-        "T1",
-        "T2",
-        "T3"
-      ]
-    },
-    {
-      "id": "lidcombe",
-      "name": "Lidcombe",
-      "connections": [
-        "T1",
-        "T2",
-        "T3",
-        "T6",
-        "T7"
-      ]
-    },
-    {
-      "id": "auburn",
-      "name": "Auburn",
-      "connections": [
-        "T1",
-        "T2"
-      ]
-    },
-    {
-      "id": "clyde",
-      "name": "Clyde",
-      "connections": [
-        "T1",
-        "T2"
-      ]
-    },
-    {
-      "id": "granville",
-      "name": "Granville",
-      "connections": [
-        "T1",
-        "T2",
-        "T7"
-      ]
-    },
-    {
-      "id": "harris_park",
-      "name": "Harris Park",
-      "connections": [
-        "T1",
-        "T2",
-        "T5"
-      ]
-    },
-    {
-      "id": "parramatta",
-      "name": "Parramatta",
-      "connections": [
-        "T1",
-        "T2",
-        "T5",
-        "T7"
-      ]
-    },
-    {
-      "id": "westmead",
-      "name": "Westmead",
-      "connections": [
-        "T1",
-        "T5",
-        "T7"
-      ]
-    },
-    {
-      "id": "wentworthville",
-      "name": "Wentworthville",
-      "connections": [
-        "T1",
-        "T5"
-      ]
-    },
-    {
-      "id": "pendle_hill",
-      "name": "Pendle Hill",
-      "connections": [
-        "T1",
-        "T5"
-      ]
-    },
-    {
-      "id": "toongabbie",
-      "name": "Toongabbie",
-      "connections": [
-        "T1",
-        "T5"
-      ]
-    },
-    {
-      "id": "seven_hills",
-      "name": "Seven Hills",
-      "connections": [
-        "T1",
-        "T5",
-        "T7"
-      ]
-    },
-    {
-      "id": "blacktown",
-      "name": "Blacktown",
-      "connections": [
-        "T1",
-        "T5",
-        "T7"
-      ]
-    },
-    {
-      "id": "doonside",
-      "name": "Doonside",
-      "connections": [
-        "T1",
-        "T5"
-      ]
-    },
-    {
-      "id": "rooty_hill",
-      "name": "Rooty Hill",
-      "connections": [
-        "T1",
-        "T5"
-      ]
-    },
-    {
-      "id": "mount_druitt",
-      "name": "Mount Druitt",
-      "connections": [
-        "T1",
-        "T5"
-      ]
-    },
-    {
-      "id": "st_marys",
-      "name": "St Marys",
-      "connections": [
-        "T1",
-        "T5"
-      ]
-    },
-    {
-      "id": "werrington",
-      "name": "Werrington",
-      "connections": [
-        "T1",
-        "T5"
-      ]
-    },
-    {
-      "id": "kingswood",
-      "name": "Kingswood",
-      "connections": [
-        "T1",
-        "T5"
-      ]
-    },
-    {
-      "id": "penrith",
-      "name": "Penrith",
-      "connections": [
-        "T1",
-        "T5"
-      ]
-    },
-    {
-      "id": "emu_plains",
-      "name": "Emu Plains",
-      "connections": [
-        "T1",
-        "T5"
-      ]
-    },
-    {
-      "id": "marayong",
-      "name": "Marayong",
-      "connections": [
-        "T1",
-        "T5"
-      ]
-    },
-    {
-      "id": "quakers_hill",
-      "name": "Quakers Hill",
-      "connections": [
-        "T1",
-        "T5"
-      ]
-    },
-    {
-      "id": "schofields",
-      "name": "Schofields",
-      "connections": [
-        "T1",
-        "T5"
-      ]
-    },
-    {
-      "id": "riverstone",
-      "name": "Riverstone",
-      "connections": [
-        "T1",
-        "T5"
-      ]
-    },
-    {
-      "id": "vineyard",
-      "name": "Vineyard",
-      "connections": [
-        "T1",
-        "T5"
-      ]
-    },
-    {
-      "id": "mulgrave",
-      "name": "Mulgrave",
-      "connections": [
-        "T1",
-        "T5"
-      ]
-    },
-    {
-      "id": "windsor",
-      "name": "Windsor",
-      "connections": [
-        "T1",
-        "T5"
-      ]
-    },
-    {
-      "id": "clarendon",
-      "name": "Clarendon",
-      "connections": [
-        "T1",
-        "T5"
-      ]
-    },
-    {
-      "id": "east_richmond",
-      "name": "East Richmond",
-      "connections": [
-        "T1",
-        "T5"
-      ]
-    },
-    {
-      "id": "richmond",
-      "name": "Richmond",
-      "connections": [
-        "T1",
-        "T5"
-      ]
-    },
-    {
-      "id": "berowra",
-      "name": "Berowra",
-      "connections": [
-        "T1",
-        "T9"
-      ]
-    },
-    {
-      "id": "mount_kuring_gai",
-      "name": "Mount Kuring-gai",
-      "connections": [
-        "T1",
-        "T9"
-      ]
-    },
-    {
-      "id": "mount_colah",
-      "name": "Mount Colah",
-      "connections": [
-        "T1",
-        "T9"
-      ]
-    },
-    {
-      "id": "asquith",
-      "name": "Asquith",
-      "connections": [
-        "T1",
-        "T9"
-      ]
-    },
-    {
-      "id": "hornsby",
-      "name": "Hornsby",
-      "connections": [
-        "T1",
-        "T9"
-      ]
-    },
-    {
-      "id": "waitara",
-      "name": "Waitara",
-      "connections": [
-        "T1",
-        "T9"
-      ]
-    },
-    {
-      "id": "wahroonga",
-      "name": "Wahroonga",
-      "connections": [
-        "T1",
-        "T9"
-      ]
-    },
-    {
-      "id": "warrawee",
-      "name": "Warrawee",
-      "connections": [
-        "T1",
-        "T9"
-      ]
-    },
-    {
-      "id": "turramurra",
-      "name": "Turramurra",
-      "connections": [
-        "T1",
-        "T9"
-      ]
-    },
-    {
-      "id": "pymble",
-      "name": "Pymble",
-      "connections": [
-        "T1",
-        "T9"
-      ]
-    },
-    {
-      "id": "gordon",
-      "name": "Gordon",
-      "connections": [
-        "T1",
-        "T9"
-      ]
-    },
-    {
-      "id": "killara",
-      "name": "Killara",
-      "connections": [
-        "T1",
-        "T9"
-      ]
-    },
-    {
-      "id": "lindfield",
-      "name": "Lindfield",
-      "connections": [
-        "T1",
-        "T9"
-      ]
-    },
-    {
-      "id": "roseville",
-      "name": "Roseville",
-      "connections": [
-        "T1",
-        "T9"
-      ]
-    },
-    {
-      "id": "chatswood",
-      "name": "Chatswood",
-      "connections": [
-        "M1",
-        "T1",
-        "T9"
-      ]
-    },
-    {
-      "id": "artarmon",
-      "name": "Artarmon",
-      "connections": [
-        "T1",
-        "T9"
-      ]
-    },
-    {
-      "id": "st_leonards",
-      "name": "St Leonards",
-      "connections": [
-        "T1",
-        "T9"
-      ]
-    },
-    {
-      "id": "wollstonecraft",
-      "name": "Wollstonecraft",
-      "connections": [
-        "T1",
-        "T9"
-      ]
-    },
-    {
-      "id": "waverton",
-      "name": "Waverton",
-      "connections": [
-        "T1",
-        "T9"
-      ]
-    },
-    {
-      "id": "north_sydney",
-      "name": "North Sydney",
-      "connections": [
-        "T1",
-        "T9"
-      ]
-    },
-    {
-      "id": "milsons_point",
-      "name": "Milsons Point",
-      "connections": [
-        "T1",
-        "T9"
-      ]
-    },
-    {
-      "id": "wynyard",
-      "name": "Wynyard",
-      "connections": [
-        "T1",
-        "T2",
-        "T3",
-        "T4",
-        "T8",
-        "T9"
-      ]
-    },
-    {
-      "id": "town_hall",
-      "name": "Town Hall",
-      "connections": [
-        "T1",
-        "T2",
-        "T3",
-        "T4",
-        "T8",
-        "T9"
-      ]
-    },
-    {
-      "id": "olympic_park",
-      "name": "Olympic Park",
-      "connections": [
-        "T1",
-        "T2",
-        "T7"
+  },
+  "T2": {
+    "lineId": "T2",
+    "displayName": "T2 Inner West & Leppington Line",
+    "color": "#0098CD",
+    "variants": {
+      "leppington_to_city": [
+        "STN-LEP",
+        "STN-EDP",
+        "STN-GFD",
+        "STN-CSL",
+        "STN-LPO",
+        "STN-WWF",
+        "STN-CAB",
+        "STN-CVE",
+        "STN-FFL",
+        "STN-YNR",
+        "STN-GUD",
+        "STN-MLN",
+        "STN-GAV",
+        "STN-CYE",
+        "STN-AUB",
+        "STN-LDC",
+        "STN-FMG",
+        "STN-HSH",
+        "STN-STR",
+        "STN-BUW",
+        "STN-CYD",
+        "STN-ASH",
+        "STN-SMH",
+        "STN-LWI",
+        "STN-PSM",
+        "STN-SMN",
+        "STN-NTN",
+        "STN-MAC",
+        "STN-REF",
+        "STN-CEN",
+        "STN-MSM",
+        "STN-STJ",
+        "STN-CQY",
+        "STN-WYN",
+        "STN-THL",
+        "STN-CEN"
+      ],
+      "parramatta_to_city": [
+        "STN-PAR",
+        "STN-HPK",
+        "STN-GAV",
+        "STN-CYE",
+        "STN-AUB",
+        "STN-LDC",
+        "STN-FMG",
+        "STN-HSH",
+        "STN-STR",
+        "STN-BUW",
+        "STN-CYD",
+        "STN-ASH",
+        "STN-SMH",
+        "STN-LWI",
+        "STN-PSM",
+        "STN-SMN",
+        "STN-NTN",
+        "STN-MAC",
+        "STN-REF",
+        "STN-CEN",
+        "STN-MSM",
+        "STN-STJ",
+        "STN-CQY",
+        "STN-WYN",
+        "STN-THL",
+        "STN-CEN"
       ]
     }
-  ],
-  "T7": [
-    {
-      "id": "blacktown",
-      "name": "Blacktown",
-      "connections": [
-        "T1",
-        "T5",
-        "T7"
-      ]
-    },
-    {
-      "id": "seven_hills",
-      "name": "Seven Hills",
-      "connections": [
-        "T1",
-        "T5",
-        "T7"
-      ]
-    },
-    {
-      "id": "westmead",
-      "name": "Westmead",
-      "connections": [
-        "T1",
-        "T5",
-        "T7"
-      ]
-    },
-    {
-      "id": "parramatta",
-      "name": "Parramatta",
-      "connections": [
-        "T1",
-        "T2",
-        "T5",
-        "T7"
-      ]
-    },
-    {
-      "id": "granville",
-      "name": "Granville",
-      "connections": [
-        "T1",
-        "T2",
-        "T7"
-      ]
-    },
-    {
-      "id": "lidcombe",
-      "name": "Lidcombe",
-      "connections": [
-        "T1",
-        "T2",
-        "T3",
-        "T6",
-        "T7"
-      ]
-    },
-    {
-      "id": "olympic_park",
-      "name": "Olympic Park",
-      "connections": [
-        "T1",
-        "T2",
-        "T7"
-      ]
-    },
-    {
-      "id": "strathfield",
-      "name": "Strathfield",
-      "connections": [
-        "T1",
-        "T2",
-        "T3",
-        "T7",
-        "T9"
-      ]
-    },
-    {
-      "id": "redfern",
-      "name": "Redfern",
-      "connections": [
-        "T1",
-        "T2",
-        "T3",
-        "T4",
-        "T7",
-        "T8",
-        "T9"
-      ]
-    },
-    {
-      "id": "central",
-      "name": "Central",
-      "connections": [
-        "M1",
-        "T1",
-        "T2",
-        "T3",
-        "T4",
-        "T7",
-        "T8",
-        "T9"
+  },
+  "T3": {
+    "lineId": "T3",
+    "displayName": "T3 Liverpool & Inner West Line",
+    "color": "#F37021",
+    "variants": {
+      "liverpool_to_city": [
+        "STN-LPO",
+        "STN-WWF",
+        "STN-CAB",
+        "STN-CRR",
+        "STN-VWD",
+        "STN-LTN",
+        "STN-CHH",
+        "STN-SFT",
+        "STN-RGP",
+        "STN-BEJ",
+        "STN-LDC",
+        "STN-FMG",
+        "STN-HSH",
+        "STN-STR",
+        "STN-BUW",
+        "STN-CYD",
+        "STN-ASH",
+        "STN-SMH",
+        "STN-LWI",
+        "STN-PSM",
+        "STN-SMN",
+        "STN-NTN",
+        "STN-MAC",
+        "STN-REF",
+        "STN-CEN",
+        "STN-MSM",
+        "STN-STJ",
+        "STN-CQY",
+        "STN-WYN",
+        "STN-THL",
+        "STN-CEN"
       ]
     }
-  ],
-  "T5": [
-    {
-      "id": "richmond",
-      "name": "Richmond",
-      "connections": [
-        "T1",
-        "T5"
-      ]
-    },
-    {
-      "id": "east_richmond",
-      "name": "East Richmond",
-      "connections": [
-        "T1",
-        "T5"
-      ]
-    },
-    {
-      "id": "clarendon",
-      "name": "Clarendon",
-      "connections": [
-        "T1",
-        "T5"
-      ]
-    },
-    {
-      "id": "windsor",
-      "name": "Windsor",
-      "connections": [
-        "T1",
-        "T5"
-      ]
-    },
-    {
-      "id": "mulgrave",
-      "name": "Mulgrave",
-      "connections": [
-        "T1",
-        "T5"
-      ]
-    },
-    {
-      "id": "vineyard",
-      "name": "Vineyard",
-      "connections": [
-        "T1",
-        "T5"
-      ]
-    },
-    {
-      "id": "riverstone",
-      "name": "Riverstone",
-      "connections": [
-        "T1",
-        "T5"
-      ]
-    },
-    {
-      "id": "schofields",
-      "name": "Schofields",
-      "connections": [
-        "T1",
-        "T5"
-      ]
-    },
-    {
-      "id": "quakers_hill",
-      "name": "Quakers Hill",
-      "connections": [
-        "T1",
-        "T5"
-      ]
-    },
-    {
-      "id": "marayong",
-      "name": "Marayong",
-      "connections": [
-        "T1",
-        "T5"
-      ]
-    },
-    {
-      "id": "blacktown",
-      "name": "Blacktown",
-      "connections": [
-        "T1",
-        "T5",
-        "T7"
-      ]
-    },
-    {
-      "id": "seven_hills",
-      "name": "Seven Hills",
-      "connections": [
-        "T1",
-        "T5",
-        "T7"
-      ]
-    },
-    {
-      "id": "toongabbie",
-      "name": "Toongabbie",
-      "connections": [
-        "T1",
-        "T5"
-      ]
-    },
-    {
-      "id": "pendle_hill",
-      "name": "Pendle Hill",
-      "connections": [
-        "T1",
-        "T5"
-      ]
-    },
-    {
-      "id": "wentworthville",
-      "name": "Wentworthville",
-      "connections": [
-        "T1",
-        "T5"
-      ]
-    },
-    {
-      "id": "westmead",
-      "name": "Westmead",
-      "connections": [
-        "T1",
-        "T5",
-        "T7"
-      ]
-    },
-    {
-      "id": "parramatta",
-      "name": "Parramatta",
-      "connections": [
-        "T1",
-        "T2",
-        "T5",
-        "T7"
-      ]
-    },
-    {
-      "id": "harris_park",
-      "name": "Harris Park",
-      "connections": [
-        "T1",
-        "T2",
-        "T5"
-      ]
-    },
-    {
-      "id": "merrylands",
-      "name": "Merrylands",
-      "connections": [
-        "T2",
-        "T5"
-      ]
-    },
-    {
-      "id": "guildford",
-      "name": "Guildford",
-      "connections": [
-        "T2",
-        "T5"
-      ]
-    },
-    {
-      "id": "yennora",
-      "name": "Yennora",
-      "connections": [
-        "T2",
-        "T5"
-      ]
-    },
-    {
-      "id": "fairfield",
-      "name": "Fairfield",
-      "connections": [
-        "T2",
-        "T5"
-      ]
-    },
-    {
-      "id": "canley_vale",
-      "name": "Canley Vale",
-      "connections": [
-        "T2",
-        "T5"
-      ]
-    },
-    {
-      "id": "cabramatta",
-      "name": "Cabramatta",
-      "connections": [
-        "T2",
-        "T3",
-        "T5"
-      ]
-    },
-    {
-      "id": "warwick_farm",
-      "name": "Warwick Farm",
-      "connections": [
-        "T2",
-        "T3",
-        "T5"
-      ]
-    },
-    {
-      "id": "liverpool",
-      "name": "Liverpool",
-      "connections": [
-        "T2",
-        "T3",
-        "T5"
-      ]
-    },
-    {
-      "id": "casula",
-      "name": "Casula",
-      "connections": [
-        "T2",
-        "T3",
-        "T5"
-      ]
-    },
-    {
-      "id": "glenfield",
-      "name": "Glenfield",
-      "connections": [
-        "T2",
-        "T3",
-        "T5",
-        "T8"
-      ]
-    },
-    {
-      "id": "edmondson_park",
-      "name": "Edmondson Park",
-      "connections": [
-        "T2",
-        "T5",
-        "T8"
-      ]
-    },
-    {
-      "id": "leppington",
-      "name": "Leppington",
-      "connections": [
-        "T2",
-        "T5",
-        "T8"
-      ]
-    },
-    {
-      "id": "st_marys",
-      "name": "St Marys",
-      "connections": [
-        "T1",
-        "T5"
-      ]
-    },
-    {
-      "id": "werrington",
-      "name": "Werrington",
-      "connections": [
-        "T1",
-        "T5"
-      ]
-    },
-    {
-      "id": "kingswood",
-      "name": "Kingswood",
-      "connections": [
-        "T1",
-        "T5"
-      ]
-    },
-    {
-      "id": "penrith",
-      "name": "Penrith",
-      "connections": [
-        "T1",
-        "T5"
-      ]
-    },
-    {
-      "id": "doonside",
-      "name": "Doonside",
-      "connections": [
-        "T1",
-        "T5"
-      ]
-    },
-    {
-      "id": "rooty_hill",
-      "name": "Rooty Hill",
-      "connections": [
-        "T1",
-        "T5"
-      ]
-    },
-    {
-      "id": "mount_druitt",
-      "name": "Mount Druitt",
-      "connections": [
-        "T1",
-        "T5"
-      ]
-    },
-    {
-      "id": "emu_plains",
-      "name": "Emu Plains",
-      "connections": [
-        "T1",
-        "T5"
-      ]
-    },
-    {
-      "id": "macarthur",
-      "name": "Macarthur",
-      "connections": [
-        "T3",
-        "T5",
-        "T8"
-      ]
-    },
-    {
-      "id": "campbelltown",
-      "name": "Campbelltown",
-      "connections": [
-        "T3",
-        "T5",
-        "T8"
+  },
+  "T4": {
+    "lineId": "T4",
+    "displayName": "T4 Eastern Suburbs & Illawarra Line",
+    "color": "#005AA3",
+    "variants": {
+      "cronulla_to_bondi": [
+        "STN-CNL",
+        "STN-WOE",
+        "STN-CIH",
+        "STN-MIJ",
+        "STN-GYM",
+        "STN-KEE",
+        "STN-SLD",
+        "STN-JNL",
+        "STN-CMO",
+        "STN-OAL",
+        "STN-MDE",
+        "STN-PHS",
+        "STN-HVL",
+        "STN-ALW",
+        "STN-CLJ",
+        "STN-KGH",
+        "STN-RKL",
+        "STN-BKS",
+        "STN-ARN",
+        "STN-WCI",
+        "STN-TME",
+        "STN-SDN",
+        "STN-REF",
+        "STN-CEN",
+        "STN-THL",
+        "STN-MPC",
+        "STN-KSX",
+        "STN-ECL",
+        "STN-BJN"
+      ],
+      "helensburgh_to_bondi": [
+        "STN-HNB",
+        "STN-WFL",
+        "STN-HTC",
+        "STN-EGD",
+        "STN-LOF",
+        "STN-SLD",
+        "STN-JNL",
+        "STN-CMO",
+        "STN-OAL",
+        "STN-MDE",
+        "STN-PHS",
+        "STN-HVL",
+        "STN-ALW",
+        "STN-CLJ",
+        "STN-KGH",
+        "STN-RKL",
+        "STN-BKS",
+        "STN-ARN",
+        "STN-WCI",
+        "STN-TME",
+        "STN-SDN",
+        "STN-REF",
+        "STN-CEN",
+        "STN-THL",
+        "STN-MPC",
+        "STN-KSX",
+        "STN-ECL",
+        "STN-BJN"
       ]
     }
-  ],
-  "T3": [
-    {
-      "id": "central",
-      "name": "Central",
-      "connections": [
-        "M1",
-        "T1",
-        "T2",
-        "T3",
-        "T4",
-        "T7",
-        "T8",
-        "T9"
-      ]
-    },
-    {
-      "id": "museum",
-      "name": "Museum",
-      "connections": [
-        "T2",
-        "T3",
-        "T4",
-        "T8"
-      ]
-    },
-    {
-      "id": "st_james",
-      "name": "St James",
-      "connections": [
-        "T2",
-        "T3",
-        "T4",
-        "T8"
-      ]
-    },
-    {
-      "id": "circular_quay",
-      "name": "Circular Quay",
-      "connections": [
-        "T2",
-        "T3",
-        "T4",
-        "T8"
-      ]
-    },
-    {
-      "id": "wynyard",
-      "name": "Wynyard",
-      "connections": [
-        "T1",
-        "T2",
-        "T3",
-        "T4",
-        "T8",
-        "T9"
-      ]
-    },
-    {
-      "id": "town_hall",
-      "name": "Town Hall",
-      "connections": [
-        "T1",
-        "T2",
-        "T3",
-        "T4",
-        "T8",
-        "T9"
-      ]
-    },
-    {
-      "id": "central",
-      "name": "Central",
-      "connections": [
-        "M1",
-        "T1",
-        "T2",
-        "T3",
-        "T4",
-        "T7",
-        "T8",
-        "T9"
-      ]
-    },
-    {
-      "id": "redfern",
-      "name": "Redfern",
-      "connections": [
-        "T1",
-        "T2",
-        "T3",
-        "T4",
-        "T7",
-        "T8",
-        "T9"
-      ]
-    },
-    {
-      "id": "macdonaldtown",
-      "name": "Macdonaldtown",
-      "connections": [
-        "T2",
-        "T3",
-        "T9"
-      ]
-    },
-    {
-      "id": "newtown",
-      "name": "Newtown",
-      "connections": [
-        "T2",
-        "T3",
-        "T9"
-      ]
-    },
-    {
-      "id": "stanmore",
-      "name": "Stanmore",
-      "connections": [
-        "T2",
-        "T3",
-        "T9"
-      ]
-    },
-    {
-      "id": "petersham",
-      "name": "Petersham",
-      "connections": [
-        "T2",
-        "T3",
-        "T9"
-      ]
-    },
-    {
-      "id": "lewisham",
-      "name": "Lewisham",
-      "connections": [
-        "T2",
-        "T3",
-        "T9"
-      ]
-    },
-    {
-      "id": "summer_hill",
-      "name": "Summer Hill",
-      "connections": [
-        "T2",
-        "T3",
-        "T9"
-      ]
-    },
-    {
-      "id": "ashfield",
-      "name": "Ashfield",
-      "connections": [
-        "T1",
-        "T2",
-        "T3",
-        "T9"
-      ]
-    },
-    {
-      "id": "croydon",
-      "name": "Croydon",
-      "connections": [
-        "T1",
-        "T2",
-        "T3",
-        "T9"
-      ]
-    },
-    {
-      "id": "burwood",
-      "name": "Burwood",
-      "connections": [
-        "T1",
-        "T2",
-        "T3",
-        "T9"
-      ]
-    },
-    {
-      "id": "strathfield",
-      "name": "Strathfield",
-      "connections": [
-        "T1",
-        "T2",
-        "T3",
-        "T7",
-        "T9"
-      ]
-    },
-    {
-      "id": "homebush",
-      "name": "Homebush",
-      "connections": [
-        "T1",
-        "T2",
-        "T3"
-      ]
-    },
-    {
-      "id": "flemington",
-      "name": "Flemington",
-      "connections": [
-        "T1",
-        "T2",
-        "T3"
-      ]
-    },
-    {
-      "id": "lidcombe",
-      "name": "Lidcombe",
-      "connections": [
-        "T1",
-        "T2",
-        "T3",
-        "T6",
-        "T7"
-      ]
-    },
-    {
-      "id": "berala",
-      "name": "Berala",
-      "connections": [
-        "T3",
-        "T6"
-      ]
-    },
-    {
-      "id": "regents_park",
-      "name": "Regents Park",
-      "connections": [
-        "T3",
-        "T6"
-      ]
-    },
-    {
-      "id": "sefton",
-      "name": "Sefton",
-      "connections": [
-        "T2",
-        "T3"
-      ]
-    },
-    {
-      "id": "chester_hill",
-      "name": "Chester Hill",
-      "connections": [
-        "T2",
-        "T3"
-      ]
-    },
-    {
-      "id": "leightonfield",
-      "name": "Leightonfield",
-      "connections": [
-        "T2",
-        "T3"
-      ]
-    },
-    {
-      "id": "villawood",
-      "name": "Villawood",
-      "connections": [
-        "T2",
-        "T3"
-      ]
-    },
-    {
-      "id": "carramar",
-      "name": "Carramar",
-      "connections": [
-        "T2",
-        "T3"
-      ]
-    },
-    {
-      "id": "cabramatta",
-      "name": "Cabramatta",
-      "connections": [
-        "T2",
-        "T3",
-        "T5"
-      ]
-    },
-    {
-      "id": "warwick_farm",
-      "name": "Warwick Farm",
-      "connections": [
-        "T2",
-        "T3",
-        "T5"
-      ]
-    },
-    {
-      "id": "liverpool",
-      "name": "Liverpool",
-      "connections": [
-        "T2",
-        "T3",
-        "T5"
-      ]
-    },
-    {
-      "id": "casula",
-      "name": "Casula",
-      "connections": [
-        "T2",
-        "T3",
-        "T5"
-      ]
-    },
-    {
-      "id": "glenfield",
-      "name": "Glenfield",
-      "connections": [
-        "T2",
-        "T3",
-        "T5",
-        "T8"
-      ]
-    },
-    {
-      "id": "macquarie_fields",
-      "name": "Macquarie Fields",
-      "connections": [
-        "T3",
-        "T8"
-      ]
-    },
-    {
-      "id": "ingleburn",
-      "name": "Ingleburn",
-      "connections": [
-        "T3",
-        "T8"
-      ]
-    },
-    {
-      "id": "minto",
-      "name": "Minto",
-      "connections": [
-        "T3",
-        "T8"
-      ]
-    },
-    {
-      "id": "leumeah",
-      "name": "Leumeah",
-      "connections": [
-        "T3",
-        "T8"
-      ]
-    },
-    {
-      "id": "campbelltown",
-      "name": "Campbelltown",
-      "connections": [
-        "T3",
-        "T5",
-        "T8"
-      ]
-    },
-    {
-      "id": "macarthur",
-      "name": "Macarthur",
-      "connections": [
-        "T3",
-        "T5",
-        "T8"
+  },
+  "T5": {
+    "lineId": "T5",
+    "displayName": "T5 Cumberland Line",
+    "color": "#C4258F",
+    "variants": {
+      "richmond_to_leppington": [
+        "STN-RCD",
+        "STN-ERD",
+        "STN-CRD",
+        "STN-WSR",
+        "STN-MUV",
+        "STN-VYR",
+        "STN-RVS",
+        "STN-SFS",
+        "STN-QKH",
+        "STN-MYG",
+        "STN-BAK",
+        "STN-SEV",
+        "STN-TGB",
+        "STN-PDH",
+        "STN-WVL",
+        "STN-WMD",
+        "STN-PAR",
+        "STN-HPK",
+        "STN-MLN",
+        "STN-GUD",
+        "STN-YNR",
+        "STN-FFL",
+        "STN-CVE",
+        "STN-CAB",
+        "STN-WWF",
+        "STN-LPO",
+        "STN-CSL",
+        "STN-GFD",
+        "STN-EDP",
+        "STN-LEP"
       ]
     }
-  ],
-  "T2": [
-    {
-      "id": "central",
-      "name": "Central",
-      "connections": [
-        "M1",
-        "T1",
-        "T2",
-        "T3",
-        "T4",
-        "T7",
-        "T8",
-        "T9"
-      ]
-    },
-    {
-      "id": "museum",
-      "name": "Museum",
-      "connections": [
-        "T2",
-        "T3",
-        "T4",
-        "T8"
-      ]
-    },
-    {
-      "id": "st_james",
-      "name": "St James",
-      "connections": [
-        "T2",
-        "T3",
-        "T4",
-        "T8"
-      ]
-    },
-    {
-      "id": "circular_quay",
-      "name": "Circular Quay",
-      "connections": [
-        "T2",
-        "T3",
-        "T4",
-        "T8"
-      ]
-    },
-    {
-      "id": "wynyard",
-      "name": "Wynyard",
-      "connections": [
-        "T1",
-        "T2",
-        "T3",
-        "T4",
-        "T8",
-        "T9"
-      ]
-    },
-    {
-      "id": "town_hall",
-      "name": "Town Hall",
-      "connections": [
-        "T1",
-        "T2",
-        "T3",
-        "T4",
-        "T8",
-        "T9"
-      ]
-    },
-    {
-      "id": "central",
-      "name": "Central",
-      "connections": [
-        "M1",
-        "T1",
-        "T2",
-        "T3",
-        "T4",
-        "T7",
-        "T8",
-        "T9"
-      ]
-    },
-    {
-      "id": "redfern",
-      "name": "Redfern",
-      "connections": [
-        "T1",
-        "T2",
-        "T3",
-        "T4",
-        "T7",
-        "T8",
-        "T9"
-      ]
-    },
-    {
-      "id": "newtown",
-      "name": "Newtown",
-      "connections": [
-        "T2",
-        "T3",
-        "T9"
-      ]
-    },
-    {
-      "id": "lewisham",
-      "name": "Lewisham",
-      "connections": [
-        "T2",
-        "T3",
-        "T9"
-      ]
-    },
-    {
-      "id": "summer_hill",
-      "name": "Summer Hill",
-      "connections": [
-        "T2",
-        "T3",
-        "T9"
-      ]
-    },
-    {
-      "id": "ashfield",
-      "name": "Ashfield",
-      "connections": [
-        "T1",
-        "T2",
-        "T3",
-        "T9"
-      ]
-    },
-    {
-      "id": "croydon",
-      "name": "Croydon",
-      "connections": [
-        "T1",
-        "T2",
-        "T3",
-        "T9"
-      ]
-    },
-    {
-      "id": "burwood",
-      "name": "Burwood",
-      "connections": [
-        "T1",
-        "T2",
-        "T3",
-        "T9"
-      ]
-    },
-    {
-      "id": "strathfield",
-      "name": "Strathfield",
-      "connections": [
-        "T1",
-        "T2",
-        "T3",
-        "T7",
-        "T9"
-      ]
-    },
-    {
-      "id": "flemington",
-      "name": "Flemington",
-      "connections": [
-        "T1",
-        "T2",
-        "T3"
-      ]
-    },
-    {
-      "id": "lidcombe",
-      "name": "Lidcombe",
-      "connections": [
-        "T1",
-        "T2",
-        "T3",
-        "T6",
-        "T7"
-      ]
-    },
-    {
-      "id": "auburn",
-      "name": "Auburn",
-      "connections": [
-        "T1",
-        "T2"
-      ]
-    },
-    {
-      "id": "clyde",
-      "name": "Clyde",
-      "connections": [
-        "T1",
-        "T2"
-      ]
-    },
-    {
-      "id": "granville",
-      "name": "Granville",
-      "connections": [
-        "T1",
-        "T2",
-        "T7"
-      ]
-    },
-    {
-      "id": "merrylands",
-      "name": "Merrylands",
-      "connections": [
-        "T2",
-        "T5"
-      ]
-    },
-    {
-      "id": "guildford",
-      "name": "Guildford",
-      "connections": [
-        "T2",
-        "T5"
-      ]
-    },
-    {
-      "id": "yennora",
-      "name": "Yennora",
-      "connections": [
-        "T2",
-        "T5"
-      ]
-    },
-    {
-      "id": "fairfield",
-      "name": "Fairfield",
-      "connections": [
-        "T2",
-        "T5"
-      ]
-    },
-    {
-      "id": "canley_vale",
-      "name": "Canley Vale",
-      "connections": [
-        "T2",
-        "T5"
-      ]
-    },
-    {
-      "id": "cabramatta",
-      "name": "Cabramatta",
-      "connections": [
-        "T2",
-        "T3",
-        "T5"
-      ]
-    },
-    {
-      "id": "warwick_farm",
-      "name": "Warwick Farm",
-      "connections": [
-        "T2",
-        "T3",
-        "T5"
-      ]
-    },
-    {
-      "id": "liverpool",
-      "name": "Liverpool",
-      "connections": [
-        "T2",
-        "T3",
-        "T5"
-      ]
-    },
-    {
-      "id": "casula",
-      "name": "Casula",
-      "connections": [
-        "T2",
-        "T3",
-        "T5"
-      ]
-    },
-    {
-      "id": "glenfield",
-      "name": "Glenfield",
-      "connections": [
-        "T2",
-        "T3",
-        "T5",
-        "T8"
-      ]
-    },
-    {
-      "id": "edmondson_park",
-      "name": "Edmondson Park",
-      "connections": [
-        "T2",
-        "T5",
-        "T8"
-      ]
-    },
-    {
-      "id": "leppington",
-      "name": "Leppington",
-      "connections": [
-        "T2",
-        "T5",
-        "T8"
-      ]
-    },
-    {
-      "id": "macdonaldtown",
-      "name": "Macdonaldtown",
-      "connections": [
-        "T2",
-        "T3",
-        "T9"
-      ]
-    },
-    {
-      "id": "stanmore",
-      "name": "Stanmore",
-      "connections": [
-        "T2",
-        "T3",
-        "T9"
-      ]
-    },
-    {
-      "id": "petersham",
-      "name": "Petersham",
-      "connections": [
-        "T2",
-        "T3",
-        "T9"
-      ]
-    },
-    {
-      "id": "homebush",
-      "name": "Homebush",
-      "connections": [
-        "T1",
-        "T2",
-        "T3"
-      ]
-    },
-    {
-      "id": "harris_park",
-      "name": "Harris Park",
-      "connections": [
-        "T1",
-        "T2",
-        "T5"
-      ]
-    },
-    {
-      "id": "parramatta",
-      "name": "Parramatta",
-      "connections": [
-        "T1",
-        "T2",
-        "T5",
-        "T7"
-      ]
-    },
-    {
-      "id": "olympic_park",
-      "name": "Olympic Park",
-      "connections": [
-        "T1",
-        "T2",
-        "T7"
-      ]
-    },
-    {
-      "id": "bankstown",
-      "name": "Bankstown",
-      "connections": [
-        "T2",
-        "T6"
-      ]
-    },
-    {
-      "id": "yagoona",
-      "name": "Yagoona",
-      "connections": [
-        "T2",
-        "T6"
-      ]
-    },
-    {
-      "id": "birrong",
-      "name": "Birrong",
-      "connections": [
-        "T2",
-        "T6"
-      ]
-    },
-    {
-      "id": "sefton",
-      "name": "Sefton",
-      "connections": [
-        "T2",
-        "T3"
-      ]
-    },
-    {
-      "id": "chester_hill",
-      "name": "Chester Hill",
-      "connections": [
-        "T2",
-        "T3"
-      ]
-    },
-    {
-      "id": "leightonfield",
-      "name": "Leightonfield",
-      "connections": [
-        "T2",
-        "T3"
-      ]
-    },
-    {
-      "id": "villawood",
-      "name": "Villawood",
-      "connections": [
-        "T2",
-        "T3"
-      ]
-    },
-    {
-      "id": "carramar",
-      "name": "Carramar",
-      "connections": [
-        "T2",
-        "T3"
+  },
+  "T6": {
+    "lineId": "T6",
+    "displayName": "T6 Lidcombe & Bankstown Line",
+    "color": "#7C3E21",
+    "variants": {
+      "main": [
+        "STN-LDC",
+        "STN-BEJ",
+        "STN-RGP",
+        "STN-BIO",
+        "STN-YOA",
+        "STN-BNK"
       ]
     }
-  ],
-  "T8": [
-    {
-      "id": "central",
-      "name": "Central",
-      "connections": [
-        "M1",
-        "T1",
-        "T2",
-        "T3",
-        "T4",
-        "T7",
-        "T8",
-        "T9"
-      ]
-    },
-    {
-      "id": "town_hall",
-      "name": "Town Hall",
-      "connections": [
-        "T1",
-        "T2",
-        "T3",
-        "T4",
-        "T8",
-        "T9"
-      ]
-    },
-    {
-      "id": "wynyard",
-      "name": "Wynyard",
-      "connections": [
-        "T1",
-        "T2",
-        "T3",
-        "T4",
-        "T8",
-        "T9"
-      ]
-    },
-    {
-      "id": "circular_quay",
-      "name": "Circular Quay",
-      "connections": [
-        "T2",
-        "T3",
-        "T4",
-        "T8"
-      ]
-    },
-    {
-      "id": "st_james",
-      "name": "St James",
-      "connections": [
-        "T2",
-        "T3",
-        "T4",
-        "T8"
-      ]
-    },
-    {
-      "id": "museum",
-      "name": "Museum",
-      "connections": [
-        "T2",
-        "T3",
-        "T4",
-        "T8"
-      ]
-    },
-    {
-      "id": "central",
-      "name": "Central",
-      "connections": [
-        "M1",
-        "T1",
-        "T2",
-        "T3",
-        "T4",
-        "T7",
-        "T8",
-        "T9"
-      ]
-    },
-    {
-      "id": "green_square",
-      "name": "Green Square",
-      "connections": [
-        "T8"
-      ]
-    },
-    {
-      "id": "mascot",
-      "name": "Mascot",
-      "connections": [
-        "T8"
-      ]
-    },
-    {
-      "id": "domestic_airport",
-      "name": "Domestic Airport",
-      "connections": [
-        "T8"
-      ]
-    },
-    {
-      "id": "international_airport",
-      "name": "International Airport",
-      "connections": [
-        "T8"
-      ]
-    },
-    {
-      "id": "wolli_creek",
-      "name": "Wolli Creek",
-      "connections": [
-        "T4",
-        "T8"
-      ]
-    },
-    {
-      "id": "turrella",
-      "name": "Turrella",
-      "connections": [
-        "T8"
-      ]
-    },
-    {
-      "id": "bardwell_park",
-      "name": "Bardwell Park",
-      "connections": [
-        "T8"
-      ]
-    },
-    {
-      "id": "bexley_north",
-      "name": "Bexley North",
-      "connections": [
-        "T8"
-      ]
-    },
-    {
-      "id": "kingsgrove",
-      "name": "Kingsgrove",
-      "connections": [
-        "T8"
-      ]
-    },
-    {
-      "id": "beverly_hills",
-      "name": "Beverly Hills",
-      "connections": [
-        "T8"
-      ]
-    },
-    {
-      "id": "narwee",
-      "name": "Narwee",
-      "connections": [
-        "T8"
-      ]
-    },
-    {
-      "id": "riverwood",
-      "name": "Riverwood",
-      "connections": [
-        "T8"
-      ]
-    },
-    {
-      "id": "padstow",
-      "name": "Padstow",
-      "connections": [
-        "T8"
-      ]
-    },
-    {
-      "id": "revesby",
-      "name": "Revesby",
-      "connections": [
-        "T8"
-      ]
-    },
-    {
-      "id": "panania",
-      "name": "Panania",
-      "connections": [
-        "T8"
-      ]
-    },
-    {
-      "id": "east_hills",
-      "name": "East Hills",
-      "connections": [
-        "T8"
-      ]
-    },
-    {
-      "id": "holsworthy",
-      "name": "Holsworthy",
-      "connections": [
-        "T8"
-      ]
-    },
-    {
-      "id": "glenfield",
-      "name": "Glenfield",
-      "connections": [
-        "T2",
-        "T3",
-        "T5",
-        "T8"
-      ]
-    },
-    {
-      "id": "macquarie_fields",
-      "name": "Macquarie Fields",
-      "connections": [
-        "T3",
-        "T8"
-      ]
-    },
-    {
-      "id": "ingleburn",
-      "name": "Ingleburn",
-      "connections": [
-        "T3",
-        "T8"
-      ]
-    },
-    {
-      "id": "minto",
-      "name": "Minto",
-      "connections": [
-        "T3",
-        "T8"
-      ]
-    },
-    {
-      "id": "leumeah",
-      "name": "Leumeah",
-      "connections": [
-        "T3",
-        "T8"
-      ]
-    },
-    {
-      "id": "campbelltown",
-      "name": "Campbelltown",
-      "connections": [
-        "T3",
-        "T5",
-        "T8"
-      ]
-    },
-    {
-      "id": "macarthur",
-      "name": "Macarthur",
-      "connections": [
-        "T3",
-        "T5",
-        "T8"
-      ]
-    },
-    {
-      "id": "edmondson_park",
-      "name": "Edmondson Park",
-      "connections": [
-        "T2",
-        "T5",
-        "T8"
-      ]
-    },
-    {
-      "id": "leppington",
-      "name": "Leppington",
-      "connections": [
-        "T2",
-        "T5",
-        "T8"
-      ]
-    },
-    {
-      "id": "redfern",
-      "name": "Redfern",
-      "connections": [
-        "T1",
-        "T2",
-        "T3",
-        "T4",
-        "T7",
-        "T8",
-        "T9"
-      ]
-    },
-    {
-      "id": "erskineville",
-      "name": "Erskineville",
-      "connections": [
-        "T4",
-        "T8"
-      ]
-    },
-    {
-      "id": "st_peters",
-      "name": "St Peters",
-      "connections": [
-        "T4",
-        "T8"
-      ]
-    },
-    {
-      "id": "sydenham",
-      "name": "Sydenham",
-      "connections": [
-        "M1",
-        "T4",
-        "T8"
+  },
+  "T7": {
+    "lineId": "T7",
+    "displayName": "T7 Olympic Park Line",
+    "color": "#6F818E",
+    "variants": {
+      "main": [
+        "STN-LDC",
+        "STN-OLP"
       ]
     }
-  ],
-  "T4": [
-    {
-      "id": "cronulla",
-      "name": "Cronulla",
-      "connections": [
-        "T4"
-      ]
-    },
-    {
-      "id": "woolooware",
-      "name": "Woolooware",
-      "connections": [
-        "T4"
-      ]
-    },
-    {
-      "id": "caringbah",
-      "name": "Caringbah",
-      "connections": [
-        "T4"
-      ]
-    },
-    {
-      "id": "miranda",
-      "name": "Miranda",
-      "connections": [
-        "T4"
-      ]
-    },
-    {
-      "id": "gymea",
-      "name": "Gymea",
-      "connections": [
-        "T4"
-      ]
-    },
-    {
-      "id": "kirrawee",
-      "name": "Kirrawee",
-      "connections": [
-        "T4"
-      ]
-    },
-    {
-      "id": "sutherland",
-      "name": "Sutherland",
-      "connections": [
-        "T4"
-      ]
-    },
-    {
-      "id": "jannali",
-      "name": "Jannali",
-      "connections": [
-        "T4"
-      ]
-    },
-    {
-      "id": "como",
-      "name": "Como",
-      "connections": [
-        "T4"
-      ]
-    },
-    {
-      "id": "oatley",
-      "name": "Oatley",
-      "connections": [
-        "T4"
-      ]
-    },
-    {
-      "id": "mortdale",
-      "name": "Mortdale",
-      "connections": [
-        "T4"
-      ]
-    },
-    {
-      "id": "penshurst",
-      "name": "Penshurst",
-      "connections": [
-        "T4"
-      ]
-    },
-    {
-      "id": "hurstville",
-      "name": "Hurstville",
-      "connections": [
-        "T4"
-      ]
-    },
-    {
-      "id": "allawah",
-      "name": "Allawah",
-      "connections": [
-        "T4"
-      ]
-    },
-    {
-      "id": "carlton",
-      "name": "Carlton",
-      "connections": [
-        "T4"
-      ]
-    },
-    {
-      "id": "kogarah",
-      "name": "Kogarah",
-      "connections": [
-        "T4"
-      ]
-    },
-    {
-      "id": "rockdale",
-      "name": "Rockdale",
-      "connections": [
-        "T4"
-      ]
-    },
-    {
-      "id": "banksia",
-      "name": "Banksia",
-      "connections": [
-        "T4"
-      ]
-    },
-    {
-      "id": "arncliffe",
-      "name": "Arncliffe",
-      "connections": [
-        "T4"
-      ]
-    },
-    {
-      "id": "wolli_creek",
-      "name": "Wolli Creek",
-      "connections": [
-        "T4",
-        "T8"
-      ]
-    },
-    {
-      "id": "tempe",
-      "name": "Tempe",
-      "connections": [
-        "T4"
-      ]
-    },
-    {
-      "id": "sydenham",
-      "name": "Sydenham",
-      "connections": [
-        "M1",
-        "T4",
-        "T8"
-      ]
-    },
-    {
-      "id": "st_peters",
-      "name": "St Peters",
-      "connections": [
-        "T4",
-        "T8"
-      ]
-    },
-    {
-      "id": "erskineville",
-      "name": "Erskineville",
-      "connections": [
-        "T4",
-        "T8"
-      ]
-    },
-    {
-      "id": "redfern",
-      "name": "Redfern",
-      "connections": [
-        "T1",
-        "T2",
-        "T3",
-        "T4",
-        "T7",
-        "T8",
-        "T9"
-      ]
-    },
-    {
-      "id": "central",
-      "name": "Central",
-      "connections": [
-        "M1",
-        "T1",
-        "T2",
-        "T3",
-        "T4",
-        "T7",
-        "T8",
-        "T9"
-      ]
-    },
-    {
-      "id": "town_hall",
-      "name": "Town Hall",
-      "connections": [
-        "T1",
-        "T2",
-        "T3",
-        "T4",
-        "T8",
-        "T9"
-      ]
-    },
-    {
-      "id": "martin_place",
-      "name": "Martin Place",
-      "connections": [
-        "M1",
-        "T4"
-      ]
-    },
-    {
-      "id": "kings_cross",
-      "name": "Kings Cross",
-      "connections": [
-        "T4"
-      ]
-    },
-    {
-      "id": "edgecliff",
-      "name": "Edgecliff",
-      "connections": [
-        "T4"
-      ]
-    },
-    {
-      "id": "bondi_junction",
-      "name": "Bondi Junction",
-      "connections": [
-        "T4"
-      ]
-    },
-    {
-      "id": "museum",
-      "name": "Museum",
-      "connections": [
-        "T2",
-        "T3",
-        "T4",
-        "T8"
-      ]
-    },
-    {
-      "id": "st_james",
-      "name": "St James",
-      "connections": [
-        "T2",
-        "T3",
-        "T4",
-        "T8"
-      ]
-    },
-    {
-      "id": "circular_quay",
-      "name": "Circular Quay",
-      "connections": [
-        "T2",
-        "T3",
-        "T4",
-        "T8"
-      ]
-    },
-    {
-      "id": "wynyard",
-      "name": "Wynyard",
-      "connections": [
-        "T1",
-        "T2",
-        "T3",
-        "T4",
-        "T8",
-        "T9"
-      ]
-    },
-    {
-      "id": "loftus",
-      "name": "Loftus",
-      "connections": [
-        "T4"
-      ]
-    },
-    {
-      "id": "engadine",
-      "name": "Engadine",
-      "connections": [
-        "T4"
-      ]
-    },
-    {
-      "id": "heathcote",
-      "name": "Heathcote",
-      "connections": [
-        "T4"
-      ]
-    },
-    {
-      "id": "waterfall",
-      "name": "Waterfall",
-      "connections": [
-        "T4"
-      ]
-    },
-    {
-      "id": "helensburgh",
-      "name": "Helensburgh",
-      "connections": [
-        "T4"
+  },
+  "T8": {
+    "lineId": "T8",
+    "displayName": "T8 Airport & South Line",
+    "color": "#00954C",
+    "variants": {
+      "via_airport": [
+        "STN-MCA",
+        "STN-CTN",
+        "STN-LUM",
+        "STN-MIO",
+        "STN-IGB",
+        "STN-MQF",
+        "STN-GFD",
+        "STN-HOL",
+        "STN-EHS",
+        "STN-PAN",
+        "STN-RSY",
+        "STN-PDW",
+        "STN-RVD",
+        "STN-NWE",
+        "STN-BVH",
+        "STN-KGV",
+        "STN-BXN",
+        "STN-BPK",
+        "STN-TLL",
+        "STN-WCI",
+        "STN-INT",
+        "STN-DOM",
+        "STN-MCO",
+        "STN-GQE",
+        "STN-CEN",
+        "STN-MSM",
+        "STN-STJ",
+        "STN-CQY",
+        "STN-WYN",
+        "STN-THL",
+        "STN-CEN"
+      ],
+      "via_sydenham": [
+        "STN-MCA",
+        "STN-CTN",
+        "STN-LUM",
+        "STN-MIO",
+        "STN-IGB",
+        "STN-MQF",
+        "STN-GFD",
+        "STN-HOL",
+        "STN-EHS",
+        "STN-PAN",
+        "STN-RSY",
+        "STN-PDW",
+        "STN-RVD",
+        "STN-NWE",
+        "STN-BVH",
+        "STN-KGV",
+        "STN-BXN",
+        "STN-BPK",
+        "STN-TLL",
+        "STN-WCI",
+        "STN-SDN",
+        "STN-SAP",
+        "STN-EKV",
+        "STN-REF",
+        "STN-CEN"
       ]
     }
-  ],
-  "T6": [
-    {
-      "id": "bankstown",
-      "name": "Bankstown",
-      "connections": [
-        "T2",
-        "T6"
-      ]
-    },
-    {
-      "id": "yagoona",
-      "name": "Yagoona",
-      "connections": [
-        "T2",
-        "T6"
-      ]
-    },
-    {
-      "id": "birrong",
-      "name": "Birrong",
-      "connections": [
-        "T2",
-        "T6"
-      ]
-    },
-    {
-      "id": "regents_park",
-      "name": "Regents Park",
-      "connections": [
-        "T3",
-        "T6"
-      ]
-    },
-    {
-      "id": "berala",
-      "name": "Berala",
-      "connections": [
-        "T3",
-        "T6"
-      ]
-    },
-    {
-      "id": "lidcombe",
-      "name": "Lidcombe",
-      "connections": [
-        "T1",
-        "T2",
-        "T3",
-        "T6",
-        "T7"
+  },
+  "T9": {
+    "lineId": "T9",
+    "displayName": "T9 Northern Line",
+    "color": "#D11F2F",
+    "variants": {
+      "main": [
+        "STN-HBY",
+        "STN-NOR",
+        "STN-THO",
+        "STN-PNT",
+        "STN-BCF",
+        "STN-CHA",
+        "STN-EPG",
+        "STN-EWD",
+        "STN-DST",
+        "STN-WRD",
+        "STN-MEB",
+        "STN-RDS",
+        "STN-CDW",
+        "STN-NST",
+        "STN-STR",
+        "STN-BUW",
+        "STN-REF",
+        "STN-CEN",
+        "STN-THL",
+        "STN-WYN",
+        "STN-MPT",
+        "STN-NSY",
+        "STN-WVT",
+        "STN-WSC",
+        "STN-SNL",
+        "STN-ATM",
+        "STN-CWD",
+        "STN-RVL",
+        "STN-LDD",
+        "STN-KLA",
+        "STN-GDN"
       ]
     }
-  ],
-  "M1": [
-    {
-      "id": "tallawong",
-      "name": "Tallawong",
-      "connections": [
-        "M1"
-      ]
-    },
-    {
-      "id": "rouse_hill",
-      "name": "Rouse Hill",
-      "connections": [
-        "M1"
-      ]
-    },
-    {
-      "id": "kellyville",
-      "name": "Kellyville",
-      "connections": [
-        "M1"
-      ]
-    },
-    {
-      "id": "bella_vista",
-      "name": "Bella Vista",
-      "connections": [
-        "M1"
-      ]
-    },
-    {
-      "id": "norwest",
-      "name": "Norwest",
-      "connections": [
-        "M1"
-      ]
-    },
-    {
-      "id": "hills_showground",
-      "name": "Hills Showground",
-      "connections": [
-        "M1"
-      ]
-    },
-    {
-      "id": "castle_hill",
-      "name": "Castle Hill",
-      "connections": [
-        "M1"
-      ]
-    },
-    {
-      "id": "cherrybrook",
-      "name": "Cherrybrook",
-      "connections": [
-        "M1"
-      ]
-    },
-    {
-      "id": "epping",
-      "name": "Epping",
-      "connections": [
-        "M1",
-        "T9"
-      ]
-    },
-    {
-      "id": "macquarie_university",
-      "name": "Macquarie University",
-      "connections": [
-        "M1"
-      ]
-    },
-    {
-      "id": "macquarie_park",
-      "name": "Macquarie Park",
-      "connections": [
-        "M1"
-      ]
-    },
-    {
-      "id": "north_ryde",
-      "name": "North Ryde",
-      "connections": [
-        "M1"
-      ]
-    },
-    {
-      "id": "chatswood",
-      "name": "Chatswood",
-      "connections": [
-        "M1",
-        "T1",
-        "T9"
-      ]
-    },
-    {
-      "id": "crows_nest",
-      "name": "Crows Nest",
-      "connections": [
-        "M1"
-      ]
-    },
-    {
-      "id": "victoria_cross",
-      "name": "Victoria Cross",
-      "connections": [
-        "M1"
-      ]
-    },
-    {
-      "id": "barangaroo",
-      "name": "Barangaroo",
-      "connections": [
-        "M1"
-      ]
-    },
-    {
-      "id": "martin_place",
-      "name": "Martin Place",
-      "connections": [
-        "M1",
-        "T4"
-      ]
-    },
-    {
-      "id": "gadigal",
-      "name": "Gadigal",
-      "connections": [
-        "M1"
-      ]
-    },
-    {
-      "id": "central",
-      "name": "Central",
-      "connections": [
-        "M1",
-        "T1",
-        "T2",
-        "T3",
-        "T4",
-        "T7",
-        "T8",
-        "T9"
-      ]
-    },
-    {
-      "id": "waterloo",
-      "name": "Waterloo",
-      "connections": [
-        "M1"
-      ]
-    },
-    {
-      "id": "sydenham",
-      "name": "Sydenham",
-      "connections": [
-        "M1",
-        "T4",
-        "T8"
+  },
+  "M1": {
+    "lineId": "M1",
+    "displayName": "M1 Metro Northwest & Bankstown Line",
+    "color": "#168388",
+    "variants": {
+      "main": [
+        "STN-TAW",
+        "STN-RSH",
+        "STN-KVL",
+        "STN-BVS",
+        "STN-NWT",
+        "STN-HSG",
+        "STN-CSH",
+        "STN-CBK",
+        "STN-EPG",
+        "STN-MCU",
+        "STN-MQP",
+        "STN-NRD",
+        "STN-CWD",
+        "STN-CRN",
+        "STN-VCS",
+        "STN-BGO",
+        "STN-MPC",
+        "STN-GDG",
+        "STN-CEN",
+        "STN-WLO",
+        "STN-SDN"
       ]
     }
-  ]
+  }
 }
