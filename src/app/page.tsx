@@ -243,21 +243,23 @@ export default function Home() {
 
     if (m === 'daily') {
       let challenge: { start: string; target: string; date: string } | null = null;
-      
+
       if (targetDate) {
         challenge = getDailyChallenge(targetDate);
       } else {
         const cached = localStorage.getItem('trackle_daily_challenge_cached');
-        const lastCheck = localStorage.getItem('trackle_last_challenge_check');
-        const now = Date.now();
-        const ONE_HOUR = 60 * 60 * 1000;
-        let needsFetch = !cached || !lastCheck || (now - Number(lastCheck)) > ONE_HOUR;
+        const todayStr = getTodayString();
+        let needsFetch = true;
 
-        if (!needsFetch && cached) {
+        if (cached) {
           try {
-            challenge = JSON.parse(cached);
+            const parsed = JSON.parse(cached);
+            if (parsed && parsed.date === todayStr) {
+              challenge = parsed;
+              needsFetch = false;
+            }
           } catch (e) {
-            needsFetch = true;
+            // Ignored, needsFetch remains true
           }
         }
 
@@ -268,7 +270,6 @@ export default function Home() {
               challenge = await res.json();
               if (challenge) {
                 localStorage.setItem('trackle_daily_challenge_cached', JSON.stringify(challenge));
-                localStorage.setItem('trackle_last_challenge_check', String(now));
               }
             }
           } catch (e) {
@@ -336,8 +337,8 @@ export default function Home() {
     const singleLinePath = line ? (findLinePath(startId, targetId, line) ?? []) : [];
 
     // If there is a single-line route AND it is not excessively longer than the optimal transfer route, use it.
-    if (line && singleLinePath.length > 0 && 
-        (!pathWithLines || singleLinePath.length <= pathWithLines.path.length + 6)) {
+    if (line && singleLinePath.length > 0 &&
+      (!pathWithLines || singleLinePath.length <= pathWithLines.path.length + 6)) {
       tripPath = singleLinePath;
       tripLines = [line];
     } else if (pathWithLines) {
@@ -1051,20 +1052,20 @@ export default function Home() {
                         onMouseLeave={() => setHoveredStationId(null)}
                         className={`
                           flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all duration-200 cursor-pointer
-                          ${isHovered 
-                            ? 'bg-amber-500/25 border border-amber-500/50 text-game-text shadow-glow-orange/10 scale-[1.02]' 
+                          ${isHovered
+                            ? 'bg-amber-500/25 border border-amber-500/50 text-game-text shadow-glow-orange/10 scale-[1.02]'
                             : 'bg-game-surface/40 hover:bg-game-surface/75 border border-game-border/30 text-game-text-muted'}
                         `}
                       >
                         <div className="shrink-0 w-5 text-center text-xs font-mono font-bold text-gray-500">
                           {index + 1}
                         </div>
-                        
+
                         {/* Station Name */}
                         <span className="flex-1 truncate font-semibold">
                           {station.name}
                         </span>
-                        
+
                         {/* Station Code */}
                         <span className="text-[9px] font-mono bg-black/30 border border-white/5 px-1 py-0.2 rounded text-gray-400">
                           {id.replace('STN-', '')}
@@ -1073,11 +1074,11 @@ export default function Home() {
 
                       {index < devRoute.stationIds.length - 1 && (
                         <div className="flex justify-center my-0.5">
-                          <div 
+                          <div
                             className="w-0.5 h-3 transition-colors duration-200"
                             style={{
-                              backgroundColor: isHovered 
-                                ? (linesData as any)[devRoute.lineId]?.color || '#888' 
+                              backgroundColor: isHovered
+                                ? (linesData as any)[devRoute.lineId]?.color || '#888'
                                 : 'var(--game-border)'
                             }}
                           />
@@ -1087,7 +1088,7 @@ export default function Home() {
                   );
                 })}
               </div>
-              
+
               {/* Footer */}
               <div className="px-4 py-3 border-t border-game-border bg-game-surface/20 shrink-0 text-center">
                 <span className="text-[10px] text-game-text-muted italic">
@@ -1182,13 +1183,6 @@ export default function Home() {
                 />
               </div>
 
-              {/* How to play footer */}
-              <div className="px-3 pb-3 pt-2 border-t border-game-border">
-                <p className="text-xs text-gray-600 leading-relaxed">
-                  Guess all the intermediate stations along the trip between the two endpoints.
-                  Pre-stated lines show which routes are part of this journey.
-                </p>
-              </div>
             </>
           )}
         </aside>

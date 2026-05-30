@@ -51,6 +51,7 @@ export default function StationInput({
 
     const results = STATIONS_DEDUPED
       .filter(s => !excludeIds.has(s.id))
+      .filter(s => s.lat !== 0 && s.lng !== 0)
       .filter(s => {
         const name = s.name.toLowerCase();
         // prefix match first, then any contains

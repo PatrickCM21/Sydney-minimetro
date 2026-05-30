@@ -5,6 +5,7 @@ import { STATION_MAP, LINE_MAP } from '@/lib/networkData';
 import { getStationLinesOnPath } from '@/lib/pathfinding';
 import type { LineId, DailyHistoryItem } from '@/types';
 import ShareButton from '@/components/ShareButton';
+import { getTodayString } from '@/lib/dailyChallenge';
 
 interface ResultsModalProps {
   isOpen: boolean;
@@ -234,16 +235,77 @@ export default function ResultsModal({
       }, 0) / totalGames
     );
 
-    // Compute previous history baseline (excluding today's date)
-    const todayStr = new Date().toISOString().split('T')[0]; // Simple YYYY-MM-DD
+    const todayStr = getTodayString();
     const previousAttempts = dailyHistory.filter(item => item.date !== todayStr);
+
+    // Helpers for safety across date transitions
+    const parseDateString = (dateStr: string): Date => {
+      const [year, month, day] = dateStr.split('-').map(Number);
+      return new Date(year, month - 1, day);
+    };
+
+    const getDayDifference = (dateA: Date, dateB: Date): number => {
+      const diffTime = Math.abs(dateA.getTime() - dateB.getTime());
+      return Math.round(diffTime / (1000 * 60 * 60 * 24));
+    };
+
+    // Sort unique dates ascending for max streak calculations
+    const uniqueDates = Array.from(new Set(dailyHistory.map(item => item.date))).sort();
+
+    // Max streak
+    let maxStreak = 0;
+    let tempStreak = 0;
+    let lastDate: Date | null = null;
+    for (const dateStr of uniqueDates) {
+      const currentDate = parseDateString(dateStr);
+      if (!lastDate) {
+        tempStreak = 1;
+      } else {
+        const diff = getDayDifference(currentDate, lastDate);
+        if (diff === 1) {
+          tempStreak++;
+        } else if (diff > 1) {
+          tempStreak = 1;
+        }
+      }
+      lastDate = currentDate;
+      if (tempStreak > maxStreak) {
+        maxStreak = tempStreak;
+      }
+    }
+
+    // Current streak
+    let currentStreak = 0;
+    const sortedDesc = [...uniqueDates].reverse();
+    if (sortedDesc.length > 0) {
+      const latestDate = parseDateString(sortedDesc[0]);
+      const todayDate = parseDateString(todayStr);
+      const diffFromToday = getDayDifference(todayDate, latestDate);
+
+      // Streak remains active if they played today or yesterday in Sydney
+      if (diffFromToday <= 1) {
+        currentStreak = 1;
+        for (let i = 0; i < sortedDesc.length - 1; i++) {
+          const d1 = parseDateString(sortedDesc[i]);
+          const d2 = parseDateString(sortedDesc[i + 1]);
+          const diff = getDayDifference(d1, d2);
+          if (diff === 1) {
+            currentStreak++;
+          } else if (diff > 1) {
+            break;
+          }
+        }
+      }
+    }
 
     if (previousAttempts.length === 0) {
       return {
         totalGames,
         avgScore,
         comparison: 'first' as const,
-        diff: 0
+        diff: 0,
+        currentStreak,
+        maxStreak
       };
     }
 
@@ -274,7 +336,9 @@ export default function ResultsModal({
       avgScore,
       prevAvgScore,
       comparison,
-      diff: Math.abs(diff)
+      diff: Math.abs(diff),
+      currentStreak,
+      maxStreak
     };
   }, [mode, dailyHistory, totalStationsToGuess, correctCount]);
 
@@ -436,6 +500,26 @@ export default function ResultsModal({
                         </span>
                       </div>
                     )}
+                  </div>
+
+                  {/* Current Streak */}
+                  <div className="bg-game-surface/30 border border-game-border/30 rounded-xl p-3 flex flex-col items-center justify-center">
+                    <span className="text-[10px] text-game-text-muted font-semibold uppercase tracking-wider text-center">
+                      Current Streak
+                    </span>
+                    <span className="text-xl font-black text-orange-500 mt-1.5 flex items-center gap-1">
+                      {personalStats.currentStreak} {personalStats.currentStreak === 1 ? 'day' : 'days'}
+                    </span>
+                  </div>
+
+                  {/* Max Streak */}
+                  <div className="bg-game-surface/30 border border-game-border/30 rounded-xl p-3 flex flex-col items-center justify-center">
+                    <span className="text-[10px] text-game-text-muted font-semibold uppercase tracking-wider text-center">
+                      Max Streak
+                    </span>
+                    <span className="text-xl font-black text-blue-500 mt-1.5 flex items-center gap-1">
+                      {personalStats.maxStreak} {personalStats.maxStreak === 1 ? 'day' : 'days'}
+                    </span>
                   </div>
                 </div>
               </div>
