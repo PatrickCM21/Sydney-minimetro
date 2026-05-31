@@ -92,8 +92,8 @@ export const CURATED_PAIRS: Array<[string, string]> = [
     "redfern"
   ],
   [
-    "banksia",
-    "riverwood"
+    "strathfield",
+    "north_ryde"
   ],
   [
     "merrylands",
