@@ -84,7 +84,7 @@ const lineSegments: Record<LineId, string[][]> = {
   ],
   T8: [
     ["STN-MCA", "STN-CTN", "STN-LUM", "STN-MIO", "STN-IGB", "STN-MQF", "STN-GFD", "STN-HOL", "STN-EHS", "STN-PAN", "STN-RSY", "STN-PDW", "STN-RVD", "STN-NWE", "STN-BVH", "STN-KGV", "STN-BXN", "STN-BPK", "STN-TLL", "STN-WCI", "STN-INT", "STN-DOM", "STN-MCO", "STN-GQE", "STN-CEN", "STN-MSM", "STN-STJ", "STN-CQY", "STN-WYN", "STN-THL", "STN-CEN"],
-    ["STN-MCA", "STN-CTN", "STN-LUM", "STN-MIO", "STN-IGB", "STN-MQF", "STN-GFD", "STN-HOL", "STN-EHS", "STN-PAN", "STN-RSY", "STN-PDW", "STN-RVD", "STN-NWE", "STN-BVH", "STN-KGV", "STN-BXN", "STN-BPK", "STN-TLL", "STN-WCI", "STN-SDN", "STN-SAP", "STN-EKV", "STN-REF", "STN-CEN"],
+    ["STN-SDN", "STN-SAP", "STN-EKV", "STN-REF", "STN-CEN"],
   ],
   T9: [
     ["STN-HBY", "STN-NOR", "STN-THO", "STN-PNT", "STN-BCF", "STN-CHA", "STN-EPG", "STN-EWD", "STN-DST", "STN-WRD", "STN-MEB", "STN-RDS", "STN-CDW", "STN-NST", "STN-STR", "STN-BUW", "STN-REF", "STN-CEN", "STN-THL", "STN-WYN", "STN-MPT", "STN-NSY", "STN-WVT", "STN-WSC", "STN-SNL", "STN-ATM", "STN-CWD", "STN-RVL", "STN-LDD", "STN-KLA", "STN-GDN"],

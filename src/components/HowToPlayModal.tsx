@@ -58,7 +58,7 @@ export default function HowToPlayModal({ isOpen, onClose }: HowToPlayModalProps)
         <div className="px-6 py-6 overflow-y-auto max-h-[70vh] flex flex-col gap-6 custom-scroll">
           <p className="text-sm text-game-text-muted leading-relaxed">
             Welcome to <strong className="font-extrabold text-game-text">Trackle</strong>, the daily shortest path quiz for Sydney&apos;s transit network.
-            Your goal is to find the correct rail route connecting two stations.
+            Your goal is to guess the route with the <strong className="text-game-text font-bold text-orange-500">least number of stops</strong> (not necessarily the shortest physical distance) connecting the two stations.
           </p>
 
           <div className="flex flex-col gap-5">

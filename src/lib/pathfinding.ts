@@ -14,7 +14,7 @@ export function findLinePath(a: string, b: string, line: LineId): string[] | nul
   const queue: Array<{ id: string; path: string[] }> = [{ id: a, path: [a] }];
   const visited = new Set<string>([a]);
 
-  const sydenhamList = ['sydenham', 'st_peters', 'erskineville'];
+  const sydenhamList = ['STN-SDN', 'STN-SAP', 'STN-EKV'];
   const useSydenham = line === 'T8' && (sydenhamList.includes(a) || sydenhamList.includes(b));
 
   while (queue.length > 0) {

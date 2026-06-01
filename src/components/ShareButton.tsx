@@ -139,77 +139,77 @@ export default function ShareButton({
       ctx.textBaseline = 'middle';
 
       // Header: Logo and Title
-      let headerY = 220;
+      let headerY = 320;
       if (logo) {
         const aspect = logo.width / logo.height;
-        const logoHeight = 90;
+        const logoHeight = 140;
         const logoWidth = logoHeight * aspect;
-        ctx.drawImage(logo, 540 - logoWidth / 2, 70, logoWidth, logoHeight);
-        headerY = 200;
+        ctx.drawImage(logo, 540 - logoWidth / 2, 90, logoWidth, logoHeight);
+        headerY = 280;
       } else {
-        ctx.font = 'bold 54px system-ui, -apple-system, sans-serif';
+        ctx.font = 'bold 96px system-ui, -apple-system, sans-serif';
         ctx.fillStyle = '#ffffff';
-        ctx.fillText('TRACKLE', 540, 120);
+        ctx.fillText('TRACKLE', 540, 180);
       }
 
-      ctx.font = 'bold 24px system-ui, -apple-system, sans-serif';
+      ctx.font = 'bold 54px system-ui, -apple-system, sans-serif';
       ctx.fillStyle = '#f37021'; // Sydney Trains Brand Orange
-      ctx.fillText('TRACKLE', 540, headerY + 25);
+      ctx.fillText('TRACKLE', 540, headerY + 45);
 
       // Divider Line (Orange)
       ctx.strokeStyle = '#f37021';
-      ctx.lineWidth = 3;
+      ctx.lineWidth = 6;
       ctx.beginPath();
-      ctx.moveTo(540 - 120, headerY + 60); // Starts at 420
-      ctx.lineTo(540 + 120, headerY + 60); // Ends at 660
+      ctx.moveTo(540 - 220, headerY + 95); // Starts at 320
+      ctx.lineTo(540 + 220, headerY + 95); // Ends at 760
       ctx.stroke();
 
       // Trip Title & Stations
-      ctx.font = 'bold 22px system-ui, sans-serif';
+      ctx.font = 'bold 24px system-ui, sans-serif';
       ctx.fillStyle = '#ffffff';
-      ctx.fillText('TODAY\'S TRIP', 540, headerY + 115);
+      ctx.fillText('TODAY\'S TRIP', 540, headerY + 160);
 
-      ctx.font = 'bold 44px system-ui, sans-serif';
+      ctx.font = 'bold 48px system-ui, sans-serif';
       ctx.fillStyle = '#ffffff';
-      ctx.fillText(startName, 540, headerY + 165);
+      ctx.fillText(startName, 540, headerY + 225);
 
-      ctx.font = 'bold 36px system-ui, sans-serif';
+      ctx.font = 'bold 40px system-ui, sans-serif';
       ctx.fillStyle = '#f37021'; // Orange Arrow
-      ctx.fillText('↔', 540, headerY + 215);
+      ctx.fillText('↔', 540, headerY + 285);
 
-      ctx.font = 'bold 44px system-ui, sans-serif';
+      ctx.font = 'bold 48px system-ui, sans-serif';
       ctx.fillStyle = '#ffffff';
-      ctx.fillText(targetName, 540, headerY + 265);
+      ctx.fillText(targetName, 540, headerY + 345);
 
       // Score / Result Box (White/Translucent with Blue border)
       const won = correctCount === totalStationsToGuess;
       const resultColor = won ? '#10b981' : '#f37021';
 
-      // Box coordinates Y = 590 to 1060
-      drawRoundedRect(ctx, 120, 590, 840, 460, 30, 'rgba(255, 255, 255, 0.07)', 'rgba(255, 255, 255, 0.12)');
+      // Box coordinates Y = 700 to 1180
+      drawRoundedRect(ctx, 120, 700, 840, 480, 30, 'rgba(255, 255, 255, 0.07)', 'rgba(255, 255, 255, 0.12)');
 
       // Highlight Outcome / "I GUESSED"
       ctx.font = 'bold 28px system-ui, sans-serif';
       ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
-      ctx.fillText('I GUESSED', 540, 670);
+      ctx.fillText('I GUESSED', 540, 780);
 
       // Giant Guesses Count Fraction
       ctx.font = '900 130px system-ui, sans-serif';
       ctx.fillStyle = resultColor;
-      ctx.fillText(`${correctCount}/${totalStationsToGuess}`, 540, 790);
+      ctx.fillText(`${correctCount}/${totalStationsToGuess}`, 540, 880);
 
       // Bottom label "STATIONS CORRECTLY"
       ctx.font = 'bold 28px system-ui, sans-serif';
       ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
-      ctx.fillText('STATIONS CORRECTLY', 540, 895);
+      ctx.fillText('STATIONS CORRECTLY', 540, 1010);
 
       // Score percentage
       ctx.font = '900 36px system-ui, sans-serif';
       ctx.fillStyle = won ? '#10b981' : '#ffffff';
-      ctx.fillText(`SCORE: ${score}%`, 540, 975);
+      ctx.fillText(`SCORE: ${score}%`, 540, 1100);
 
       // Journey Path Graphic: Horizontal and Snaking layout
-      const pathStartY = 1140;
+      const pathStartY = 1260;
       const numStations = optimalPath.length;
 
       if (numStations > 0) {
@@ -354,11 +354,13 @@ export default function ShareButton({
           ctx.fillStyle = '#ffffff';
           ctx.fill();
 
-          // Station Name Label
-          ctx.font = 'bold 20px system-ui, sans-serif';
-          ctx.fillStyle = '#ffffff';
-          ctx.textAlign = 'center';
-          ctx.fillText(st.name, x, y + (st.isEndpoint ? 50 : 42));
+          // Station Name Label (only for the endpoints)
+          if (st.isEndpoint) {
+            ctx.font = 'bold 20px system-ui, sans-serif';
+            ctx.fillStyle = '#ffffff';
+            ctx.textAlign = 'center';
+            ctx.fillText(st.name, x, y + 50);
+          }
 
           // Mini indicator symbol inside node label area
           if (!st.isEndpoint) {
@@ -375,15 +377,11 @@ export default function ShareButton({
       ctx.textAlign = 'center';
       ctx.font = 'bold 28px system-ui, sans-serif';
       ctx.fillStyle = '#ffffff';
-      ctx.fillText('Can you beat my score?', 540, 1690);
+      ctx.fillText('Can you beat my score?', 540, 1720);
 
       ctx.font = '900 48px system-ui, sans-serif';
       ctx.fillStyle = '#f37021';
-      ctx.fillText('playtrackle.app', 540, 1755);
-
-      ctx.font = '18px system-ui, sans-serif';
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-      ctx.fillText('Sydney Trains Minimetro Puzzle', 540, 1810);
+      ctx.fillText('playtrackle.app', 540, 1785);
 
       // Convert Canvas to Blob
       const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));

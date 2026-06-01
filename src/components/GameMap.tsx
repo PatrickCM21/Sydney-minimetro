@@ -245,6 +245,11 @@ export default function GameMap({
       const fromIdx = revealedIndices[r];
       const toIdx = revealedIndices[r + 1];
 
+      // If hardMode is true, only show the segment if the two revealed stations are physically adjacent
+      if (hardMode && toIdx > fromIdx + 1) {
+        continue;
+      }
+
       // Collect all stations in this segment (inclusive)
       const segmentStationIds: string[] = [];
       for (let i = fromIdx; i <= toIdx; i++) {
@@ -523,11 +528,17 @@ export default function GameMap({
         smoothWheelZoom={true}
         smoothSensitivity={25}
       >
-        {/* CartoDB Map Tiles based on darkMap prop */}
+        {/* CartoDB Map Tiles based on darkMap and hardMode props */}
         <TileLayer
-          url={darkMap
-            ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-            : "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+          url={hardMode
+            ? (darkMap
+                ? "https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png"
+                : "https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png"
+              )
+            : (darkMap
+                ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+                : "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+              )
           }
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
           subdomains="abcd"
