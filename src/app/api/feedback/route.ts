@@ -3,7 +3,7 @@ import { NextRequest } from 'next/server';
 export async function POST(request: NextRequest): Promise<Response> {
   try {
     const body = await request.json();
-    const { feedback, score, mode, startStation, targetStation, guessedCount, totalCount, wrongCount } = body;
+    const { feedback, email, score, mode, startStation, targetStation, guessedCount, totalCount, wrongCount } = body;
 
     if (!feedback || typeof feedback !== 'string') {
       return Response.json({ error: 'Feedback message is required' }, { status: 400 });
@@ -15,19 +15,46 @@ export async function POST(request: NextRequest): Promise<Response> {
       return Response.json({ error: 'Feedback submission is not configured on the server' }, { status: 500 });
     }
 
+    let color = 3447003; // Default blue
+    let modeName = 'Practice';
+
+    if (mode === 'daily') {
+      color = 16753920; // Orange
+      modeName = 'Daily Challenge';
+    } else if (mode === 'settings') {
+      color = 10197915; // Grey
+      modeName = 'Settings Menu / General';
+    }
+
+    const fields = [
+      { name: 'Mode', value: modeName, inline: true }
+    ];
+
+    if (startStation && targetStation) {
+      fields.push({ name: 'Route', value: `${startStation} ↔ ${targetStation}`, inline: true });
+    }
+
+    if (score !== undefined && score !== null) {
+      fields.push({ name: 'Score', value: `${score}%`, inline: true });
+    }
+
+    if (guessedCount !== undefined && totalCount !== undefined && wrongCount !== undefined &&
+        guessedCount !== null && totalCount !== null && wrongCount !== null) {
+      fields.push({ name: 'Guesses', value: `${guessedCount}/${totalCount} (Wrong: ${wrongCount})`, inline: true });
+    }
+
+    if (email) {
+      fields.push({ name: 'Contact Email', value: email, inline: false });
+    }
+
     // Format a nice rich embed or message for Discord
     const discordMessage = {
       embeds: [
         {
           title: 'New Trackle Game Feedback',
           description: feedback,
-          color: mode === 'daily' ? 16753920 : 3447003, // Orange for Daily, Blue for Practice
-          fields: [
-            { name: 'Mode', value: mode === 'daily' ? 'Daily Challenge' : 'Practice', inline: true },
-            { name: 'Route', value: `${startStation} ↔ ${targetStation}`, inline: true },
-            { name: 'Score', value: `${score}%`, inline: true },
-            { name: 'Guesses', value: `${guessedCount}/${totalCount} (Wrong: ${wrongCount})`, inline: true }
-          ],
+          color,
+          fields,
           timestamp: new Date().toISOString()
         }
       ]

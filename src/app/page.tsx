@@ -57,6 +57,7 @@ export default function Home() {
   const [gameState, setGameState] = useState<GameState | null>(null);
   const [showResults, setShowResults] = useState(false);
   const [showHowToPlay, setShowHowToPlay] = useState(false);
+  const [showHelpPopup, setShowHelpPopup] = useState(false);
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
   const toastIdRef = React.useRef(0);
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
@@ -175,15 +176,16 @@ export default function Home() {
     return () => clearTimeout(timer);
   }, []);
 
-  // Check if user has seen tutorial on mount
-  useEffect(() => {
+  const handleInitialZoomComplete = useCallback(() => {
+    if (typeof window === 'undefined') return;
     const hasSeenTutorial = document.cookie.split('; ').some(row => row.startsWith('trackle_tutorial_seen='));
     if (!hasSeenTutorial) {
-      const timer = setTimeout(() => {
-        setShowHowToPlay(true);
-      }, 0);
+      setShowHelpPopup(true);
+      // Auto-dismiss the reminder tooltip after 8 seconds
+      setTimeout(() => {
+        setShowHelpPopup(false);
+      }, 8000);
       document.cookie = 'trackle_tutorial_seen=true; max-age=31536000; path=/; SameSite=Lax';
-      return () => clearTimeout(timer);
     }
   }, []);
 
@@ -546,6 +548,10 @@ export default function Home() {
     startGame('practice');
   }, [startGame]);
 
+  const handleCloseTutorial = useCallback(() => {
+    setShowHowToPlay(false);
+  }, []);
+
   const handleExplorerDateChange = useCallback((offsetDays: number) => {
     setExplorerDate(prevDate => {
       const d = new Date(prevDate + 'T12:00:00');
@@ -796,17 +802,37 @@ export default function Home() {
           </a>
 
           {/* Help Button */}
-          <button
-            onClick={() => setShowHowToPlay(true)}
-            className="p-2.5 md:p-1.5 rounded-lg border border-game-border hover:bg-game-surface text-game-text-muted hover:text-game-text transition-colors flex items-center justify-center"
-            aria-label="help"
-            title="Help"
-          >
-            <svg className="w-5 h-5 md:w-[15px] md:h-[15px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="10" />
-              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01" />
-            </svg>
-          </button>
+          <div className="relative">
+            <button
+              onClick={() => { setShowHowToPlay(true); setShowHelpPopup(false); }}
+              className="p-2.5 md:p-1.5 rounded-lg border border-game-border hover:bg-game-surface text-game-text-muted hover:text-game-text transition-colors flex items-center justify-center"
+              aria-label="help"
+              title="Help"
+            >
+              <svg className="w-5 h-5 md:w-[15px] md:h-[15px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01" />
+              </svg>
+            </button>
+            {showHelpPopup && (
+              <div className="absolute right-0 top-full mt-2 w-56 md:w-64 bg-blue-600 dark:bg-blue-500 text-white text-sm px-4 py-2.5 md:py-3 rounded-xl shadow-xl z-[2100] animate-bounce-subtle">
+                <div className="absolute top-0 right-3.5 -mt-1 w-2 h-2 bg-blue-600 dark:bg-blue-500 transform rotate-45"></div>
+                <div className="flex flex-col gap-1.5">
+                  <div className="font-bold flex items-center justify-between">
+                    <span>Need the rules?</span>
+                    <button
+                      onClick={() => setShowHelpPopup(false)}
+                      className="w-6 h-6 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 text-white font-extrabold text-sm transition-colors shrink-0 ml-1.5"
+                      aria-label="Close rules helper"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                  <p className="text-xs text-blue-100 leading-tight">Click this button anytime to check the rules!</p>
+                </div>
+              </div>
+            )}
+          </div>
 
           {/* Settings Button */}
           <button
@@ -853,6 +879,8 @@ export default function Home() {
             hardMode={hardMode}
             darkMap={darkMap}
             hoveredStationId={hoveredStationId}
+            mode={mode}
+            onInitialZoomComplete={handleInitialZoomComplete}
           />
 
           {/* MOBILE FLOATING OBJECTIVE (only visible on mobile, md:hidden) */}
@@ -1247,7 +1275,7 @@ export default function Home() {
       {/* ── HOW TO PLAY TUTORIAL ──────────────────────────────────── */}
       <HowToPlayModal
         isOpen={showHowToPlay}
-        onClose={() => setShowHowToPlay(false)}
+        onClose={handleCloseTutorial}
       />
 
       {/* ── SETTINGS MODAL ────────────────────────────────────────── */}

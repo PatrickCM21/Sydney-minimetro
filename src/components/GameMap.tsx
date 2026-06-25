@@ -34,6 +34,8 @@ interface GameMapProps {
   hardMode?: boolean;
   darkMap?: boolean;
   hoveredStationId?: string | null;
+  mode?: 'daily' | 'practice';
+  onInitialZoomComplete?: () => void;
 }
 
 // Coordinates are now stored directly in standard [longitude, latitude] degrees.
@@ -91,19 +93,53 @@ export default function GameMap({
   hardMode = false,
   darkMap = false,
   hoveredStationId = null,
+  mode = 'daily',
+  onInitialZoomComplete,
 }: GameMapProps) {
   const [mapInstance, setMapInstance] = useState<L.Map | null>(null);
   const [routeShapes, setRouteShapes] = useState<RouteShape[]>([]);
+  const [hasZoomedInitial, setHasZoomedInitial] = useState(false);
 
   // Auto-center and zoom to fit the entire route/path when completed or loaded
   useEffect(() => {
     if (!mapInstance || !isComplete || !tripPath || tripPath.length === 0) return;
+    mapInstance.invalidateSize();
     const points = tripPath.map(id => STATION_MAP.get(id)).filter(Boolean) as Station[];
     if (points.length > 0) {
       const bounds = L.latLngBounds(points.map(p => [p.lat, p.lng]));
-      mapInstance.flyToBounds(bounds, { padding: [50, 50], duration: 0.8 });
+      const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+      const isIOS = typeof navigator !== 'undefined' && /iPad|iPhone|iPod/.test(navigator.userAgent);
+      const paddingVal: [number, number] = (isMobile || isIOS) ? [50, 130] : [50, 50];
+      mapInstance.flyToBounds(bounds, { padding: paddingVal, duration: 0.8 });
     }
   }, [mapInstance, isComplete, tripPath]);
+
+  // Auto-center and zoom to fit start and target stations when they change or when the mode changes
+  useEffect(() => {
+    if (!mapInstance || isComplete) return;
+    mapInstance.invalidateSize();
+    const startStation = STATION_MAP.get(startId);
+    const targetStation = STATION_MAP.get(targetId);
+    if (startStation && targetStation) {
+      const bounds = L.latLngBounds([
+        [startStation.lat, startStation.lng],
+        [targetStation.lat, targetStation.lng]
+      ]);
+      const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+      const isIOS = typeof navigator !== 'undefined' && /iPad|iPhone|iPod/.test(navigator.userAgent);
+      const paddingVal: [number, number] = (isMobile || isIOS) ? [60, 140] : [100, 100];
+      const maxZoomVal = (isMobile || isIOS) ? 12 : 13;
+
+      mapInstance.flyToBounds(bounds, { padding: paddingVal, maxZoom: maxZoomVal, duration: 0.8 });
+
+      if (!hasZoomedInitial && onInitialZoomComplete) {
+        setHasZoomedInitial(true);
+        setTimeout(() => {
+          onInitialZoomComplete();
+        }, 1300); // 0.8s flight duration + 0.5s wait
+      }
+    }
+  }, [mapInstance, mode, startId, targetId, isComplete, hasZoomedInitial, onInitialZoomComplete]);
 
 
   useEffect(() => {

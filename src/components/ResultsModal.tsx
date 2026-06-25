@@ -163,6 +163,7 @@ export default function ResultsModal({
 }: ResultsModalProps) {
   const overlayRef = useRef<HTMLDivElement>(null);
   const [feedback, setFeedback] = React.useState('');
+  const [email, setEmail] = React.useState('');
   const [showFeedback, setShowFeedback] = React.useState(false);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [submitStatus, setSubmitStatus] = React.useState<'idle' | 'success' | 'error'>('idle');
@@ -194,6 +195,7 @@ export default function ResultsModal({
         },
         body: JSON.stringify({
           feedback,
+          email: email.trim() || undefined,
           score,
           mode,
           startStation,
@@ -207,6 +209,7 @@ export default function ResultsModal({
       if (res.ok) {
         addToast?.('Feedback sent successfully!', 'success');
         setFeedback('');
+        setEmail('');
         setShowFeedback(false);
       } else {
         setSubmitStatus('error');
@@ -562,6 +565,13 @@ export default function ResultsModal({
                 placeholder="Spotted an issue? Have a suggestion?"
                 rows={2}
                 required
+                className="w-full text-xs p-2 bg-game-bg border border-game-border rounded-lg text-game-text focus:outline-none focus:border-blue-500"
+              />
+              <input
+                type="email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                placeholder="Email (optional, for response)"
                 className="w-full text-xs p-2 bg-game-bg border border-game-border rounded-lg text-game-text focus:outline-none focus:border-blue-500"
               />
               <div className="flex gap-2 justify-end">
