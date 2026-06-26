@@ -349,16 +349,21 @@ export default function ResultsModal({
 
   React.useEffect(() => {
     if (isOpen && mode === 'daily' && date) {
-      fetch(`/api/stats?date=${date}`)
+      fetch(`/api/stats?date=${date}&mode=${mode}&start=${startId}&target=${targetId}`)
         .then(res => res.json())
         .then(data => {
           if (data && typeof data.avg_score === 'number' && data.total_submissions > 0) {
             setGlobalAvgScore(Math.round(data.avg_score));
+          } else {
+            setGlobalAvgScore(null);
           }
         })
-        .catch(err => console.error("Error fetching stats:", err));
+        .catch(err => {
+          console.error("Error fetching stats:", err);
+          setGlobalAvgScore(null);
+        });
     }
-  }, [isOpen, mode, date]);
+  }, [isOpen, mode, date, startId, targetId]);
 
   const fakeAverage = React.useMemo(() => {
     let seed = 0;

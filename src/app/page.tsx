@@ -39,7 +39,7 @@ function initGameState(
     isComplete: false,
     optimalPath: tripPath,
     userPath: [],
-    date: mode === 'daily' ? getTodayString() : undefined,
+    date: getTodayString(),
     tripPath,
     tripLines,
     wrongGuesses: [],
@@ -122,7 +122,9 @@ export default function Home() {
         body: JSON.stringify({
           date: state.date,
           guesses: correctCount,
-          score
+          score,
+          start_id: state.startId,
+          target_id: state.targetId
         })
       }).catch(err => {
         console.error('Error submitting stats:', err);
@@ -146,6 +148,33 @@ export default function Home() {
       const nextHistory = [...prevHistory, historyItem];
       localStorage.setItem('trackle_daily_history', JSON.stringify(nextHistory));
       return nextHistory;
+    });
+  }, []);
+
+  const saveToPracticeStats = useCallback((state: GameState) => {
+    if (state.mode !== 'practice' || !state.isComplete) return;
+
+    const totalStationsToGuess = state.tripPath.length > 2 ? state.tripPath.length - 2 : 0;
+    const correctCount = state.guessedIds.length;
+    const score = totalStationsToGuess > 0
+      ? Math.round((correctCount / totalStationsToGuess) * 100)
+      : 100;
+
+    fetch('/api/stats', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        date: getTodayString(),
+        guesses: correctCount,
+        score,
+        mode: 'practice',
+        start_id: state.startId,
+        target_id: state.targetId
+      })
+    }).catch(err => {
+      console.error('Error submitting practice stats:', err);
     });
   }, []);
 
@@ -487,6 +516,10 @@ export default function Home() {
         if (allGuessed) {
           saveToDailyHistory(newState);
         }
+      } else if (gameState.mode === 'practice') {
+        if (allGuessed) {
+          saveToPracticeStats(newState);
+        }
       }
 
       if (allGuessed) {
@@ -514,6 +547,10 @@ export default function Home() {
         if (isFailed) {
           saveToDailyHistory(newState);
         }
+      } else if (gameState.mode === 'practice') {
+        if (isFailed) {
+          saveToPracticeStats(newState);
+        }
       }
 
       if (isFailed) {
@@ -525,7 +562,7 @@ export default function Home() {
         addToast(`${station.name} is not on this trip!`, 'error');
       }
     }
-  }, [gameState, addToast, saveDailyProgress, saveToDailyHistory]);
+  }, [gameState, addToast, saveDailyProgress, saveToDailyHistory, saveToPracticeStats]);
 
   const handleGiveUp = useCallback(() => {
     if (!gameState || gameState.isComplete) return;
@@ -539,10 +576,12 @@ export default function Home() {
     if (gameState.mode === 'daily') {
       saveDailyProgress(gameState.guessedIds, gameState.wrongGuesses, true, gameState.date);
       saveToDailyHistory(newState);
+    } else if (gameState.mode === 'practice') {
+      saveToPracticeStats(newState);
     }
 
     setTimeout(() => setShowResults(true), 400);
-  }, [gameState, saveDailyProgress, saveToDailyHistory]);
+  }, [gameState, saveDailyProgress, saveToDailyHistory, saveToPracticeStats]);
 
   const handlePlayAgain = useCallback(() => {
     startGame('practice');
