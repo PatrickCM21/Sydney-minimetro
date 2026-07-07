@@ -124,7 +124,8 @@ export default function Home() {
           guesses: correctCount,
           score,
           start_id: state.startId,
-          target_id: state.targetId
+          target_id: state.targetId,
+          wrong_guesses: wrongCount
         })
       }).catch(err => {
         console.error('Error submitting stats:', err);
@@ -160,6 +161,8 @@ export default function Home() {
       ? Math.round((correctCount / totalStationsToGuess) * 100)
       : 100;
 
+    const wrongCount = state.wrongGuesses.length;
+
     fetch('/api/stats', {
       method: 'POST',
       headers: {
@@ -171,7 +174,8 @@ export default function Home() {
         score,
         mode: 'practice',
         start_id: state.startId,
-        target_id: state.targetId
+        target_id: state.targetId,
+        wrong_guesses: wrongCount
       })
     }).catch(err => {
       console.error('Error submitting practice stats:', err);

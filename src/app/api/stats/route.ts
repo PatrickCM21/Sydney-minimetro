@@ -40,6 +40,7 @@ export async function GET(request: NextRequest): Promise<Response> {
         target_id: targetId || null,
         total_submissions: 0,
         total_guesses: 0,
+        total_wrong_guesses: 0,
         avg_score: 0.0
       });
     }
@@ -55,7 +56,7 @@ export async function GET(request: NextRequest): Promise<Response> {
 export async function POST(request: NextRequest): Promise<Response> {
   try {
     const body = await request.json();
-    const { date, guesses, score, mode = 'daily', start_id, target_id } = body;
+    const { date, guesses, score, mode = 'daily', start_id, target_id, wrong_guesses } = body;
 
     if (!date || typeof guesses !== 'number' || typeof score !== 'number') {
       return Response.json({ error: 'Missing or invalid parameters' }, { status: 400 });
@@ -69,7 +70,8 @@ export async function POST(request: NextRequest): Promise<Response> {
       p_guesses: guesses,
       p_score: score,
       p_start_id: start_id || null,
-      p_target_id: target_id || null
+      p_target_id: target_id || null,
+      p_wrong_guesses: typeof wrong_guesses === 'number' ? wrong_guesses : 0
     });
 
     if (error) {
